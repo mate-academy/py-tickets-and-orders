@@ -135,7 +135,7 @@ def test_order_str(orders_data):
 
 
 def test_order_ordering(orders_data):
-    assert list(Order.objects.all().values_list("id")) == [(3,), (2,), (1,)]
+    assert sorted(Order.objects.all().values_list("id"))[::-1] == [(3,), (2,), (1,)]
 
 
 def test_ticket_str(tickets_data):
@@ -277,7 +277,7 @@ def test_user_service_update_user_with_whole_data(users_data):
 
 
 def test_order_service_get_orders_without_user(orders_data):
-    assert list(get_orders().values_list("user__username")) == [
+    assert sorted(get_orders().values_list("user__username"))[::-1] == [
         ("user2",),
         ("user1",),
         ("user1",),
