@@ -83,7 +83,7 @@ class Ticket(models.Model):
     class Meta:
         constraints = [
             UniqueConstraint(fields=["row", "seat", "movie_session"],
-                             name="unique")
+                             name="unique_combination_of_row_seat_session")
         ]
 
     def clean(self):
