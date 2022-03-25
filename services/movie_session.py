@@ -50,5 +50,3 @@ def get_taken_seats(movie_session_id: int):
         )
 
     return session_seats
-
-
