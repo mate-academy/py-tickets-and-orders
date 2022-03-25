@@ -8,8 +8,8 @@ def create_order(tickets: list,
                  date=None,
                  ):
     with transaction.atomic():
-        u = User.objects.get(username=username)
-        order = Order.objects.create(user=u)
+        user = User.objects.get(username=username)
+        order = Order.objects.create(user=user)
 
         if date:
             order.created_at = date
