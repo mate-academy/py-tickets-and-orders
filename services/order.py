@@ -1,5 +1,6 @@
 from typing import List
 
+from django.contrib.auth import get_user_model
 from django.db import transaction
 
 from db.models import Order, Ticket, User, MovieSession
@@ -7,12 +8,12 @@ from db.models import Order, Ticket, User, MovieSession
 
 def create_order(tickets: List[dict], username, date=None):
     with transaction.atomic():
-        user = User.objects.get(username=username)
+        user = get_user_model().objects.get(username=username)
         order = Order.objects.create(user=user)
 
         if date:
             order.created_at = date
-        order.save()
+            order.save()
 
         for ticket_data in tickets:
             if ticket_data["movie_session"]:
