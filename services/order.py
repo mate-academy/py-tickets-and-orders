@@ -10,8 +10,7 @@ def create_order(tickets, username, date=None):
 
         if date:
             order.created_at = date
-
-        order.save()
+            order.save()
 
         for ticket_data in tickets:
             Ticket.objects.create(
