@@ -25,7 +25,7 @@ def create_order(
                 )
                 ticket["movie_session"] = movie
 
-                Ticket.objects.create(order=order, **ticket)
+            Ticket.objects.create(order=order, **ticket)
 
 
 def get_orders(username: str = None):
