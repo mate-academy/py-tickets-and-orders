@@ -33,6 +33,7 @@ def update_user(
         user_id: int,
         username: str = None,
         password: str = None,
+        email: str = None,
         first_name: str = None,
         last_name: str = None
 ) -> None:
@@ -43,6 +44,9 @@ def update_user(
 
     if password:
         user.set_password(password)
+
+    if email:
+        user.email = email
 
     if first_name:
         user.first_name = first_name
