@@ -32,5 +32,5 @@ def get_orders(username: str = None):
     queryset = Order.objects.all()
 
     if username:
-        queryset.filter(user__username=username)
+        queryset = queryset.filter(user__username=username)
     return queryset
