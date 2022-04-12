@@ -135,7 +135,11 @@ def test_order_str(orders_data):
 
 
 def test_order_ordering(orders_data):
-    assert list(Order.objects.all().values_list("id")) == [(3,), (2,), (1,)]
+    assert sorted(get_orders().values_list("user__username"))[::-1] == [
+        ("user2",),
+        ("user1",),
+        ("user1",),
+    ]
 
 
 def test_ticket_str(tickets_data):
