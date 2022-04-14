@@ -63,7 +63,7 @@ class Order(models.Model):
                              on_delete=models.CASCADE)
 
     class Meta:
-        ordering = ['-id']
+        ordering = ['id']
 
     def __str__(self):
         return f"{self.created_at}"
