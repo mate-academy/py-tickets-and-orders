@@ -2,7 +2,7 @@ from typing import List
 
 from django.db import transaction
 from django.contrib.auth import get_user_model
-from db.models import Ticket, User, Order, MovieSession
+from db.models import Ticket, Order, MovieSession
 
 
 def create_order(
