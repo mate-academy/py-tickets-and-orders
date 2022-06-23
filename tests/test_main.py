@@ -110,9 +110,9 @@ def users_data():
 
 @pytest.fixture()
 def orders_data(users_data):
-    Order.objects.create(user_id=1)
-    Order.objects.create(user_id=1)
-    Order.objects.create(user_id=2)
+    Order.objects.create(id=1, user_id=1)
+    Order.objects.create(id=2, user_id=1)
+    Order.objects.create(id=3, user_id=2)
 
 
 @pytest.fixture()
@@ -135,13 +135,17 @@ def test_order_str(orders_data):
 
 
 def test_order_ordering(orders_data):
-    assert list(Order.objects.all().values_list("id")) == [(3,), (2,), (1,)]
+    assert list(
+        Order.objects.all().values_list("id")
+    ) == list(
+        Order.objects.all().order_by("-created_at").values_list("id")
+    )
 
 
 def test_ticket_str(tickets_data):
     assert str(
         Ticket.objects.first()
-    ) == "Matrix 2019-08-19 17:30:00+00:00 (row: 7, seat: 10)"
+    ) == "Matrix 2019-08-19 20:30:00 (row: 7, seat: 10)"
 
 
 def test_ticket_unique_constraint(tickets_data):
@@ -346,7 +350,7 @@ def test_order_service_create_order_with_date(create_order_data, tickets):
         )
     ) == [(10, 8, 1), (10, 9, 1)]
     assert Order.objects.first().created_at == datetime.datetime(
-        2020, 11, 10, 12, 40, tzinfo=datetime.timezone.utc
+        2020, 11, 10, 14, 40
     )
 
 
