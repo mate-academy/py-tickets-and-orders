@@ -1,4 +1,12 @@
 from db.models import MovieSession
+from db.models import Ticket
+
+
+def get_taken_seats(movie_session_id):
+    tickets = Ticket.objects.select_related("movie_session")
+    return list(
+        tickets.filter(movie_session_id=movie_session_id).values("row", "seat")
+    )
 
 
 def create_movie_session(movie_show_time,
