@@ -18,7 +18,7 @@ def create_order(tickets: list[dict], username: str, date: datetime = None):
             Ticket.objects.create(row=ticket["row"], seat=ticket["seat"],
                                   movie_session_id=ticket["movie_session"],
                                   order=order)
-        return Order
+        return order
 
 
 def get_orders(username: str = None):
