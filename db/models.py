@@ -1,3 +1,6 @@
+from django.conf import settings
+from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
 from django.db import models
 
 
@@ -17,7 +20,7 @@ class Actor(models.Model):
 
 
 class Movie(models.Model):
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=255, db_index=True)
     description = models.TextField()
     actors = models.ManyToManyField(to=Actor)
     genres = models.ManyToManyField(to=Genre)
@@ -45,3 +48,52 @@ class MovieSession(models.Model):
 
     def __str__(self):
         return f"{self.movie.title} {str(self.show_time)}"
+
+
+class Order(models.Model):
+    created_at = models.DateTimeField(auto_add_now=True)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return str(self.created_at)
+
+
+class User(AbstractUser):
+    pass
+
+
+class Ticket(models.Model):
+    movie_session = models.ForeignKey(MovieSession, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    row = models.IntegerField()
+    seat = models.IntegerField()
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["row", "seat", "movie_session"],
+                name="unique_ticket",
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.movie_session.movie.title} " \
+               f"{self.movie_session.show_time} " \
+               f"(row: {self.row}, seat: {self.seat})"
+
+    def clean(self):
+        if not (1 <= self.row <= self.movie_session.cinema_hall.rows):
+            raise ValidationError({
+                "row": [f"row number must be in available range: (1, rows): "
+                        f"(1, {self.movie_session.cinema_hall.rows})"]
+            })
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        self.full_clean()
+        return super(Ticket, self).save(force_insert, force_update,
+                                        using, update_fields)
