@@ -15,6 +15,8 @@ DATABASES = {
     }
 }
 
+AUTH_USER_MODEL = "db.User"
+
 LANGUAGE_CODE = "en-us"
 
 TIME_ZONE = "Europe/Kiev"
@@ -25,4 +27,26 @@ USE_TZ = False
 
 INSTALLED_APPS = [
     "db",
+    "django.contrib.auth",
+    "django.contrib.contenttypes"
+]
+
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME':
+            'django.contrib.auth.password_validation.User'
+            'AttributeSimilarityValidator',
+    },
+    {
+        'NAME':
+            'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
+    {
+        'NAME':
+            'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME':
+            'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
 ]
