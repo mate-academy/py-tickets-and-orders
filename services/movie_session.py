@@ -1,4 +1,4 @@
-from db.models import MovieSession
+from db.models import MovieSession, Ticket
 
 
 def create_movie_session(movie_show_time,
@@ -36,3 +36,17 @@ def update_movie_session(session_id: int,
 
 def delete_movie_session_by_id(session_id: int):
     MovieSession.objects.get(id=session_id).delete()
+
+
+def get_taken_seats(movie_session_id: int):
+    session = MovieSession.objects.get(id=movie_session_id)
+    tickets = Ticket.objects.filter(movie_session=session)
+
+    session_seats = []
+
+    for ticket in tickets:
+        session_seats.append(
+            {"row": ticket.row, "seat": ticket.seat}
+        )
+
+    return session_seats
