@@ -63,7 +63,8 @@ class User(AbstractUser):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(to=settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE)
 
     class Meta:
         ordering = ["-id"]
@@ -79,8 +80,9 @@ class Ticket(models.Model):
     seat = models.IntegerField()
 
     class Meta:
-        constraints = [UniqueConstraint(fields=["movie_session", "row", "seat"],
-                                        name="unique_movie_session_row_seat")]
+        constraints = [
+            UniqueConstraint(fields=["movie_session", "row", "seat"],
+                             name="unique_movie_session_row_seat")]
 
     def __str__(self):
         return f"{self.movie_session.movie.title}" \
@@ -91,15 +93,18 @@ class Ticket(models.Model):
         if not (1 <= self.row <= self.movie_session.cinema_hall.rows):
             raise ValidationError(
                 {"row": f"row number must be in available range: "
-                        f"(1, rows): (1, {self.movie_session.cinema_hall.rows})"}
+                        f"(1, rows): "
+                        f"(1, {self.movie_session.cinema_hall.rows})"}
             )
         if not (1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row):
             raise ValidationError(
                 {"seat": f"seat number must be in available range: "
-                         f"(1, seats_in_row): (1, {self.movie_session.cinema_hall.seats_in_row})"}
+                         f"(1, seats_in_row): "
+                         f"(1, {self.movie_session.cinema_hall.seats_in_row})"}
             )
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
         self.full_clean()
-        return super(Ticket, self).save(force_insert, force_update, using, update_fields)
+        return super(Ticket, self).save(force_insert, force_update,
+                                        using, update_fields)
