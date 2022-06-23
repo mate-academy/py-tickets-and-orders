@@ -64,7 +64,7 @@ class Order(models.Model):
                              on_delete=models.CASCADE)
 
     class Meta:
-        ordering = ["-id"]
+        ordering = ["-created_at"]
 
     def __str__(self):
         return self.created_at.strftime('%Y-%m-%d %H:%M:%S.%f')
