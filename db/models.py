@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import UniqueConstraint
 
 import settings
 
@@ -95,7 +96,12 @@ class Ticket(models.Model):
             save(force_insert, force_update, using, update_fields)
 
     class Meta:
-        unique_together = ["row", "seat", "movie_session"]
+        constraints = [
+            UniqueConstraint(
+                fields=['row', 'seat', 'movie_session'],
+                name='UniqueLimit'
+            )
+        ]
 
 
 class User(AbstractUser):
