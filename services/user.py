@@ -10,14 +10,14 @@ def create_user(username: str,
         username=username,
         password=password
     )
-    user = get_user_model().objects.filter(id=new_user.id)
 
     if email:
-        user.update(email=email)
+        new_user.email = email
     if first_name:
-        user.update(first_name=first_name)
+        new_user.first_name = first_name
     if last_name:
-        user.update(last_name=last_name)
+        new_user.last_name = last_name
+    new_user.save()
 
 
 def get_user(user_id: int):
@@ -30,17 +30,16 @@ def update_user(user_id: int,
                 email: str = None,
                 first_name: str = None,
                 last_name: str = None):
-    user = get_user_model().objects.filter(id=user_id)
+    user = get_user_model().objects.get(id=user_id)
 
     if username:
-        user.update(username=username)
+        user.username = username
     if password:
-        user_with_new_password = get_user_model().objects.get(id=user_id)
-        user_with_new_password.set_password(password)
-        user_with_new_password.save()
+        user.set_password(password)
     if email:
-        user.update(email=email)
+        user.email = email
     if first_name:
-        user.update(first_name=first_name)
+        user.first_name = first_name
     if last_name:
-        user.update(last_name=last_name)
+        user.last_name = last_name
+    user.save()
