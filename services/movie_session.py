@@ -42,5 +42,6 @@ def get_taken_seats(movie_session_id: list[dict]):
     return [
         {
             "row": ticket.row, "seat": ticket.seat
-        } for ticket in MovieSession.objects.get(id=movie_session_id).ticket_set.all()
+        } for ticket in MovieSession.objects.get(
+            id=movie_session_id).ticket_set.all()
     ]
