@@ -18,8 +18,6 @@ def create_user(username, password, email=None,
 
     user.save()
 
-    return user
-
 
 def get_user(user_id):
     return get_user_model().objects.get(id=user_id)

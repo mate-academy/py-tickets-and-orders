@@ -35,5 +35,3 @@ def create_movie(movie_title: str,
 
         if actors_ids:
             movie.actors.set(actors_ids)
-
-        return movie

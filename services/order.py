@@ -20,8 +20,6 @@ def create_order(tickets, username, date=None):
                 movie_session_id=ticket["movie_session"]
             )
 
-        return order
-
 
 def get_orders(username=None):
     queryset = Order.objects.all()
