@@ -1,3 +1,5 @@
+from django.db import transaction
+
 from db.models import Movie
 
 
@@ -24,9 +26,10 @@ def create_movie(movie_title: str,
                  movie_description: str,
                  genres_ids: list = None,
                  actors_ids: list = None):
-    movie = Movie.objects.create(title=movie_title,
-                                 description=movie_description)
-    if genres_ids:
-        movie.genres.set(genres_ids)
-    if actors_ids:
-        movie.actors.set(actors_ids)
+    with transaction.atomic():
+        movie = Movie.objects.create(title=movie_title,
+                                     description=movie_description)
+        if genres_ids:
+            movie.genres.set(genres_ids)
+        if actors_ids:
+            movie.actors.set(actors_ids)
