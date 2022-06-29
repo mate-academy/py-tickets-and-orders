@@ -1,7 +1,7 @@
 from db.models import Movie
 
 
-def get_movies(genres_ids=None, actors_ids=None):
+def get_movies(genres_ids=None, actors_ids=None, title: str = None):
     queryset = Movie.objects.all()
 
     if genres_ids:
@@ -9,6 +9,9 @@ def get_movies(genres_ids=None, actors_ids=None):
 
     if actors_ids:
         queryset = queryset.filter(actors__id__in=actors_ids)
+
+    if title:
+        queryset = queryset.filter(title__contains=title)
 
     return queryset
 
