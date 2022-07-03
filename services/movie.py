@@ -1,3 +1,5 @@
+from django.db import transaction
+
 from db.models import Movie
 
 
@@ -15,7 +17,7 @@ def get_movies(
         queryset = queryset.filter(actors__id__in=actors_ids)
 
     if title:
-        queryset = queryset.filter(title__in=title)
+        queryset = queryset.filter(title__icontains=title)
 
     return queryset
 
@@ -28,9 +30,10 @@ def create_movie(movie_title: str,
                  movie_description: str,
                  genres_ids: list = None,
                  actors_ids: list = None):
-    movie = Movie.objects.create(title=movie_title,
-                                 description=movie_description)
-    if genres_ids:
-        movie.genres.set(genres_ids)
-    if actors_ids:
-        movie.actors.set(actors_ids)
+    with transaction.atomic():
+        movie = Movie.objects.create(title=movie_title,
+                                     description=movie_description)
+        if genres_ids:
+            movie.genres.set(genres_ids)
+        if actors_ids:
+            movie.actors.set(actors_ids)
