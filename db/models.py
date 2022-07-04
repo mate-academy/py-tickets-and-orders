@@ -53,10 +53,7 @@ class MovieSession(models.Model):
 
 
 class User(AbstractUser):
-
-    @classmethod
-    def create_user(cls):
-        pass
+    pass
 
 
 class Order(models.Model):
@@ -89,9 +86,7 @@ class Ticket(models.Model):
         ]
 
     def __str__(self):
-        return f"{self.movie_session.movie.title} " \
-               f"{self.movie_session.show_time} " \
-               f"(row: {self.row}, seat: {self.seat})"
+        return f"{self.movie_session} (row: {self.row}, seat: {self.seat})"
 
     def clean(self):
         if not 1 <= self.row <= self.movie_session.cinema_hall.rows:
