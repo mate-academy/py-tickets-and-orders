@@ -5,22 +5,22 @@ from db.models import Order, Ticket
 
 def create_order(tickets, username, date=None):
     with transaction.atomic():
-        created_order = Order.objects.create(
-            user=get_user_model().objects.get(username=username)
-        )
+        user = get_user_model().objects.get(username=username)
+        order = Order.objects.create(user=user)
 
         if date:
-            created_order.created_at = date
-
-        created_order.save()
+            order.created_at = date
+            order.save()
 
         for ticket in tickets:
-            row, seat, movie_session = ticket.values()
             Ticket.objects.create(
-                movie_session_id=movie_session,
-                order=created_order,
-                row=row,
-                seat=seat)
+                movie_session_id=ticket["movie_session"],
+                order=order,
+                row=ticket["row"],
+                seat=ticket["seat"]
+            )
+
+    return order
 
 
 def get_orders(username=None):
