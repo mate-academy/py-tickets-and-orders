@@ -29,6 +29,21 @@ class Movie(models.Model):
         return self.title
 
 
+class User(AbstractUser):
+    pass
+
+
+class Order(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.created_at}"
+
+
 class CinemaHall(models.Model):
     name = models.CharField(max_length=255)
     rows = models.IntegerField()
@@ -50,18 +65,6 @@ class MovieSession(models.Model):
         return f"{self.movie.title} {str(self.show_time)}"
 
 
-class User(AbstractUser):
-    pass
-
-
-class Order(models.Model):
-    created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-
-    class Meta:
-        ordering = ["-created_at"]
-
-
 class Ticket(models.Model):
     movie_session = models.ForeignKey(MovieSession, on_delete=models.CASCADE)
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
@@ -69,7 +72,7 @@ class Ticket(models.Model):
     seat = models.IntegerField()
 
     def __str__(self):
-        print("change me")
+        pass
 
     def clean(self):
         if not (self.seat <= self.movie_session.cinema_hall.seats_in_row and self.row <= self.movie_session.cinema_hall.rows):
@@ -81,6 +84,8 @@ class Ticket(models.Model):
         return super(Ticket, self).save(force_insert, force_update, using, update_fields)
 
     class Meta:
-        constraint = [
-            UniqueConstraint(fields=["row", "seats", "movie_session "])
-        ]
+        UniqueConstraint(
+            name="unique_ticket",
+            fields=["row", "seats", "movie_session "]
+        )
+
