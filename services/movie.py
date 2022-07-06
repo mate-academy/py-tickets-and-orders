@@ -5,7 +5,7 @@ def get_movies(genres_ids=None, actors_ids=None, title=None):
     queryset = Movie.objects.all()
 
     if title:
-        queryset = queryset.filter(title=title)
+        queryset = queryset.filter(title__contains=title)
 
     if genres_ids:
         queryset = queryset.filter(genres__id__in=genres_ids)

@@ -72,10 +72,14 @@ class Ticket(models.Model):
     seat = models.IntegerField()
 
     def __str__(self):
-        pass
+        return f"{self.movie_session.movie.title} {self.movie_session.show_time} " \
+               f"(row: {self.row}, seat: {self.seat})"
 
     def clean(self):
-        if not (self.seat <= self.movie_session.cinema_hall.seats_in_row and self.row <= self.movie_session.cinema_hall.rows):
+        if not (
+            self.seat <= self.movie_session.cinema_hall.seats_in_row and
+            self.row <= self.movie_session.cinema_hall.rows
+        ):
             raise ValidationError
 
     def save(self, force_insert=False, force_update=False, using=None,
@@ -86,6 +90,6 @@ class Ticket(models.Model):
     class Meta:
         UniqueConstraint(
             name="unique_ticket",
-            fields=["row", "seats", "movie_session "]
+            fields=["row", "seats", "movie_session"],
         )
 
