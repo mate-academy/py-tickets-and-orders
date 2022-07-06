@@ -17,7 +17,7 @@ def create_user(
     if not last_name:
         last_name = ""
 
-    user = get_user_model().objects.create_user(
+    return get_user_model().objects.create_user(
         username=username,
         password=password,
         email=email,
@@ -53,6 +53,6 @@ def update_user(
         new_user.first_name = first_name
 
     if last_name is not None:
-        last_name.username = last_name
+        new_user.last_name = last_name
 
     new_user.save()
