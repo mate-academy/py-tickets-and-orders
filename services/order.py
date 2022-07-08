@@ -19,7 +19,8 @@ def create_order(
         new_order.save()
 
         for ticket in tickets:
-            movie_session = MovieSession.objects.get(id=ticket["movie_session"])
+            movie_session_id = ticket["movie_session"]
+            movie_session = MovieSession.objects.get(id=movie_session_id)
 
             Ticket.objects.create(
                 movie_session=movie_session,
@@ -32,4 +33,4 @@ def create_order(
 def get_orders(username: str = None):
     if username:
         return Order.objects.filter(user__username=username)
-    return Order.objects.all()
+    return Order.objects.all().order_by("-user__username")
