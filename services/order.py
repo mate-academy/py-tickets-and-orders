@@ -15,8 +15,7 @@ def create_order(
 
         if date:
             new_order.created_at = date
-
-        new_order.save()
+            new_order.save()
 
         for ticket in tickets:
             movie_session_id = ticket["movie_session"]
