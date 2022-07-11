@@ -54,7 +54,8 @@ class MovieSession(models.Model):
     movie = models.ForeignKey(to=Movie, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.movie.title} {str(self.show_time)}"
+        t_f = "%Y-%m-%d %H:%M:%S"
+        return f"{self.movie.title} {str(self.show_time.strftime(t_f))}"
 
 
 class Order(models.Model):
@@ -78,18 +79,17 @@ class Ticket(models.Model):
     order = models.ForeignKey("Order", on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
-        time_format = "%Y-%m-%d %H:%M:%S"
-        return f"{self.movie_session.movie.title} " \
-               f"{self.movie_session.show_time.strftime(time_format)} " \
+        return f"{self.movie_session} " \
                f"(row: {self.row}, seat: {self.seat})"
 
     def clean(self):
-        if self.row > self.movie_session.cinema_hall.rows:
+        if self.row > self.movie_session.cinema_hall.rows or self.row < 1:
             raise ValidationError({
                 "row": f"row number must be in available range: "
                        f"(1, rows): (1, {self.movie_session.cinema_hall.rows})"
             })
-        if self.seat > self.movie_session.cinema_hall.seats_in_row:
+        seats_in_row = self.movie_session.cinema_hall.seats_in_row
+        if self.seat > seats_in_row or self.seat < 1:
             raise ValidationError({
                 "seat": f"seat number must be in available range: "
                         "(1, seats_in_row): "
