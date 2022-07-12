@@ -19,8 +19,6 @@ def create_order(tickets, username, date=None):
                 seat=ticket["seat"],
             )
 
-        return order
-
 
 def get_orders(username=None):
     orders = Order.objects.all().order_by("-id")

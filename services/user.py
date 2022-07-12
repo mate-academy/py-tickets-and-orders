@@ -20,8 +20,6 @@ def create_user(
         new_user.email = email
     new_user.save()
 
-    return new_user
-
 
 def get_user(user_id):
     return get_user_model().objects.get(id=user_id)
