@@ -1,5 +1,4 @@
-from db.models import MovieSession
-from db.models import Ticket
+from db.models import MovieSession, Ticket
 
 
 def create_movie_session(movie_show_time,
