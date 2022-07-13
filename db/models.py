@@ -1,4 +1,11 @@
+from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import UniqueConstraint
+
+
+class User(AbstractUser):
+    pass
 
 
 class Genre(models.Model):
@@ -25,6 +32,9 @@ class Movie(models.Model):
     def __str__(self):
         return self.title
 
+    class Meta:
+        indexes = [models.Index(fields=["title"])]
+
 
 class CinemaHall(models.Model):
     name = models.CharField(max_length=255)
@@ -45,3 +55,53 @@ class MovieSession(models.Model):
 
     def __str__(self):
         return f"{self.movie.title} {str(self.show_time)}"
+
+
+class Order(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.created_at}"
+
+    class Meta:
+        ordering = ["-created_at"]
+
+
+class Ticket(models.Model):
+    row = models.IntegerField()
+    seat = models.IntegerField()
+    movie_session = models.ForeignKey(MovieSession, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.movie_session.movie} {self.movie_session.show_time} " \
+               f"(row: {self.row}, seat: {self.seat})"
+
+    class Meta:
+        constraints = [UniqueConstraint(
+            name="unique_ticket",
+            fields=["row", "seat", "movie_session"]
+        )]
+
+    def clean(self):
+        rows = self.movie_session.cinema_hall.rows
+        seats = self.movie_session.cinema_hall.seats_in_row
+        if not (1 <= self.row <= rows):
+            raise ValidationError(
+                {'row': f'row number must '
+                        f'be in available range: (1, rows): (1, {rows})'}
+            )
+
+        if not (1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row):
+            raise ValidationError(
+                {'seat': f'seat number must be in '
+                         f'available range: (1, seats_in_row): (1, {seats})'}
+            )
+
+    def save(
+            self, force_insert=False, force_update=False,
+            using=None, update_fields=None):
+        self.full_clean()
+        return super(Ticket, self).\
+            save(force_insert, force_update, using, update_fields)
