@@ -1,4 +1,3 @@
-from db.models import User
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth import get_user_model
 
