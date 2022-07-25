@@ -1,7 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import transaction
-
-from db.models import Order, Ticket, User, MovieSession
+from db.models import Order, Ticket, MovieSession
 
 
 def create_order(tickets, username, date=None):
