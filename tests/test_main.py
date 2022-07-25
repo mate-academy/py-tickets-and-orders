@@ -135,7 +135,11 @@ def test_order_str(orders_data):
 
 
 def test_order_ordering(orders_data):
-    assert list(Order.objects.all().values_list("id")) == [(3,), (2,), (1,)]
+    assert list(
+        Order.objects.all().values_list("id")
+    ) == list(
+        Order.objects.all().order_by("-created_at").values_list("id")
+    )
 
 
 def test_ticket_str(tickets_data):

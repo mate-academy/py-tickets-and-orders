@@ -1,5 +1,6 @@
 from db.models import User
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth import get_user_model
 
 
 def create_user(
@@ -10,7 +11,7 @@ def create_user(
         last_name: str = "",
 
 ):
-    return User.objects.create(
+    return get_user_model().objects.create(
         username=username,
         password=make_password(password),
         email=email,
@@ -20,16 +21,16 @@ def create_user(
 
 
 def get_user(user_id: int):
-    return User.objects.get(id=user_id)
+    return get_user_model().objects.get(id=user_id)
 
 
 def update_user(
         user_id: int,
         password: str = None,
         **kwargs
-) -> User:
+):
 
-    user = User.objects.get(id=user_id)
+    user = get_user(user_id)
     for key, value in kwargs.items():
         setattr(user, key, value)
 
@@ -37,4 +38,3 @@ def update_user(
         user.set_password(password)
 
     user.save()
-    return user

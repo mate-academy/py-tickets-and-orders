@@ -11,7 +11,6 @@ def create_order(tickets: list[dict], username, date=None):
 
         if date:
             order.created_at = date
-
         order.save()
 
         for ticket in tickets:
@@ -20,7 +19,7 @@ def create_order(tickets: list[dict], username, date=None):
                 order=order,
                 row=ticket["row"],
                 seat=ticket["seat"]
-            )
+            ).order_by("-id")
 
 
 def get_orders(username: str = None) -> Order:
