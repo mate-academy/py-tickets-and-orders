@@ -18,7 +18,6 @@ def create_user(username,
     if last_name:
         user.last_name = last_name
     user.save()
-    return user
 
 
 def get_user(user_id):
@@ -31,7 +30,7 @@ def update_user(user_id,
                 email=None,
                 first_name=None,
                 last_name=None):
-    user = get_user_model().objects.get(id=user_id)
+    user = get_user(user_id)
     if username:
         user.username = username
     if password:
@@ -43,4 +42,3 @@ def update_user(user_id,
     if last_name:
         user.last_name = last_name
     user.save()
-    return user
