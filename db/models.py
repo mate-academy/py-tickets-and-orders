@@ -58,7 +58,6 @@ class MovieSession(models.Model):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE
@@ -69,6 +68,10 @@ class Order(models.Model):
 
     def __str__(self):
         return str(self.created_at)
+
+
+class User(AbstractUser):
+    pass
 
 
 class Ticket(models.Model):
@@ -113,7 +116,3 @@ class Ticket(models.Model):
             using=None,
             update_fields=None
         )
-
-
-class User(AbstractUser):
-    pass
