@@ -107,8 +107,12 @@ class Ticket(models.Model):
                          "(1, seats_in_row): "
                          f"(1, {seats})"]})
 
-    def save(self, force_insert=False, force_update=False, using=None,
-             update_fields=None):
+    def save(self,
+             force_insert=False,
+             force_update=False,
+             using=None,
+             update_fields=None
+             ):
         self.full_clean()
         return super(Ticket, self).save(
             force_insert=False,
