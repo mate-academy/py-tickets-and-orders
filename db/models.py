@@ -36,7 +36,7 @@ class Movie(models.Model):
 
 
 class CinemaHall(models.Model):
-    name = models.CharField(max_length=254)
+    name = models.CharField(max_length=255)
     rows = models.IntegerField()
     seats_in_row = models.IntegerField()
 
@@ -67,7 +67,7 @@ class Order(models.Model):
         ordering = ["-created_at"]
 
     def __str__(self):
-        return str(self.created_at)
+        return f"{self.created_at}"
 
 
 class User(AbstractUser):
