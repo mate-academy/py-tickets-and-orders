@@ -31,4 +31,4 @@ def get_orders(username: str = None):
     if username:
         user = User.objects.get(username=username)
         return Order.objects.filter(user_id=user.id)
-    return Order.objects.all()
+    return Order.objects.all().order_by("-user__date_joined")
