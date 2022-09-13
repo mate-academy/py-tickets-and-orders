@@ -22,5 +22,4 @@ def create_order(tickets, username, date=None):
 def get_orders(username=None):
     if username:
         return Order.objects.filter(user__username=username)
-    else:
-        return Order.objects.all().order_by("-user__username")
+    return Order.objects.all().order_by("-user__username")

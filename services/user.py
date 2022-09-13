@@ -23,9 +23,9 @@ def update_user(user_id, username=None, password=None,
     if email:
         User.objects.filter(id=user_id).update(email=email)
     if password:
-        u = User.objects.get(id=user_id)
-        u.set_password(password)
-        u.save()
+        user = User.objects.get(id=user_id)
+        user.set_password(password)
+        user.save()
     if first_name:
         User.objects.filter(id=user_id).update(first_name=first_name)
     if last_name:
