@@ -41,5 +41,3 @@ def update_user(user_id,
     if last_name:
         user.last_name = last_name
     user.save()
-
-
