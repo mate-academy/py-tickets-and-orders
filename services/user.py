@@ -18,11 +18,11 @@ def create_user(username: str,
     user.save()
 
 
-def get_user(user_id):
+def get_user(user_id: int):
     return User.objects.get(id=user_id)
 
 
-def update_user(user_id,
+def update_user(user_id: int,
                 username: str = None,
                 password: str = None,
                 email: str = None,
