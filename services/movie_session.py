@@ -1,3 +1,5 @@
+from django.db.models import F
+
 from db.models import MovieSession
 
 
@@ -36,3 +38,9 @@ def update_movie_session(session_id: int,
 
 def delete_movie_session_by_id(session_id: int):
     MovieSession.objects.get(id=session_id).delete()
+
+
+def get_taken_seats(movie_session_id: int):
+    return list(MovieSession.objects.
+                annotate(row=F("ticket__row"), seat=F("ticket__seat")).
+                filter(id=movie_session_id).values("row", "seat"))
