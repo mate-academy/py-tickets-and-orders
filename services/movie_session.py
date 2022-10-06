@@ -24,7 +24,7 @@ def get_movie_session_by_id(movie_session_id: int):
 
 
 def update_movie_session(session_id: int,
-                         show_time=None,
+                         show_time: str = None,
                          movie_id: int = None,
                          cinema_hall_id: int = None):
     movie_session = MovieSession.objects.get(id=session_id)
