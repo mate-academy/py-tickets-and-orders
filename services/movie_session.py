@@ -1,4 +1,5 @@
-from db.models import MovieSession
+import init_django_orm # noqa F401
+from db.models import MovieSession, Ticket
 
 
 def create_movie_session(movie_show_time,
@@ -36,3 +37,18 @@ def update_movie_session(session_id: int,
 
 def delete_movie_session_by_id(session_id: int):
     MovieSession.objects.get(id=session_id).delete()
+
+
+def get_taken_seats(movie_session_id):
+    res = []
+    tickets = Ticket.objects.filter(movie_session_id=movie_session_id)
+    for ticket in tickets:
+        row = ticket.row
+        seat = ticket.seat
+        res.append(
+            {
+                "row": row,
+                "seat": seat
+            }
+        )
+    return res
