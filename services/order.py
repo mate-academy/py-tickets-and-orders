@@ -12,6 +12,7 @@ def create_order(tickets: List[dict], username: str, date=None) -> Order:
     with transaction.atomic():
         user = User.objects.get(username=username)
         order = Order.objects.create(user=user, created_at=date)
+
         if date:
             order.created_at = date
             order.save()
