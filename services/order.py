@@ -2,7 +2,7 @@ from django.db import transaction
 from db.models import User, Order, Ticket
 
 
-def create_order(tickets, username, date=None):
+def create_order(tickets: list, username: str, date: str = None) -> Order:
     with transaction.atomic():
         user = User.objects.get(username=username)
         new_order = Order.objects.create(user=user)
@@ -22,7 +22,7 @@ def create_order(tickets, username, date=None):
         return new_order
 
 
-def get_orders(username=None):
+def get_orders(username: str = None) -> Order:
     if username:
         return Order.objects.filter(user__username=username)
-    return Order.objects.all()
+    return Order.objects.all().order_by("-id")
