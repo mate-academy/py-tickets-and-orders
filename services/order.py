@@ -23,6 +23,7 @@ def create_order(tickets: List[dict], username: str, date=None) -> Order:
                                   movie_session=movie_session,
                                   row=ticket_data["row"],
                                   seat=ticket_data["seat"])
+
         return order
 
 
