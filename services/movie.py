@@ -2,7 +2,7 @@ from django.db import transaction
 from db.models import Movie
 
 
-def get_movies(genres_ids=None, actors_ids=None, title=None):
+def get_movies(genres_ids=None, actors_ids=None, title: str = None):
     queryset = Movie.objects.all()
 
     if genres_ids:
