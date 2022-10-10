@@ -70,10 +70,6 @@ class Order(models.Model):
         return f"{self.created_at}"
 
 
-class UniqueConstraints:
-    pass
-
-
 class Ticket(models.Model):
     movie_session = models.ForeignKey(MovieSession, on_delete=models.CASCADE)
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
