@@ -12,15 +12,17 @@ def create_order(tickets: list[dict], username: str, date=None) -> None:
             order.save()
         for ticket in tickets:
             Ticket.objects.create(
-                movie_session=MovieSession.objects.get(movie_id=ticket["movie_session"]),
+                movie_session=MovieSession.objects.
+                get(movie_id=ticket["movie_session"]),
                 order=order,
                 row=ticket["row"],
                 seat=ticket["seat"]
-                )
+            )
 
 
 def get_orders(username=None):
-    """Getting all orders for the user with the provided username, else returns all orders"""
+    """Getting all orders for the user with the provided username,
+    else returns all orders"""
     if username:
         return Order.objects.filter(user__username=username).all()
     return Order.objects.all().order_by("-id")
