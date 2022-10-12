@@ -99,7 +99,7 @@ class Ticket(models.Model):
 
     def save(
             self, force_insert: bool = False, force_update: bool = False,
-            using: str = None, update_fields: int = None
+            using: bool = None, update_fields: bool = None
     ) -> str:
         self.full_clean()
         return super(Ticket, self).save(force_insert,
