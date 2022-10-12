@@ -20,7 +20,7 @@ def create_order(tickets: list[dict], username: str, date=None) -> None:
             )
 
 
-def get_orders(username=None):
+def get_orders(username: str = None) -> Order:
     """Getting all orders for the user with the provided username,
     else returns all orders"""
     if username:

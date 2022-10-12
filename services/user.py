@@ -3,8 +3,8 @@ from django.contrib.auth import get_user_model
 from db.models import User
 
 
-def create_user(username, password, email=None,
-                first_name=None, last_name=None) -> None:
+def create_user(username: str, password: (str, int), email: str = None,
+                first_name: str = None, last_name: str = None) -> None:
     user = get_user_model().objects.create_user(
         username=username,
         password=password,
@@ -18,14 +18,14 @@ def create_user(username, password, email=None,
     user.save()
 
 
-def get_user(user_id: int):
+def get_user(user_id: int) -> User:
     """Getting user with the given id"""
     return User.objects.get(id=user_id)
 
 
-def update_user(user_id: int, username=None,
-                password=None, email=None,
-                first_name=None, last_name=None) -> None:
+def update_user(user_id: int, username: str = None,
+                password: (str, int) = None, email: str = None,
+                first_name: str = None, last_name: str = None) -> None:
     updated_user = User.objects.get(id=user_id)
     if username:
         updated_user.username = username
