@@ -9,7 +9,7 @@ def create_movie_session(movie_show_time: int,
                                 cinema_hall_id=cinema_hall_id)
 
 
-def get_movies_sessions(session_date: str = None):
+def get_movies_sessions(session_date: str = None) -> MovieSession:
     queryset = MovieSession.objects.all()
     if session_date:
         queryset = queryset.filter(show_time__date=session_date)
@@ -38,7 +38,7 @@ def delete_movie_session_by_id(session_id: int) -> None:
     MovieSession.objects.get(id=session_id).delete()
 
 
-def get_taken_seats(movie_session_id: int):
+def get_taken_seats(movie_session_id: int) -> list:
     """Getting information about engaged places"""
     movies = Ticket.objects.filter(movie_session_id=movie_session_id).all()
     result = []

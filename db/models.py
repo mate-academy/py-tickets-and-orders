@@ -9,7 +9,7 @@ import settings
 class Genre(models.Model):
     name = models.CharField(max_length=255, unique=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
 
@@ -17,7 +17,7 @@ class Actor(models.Model):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.first_name} {self.last_name}"
 
 
@@ -32,7 +32,7 @@ class Movie(models.Model):
             models.Index(fields=["title"])
         ]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.title
 
 
@@ -44,7 +44,7 @@ class CinemaHall(models.Model):
     def capacity(self) -> int:
         return self.rows * self.seats_in_row
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
 
@@ -53,7 +53,7 @@ class MovieSession(models.Model):
     cinema_hall = models.ForeignKey(to=CinemaHall, on_delete=models.CASCADE)
     movie = models.ForeignKey(to=Movie, on_delete=models.CASCADE)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.movie.title} {str(self.show_time)}"
 
 
@@ -66,7 +66,7 @@ class Order(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.created_at}"
 
     class Meta:
@@ -80,11 +80,11 @@ class Ticket(models.Model):
     row = models.IntegerField()
     seat = models.IntegerField()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.movie_session.movie} {self.movie_session.show_time} " \
                f"(row: {self.row}, seat: {self.seat})"
 
-    def clean(self):
+    def clean(self) -> None:
         if not (1 <= self.row <= self.movie_session.cinema_hall.rows):
             raise ValidationError(
                 {"row": [f"row number must be in available range: (1, rows): "
@@ -98,9 +98,9 @@ class Ticket(models.Model):
             )
 
     def save(
-            self, force_insert=False, force_update=False,
-            using=None, update_fields=None
-    ):
+            self, force_insert: bool = False, force_update: bool = False,
+            using: str = None, update_fields: int = None
+    ) -> str:
         self.full_clean()
         return super(Ticket, self).save(force_insert,
                                         force_update, using, update_fields)
