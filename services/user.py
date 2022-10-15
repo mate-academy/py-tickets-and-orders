@@ -43,7 +43,7 @@ def update_user(
         if username:
             user.username = username
 
-        # These fields can be blank, hence `is not None`
+        # These fields can be blank, hence `is not None`.
         if email is not None:
             user.email = email
         if first_name is not None:
