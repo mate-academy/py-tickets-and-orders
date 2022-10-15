@@ -1,5 +1,3 @@
-import datetime
-
 from django.db import transaction
 
 from db.models import Order, User, Ticket, MovieSession
@@ -7,15 +5,11 @@ from db.models import Order, User, Ticket, MovieSession
 
 def create_order(tickets: dict, username, date=None):
     with transaction.atomic():
+        user = User.objects.get(username=username)
+        order_ = Order.objects.create(user=user)
         if date:
-            order_ = Order.objects.create(
-                created_at=datetime.datetime.strptime(date, "%Y-%m-%d %H:%M"),
-                user=User.objects.get(username=username)
-            )
-        else:
-            order_ = Order.objects.create(
-                user=User.objects.get(username=username)
-            )
+            order_.created_at = date
+            order_.save()
         [
             Ticket.objects.create(
                 row=ticket["row"],
@@ -30,4 +24,4 @@ def create_order(tickets: dict, username, date=None):
 def get_orders(username=None):
     if username:
         return Order.objects.filter(user__username=username)
-    return Order.objects.all()
+    return Order.objects.all().order_by("-id")
