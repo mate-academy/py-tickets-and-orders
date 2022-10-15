@@ -7,7 +7,7 @@ def create_user(
     first_name: str = None,
     last_name: str = None,
     email: str = None
-):
+) -> None:
     user = User.objects.create_user(username)
     user.set_password(password)
     user.first_name = first_name if first_name else ""
@@ -16,7 +16,7 @@ def create_user(
     user.save()
 
 
-def get_user(user_id):
+def get_user(user_id) -> User:
     return User.objects.get(id=user_id)
 
 
