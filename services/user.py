@@ -33,6 +33,7 @@ def update_user(
     first_name: str = None,
     last_name: str = None,
 ) -> None:
+    # Don't want to access DB when I don't need to.
     if not any((username, password, email, first_name, last_name)):
         return
 

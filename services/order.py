@@ -21,6 +21,8 @@ def create_order(
         movie_sessions = {}
 
         for ticket in tickets:
+            # Attempting to reduce number of DB calls a little.
+            # For some reason I wasn't able to use `bulk_create()` here. :(
             if (session_id := ticket["movie_session"]) not in movie_sessions:
                 movie_sessions[session_id] = MovieSession.objects.get(
                     id=session_id
