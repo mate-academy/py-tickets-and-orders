@@ -20,12 +20,14 @@ def get_user(user_id) -> User:
     return User.objects.get(id=user_id)
 
 
-def update_user(user_id,
-                username=None,
-                password=None,
-                first_name=None,
-                last_name=None,
-                email=None):
+def update_user(
+    user_id,
+    username=None,
+    password=None,
+    first_name=None,
+    last_name=None,
+    email=None
+) -> None:
     user = User.objects.get(id=user_id)
     if username:
         user.username = username
