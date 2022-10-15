@@ -11,14 +11,13 @@ def create_user(
     first_name: str = None,
     last_name: str = None,
 ) -> None:
-    with transaction.atomic():
-        user = get_user_model().objects.create_user(
-            username=username,
-            email=email or "",
-            first_name=first_name or "",
-            last_name=last_name or "",
-        )
-        user.set_password(password)
+    user = get_user_model().objects.create_user(
+        username=username,
+        password=password,
+        email=email or "",
+        first_name=first_name or "",
+        last_name=last_name or "",
+    )
 
 
 def get_user(user_id: int) -> User:
