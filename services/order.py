@@ -28,9 +28,8 @@ def create_order(
             )
 
 
-def get_orders(
-        username: str = None
-) -> QuerySet:
+def get_orders(username: str = None) -> QuerySet:
+
     queryset = Order.objects.all().order_by("-user")
 
     if username:
