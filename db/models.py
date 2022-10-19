@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Any
+
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -65,7 +67,10 @@ class User(AbstractUser):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
 
     class Meta:
         ordering = ["-created_at"]
@@ -109,10 +114,10 @@ class Ticket(models.Model):
 
     def save(
             self,
-            force_insert=False,
-            force_update=False,
-            using=None,
-            update_fields=None
+            force_insert: bool = False,
+            force_update: bool = False,
+            using: Any = None,
+            update_fields: Any = None
     ) -> Ticket:
         self.full_clean()
         return super(Ticket, self).save(
