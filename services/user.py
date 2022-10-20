@@ -16,17 +16,17 @@ def create_user(
     user.save()
 
 
-def get_user(user_id) -> User:
+def get_user(user_id: int) -> User:
     return User.objects.get(id=user_id)
 
 
 def update_user(
-    user_id,
-    username=None,
-    password=None,
-    first_name=None,
-    last_name=None,
-    email=None
+    user_id: int,
+    username: str = None,
+    password: str = None,
+    first_name: str = None,
+    last_name: str = None,
+    email: str = None
 ) -> None:
     user = User.objects.get(id=user_id)
     if username:
