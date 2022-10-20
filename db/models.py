@@ -83,10 +83,9 @@ class Ticket(models.Model):
     seat = models.IntegerField()
 
     def __str__(self) -> str:
-        time_str = self.movie_session.show_time
         return (
             f"{self.movie_session.movie.title} "
-            f"{time_str.isoformat(sep=' ', timespec='seconds')} "
+            f"{self.movie_session.show_time} "
             f"(row: {self.row}, seat: {self.seat})"
         )
 
