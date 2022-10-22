@@ -33,4 +33,4 @@ def get_orders(username: str = None) -> QuerySet:
     if username:
         orders = orders.filter(user__username=username)
 
-    return orders.order_by("-id")
+    return orders
