@@ -111,13 +111,6 @@ class Ticket(models.Model):
                         f"(1, {self.movie_session.cinema_hall.seats_in_row})"
             })
 
-    def save(self, force_insert=False,
-             force_update=False, using=None,
-             update_fields=None) -> None:
+    def save(self, *args: tuple, **kwargs: dict) -> None:
         self.full_clean()
-        return super(Ticket, self).save(
-            force_insert=False,
-            force_update=False,
-            using=None,
-            update_fields=None
-        )
+        return super(Ticket, self).save(*args, **kwargs)
