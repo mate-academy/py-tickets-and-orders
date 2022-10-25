@@ -64,6 +64,9 @@ class Order(models.Model):
     def __str__(self) -> str:
         return f"{self.created_at}"
 
+    class Meta:
+        ordering = ["-created_at"]
+
 
 class Ticket(models.Model):
     movie_session = models.ForeignKey(
