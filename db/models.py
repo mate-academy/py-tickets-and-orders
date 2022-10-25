@@ -95,7 +95,7 @@ class Ticket(models.Model):
             })
         if not (1 <= self.seat <= number_of_seats):
             raise ValidationError({
-                "seat": f"seat number must be in available range: " 
+                "seat": f"seat number must be in available range: "
                         f"(1, seats_in_row): (1, {number_of_seats})"
             })
 
