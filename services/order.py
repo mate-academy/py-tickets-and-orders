@@ -25,6 +25,7 @@ def get_orders(username: str = None) -> QuerySet:
     queryset = Order.objects.all().order_by("-id")
 
     if username:
-        queryset = queryset.filter(user__username=username).all().order_by("-id")
+        queryset = queryset.filter(user__username=username)\
+            .all().order_by("-id")
 
     return queryset
