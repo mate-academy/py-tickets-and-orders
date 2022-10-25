@@ -1,4 +1,3 @@
-from django.db.models import QuerySet
 from db.models import User
 from django.contrib.auth import get_user_model
 
@@ -10,9 +9,10 @@ def create_user(
     first_name: str = None,
     last_name: str = None,
 ) -> None:
-    user = get_user_model().objects.create_user(username=username)
-    if password:
-        user.set_password(password)
+    user = get_user_model().objects.create_user(
+        username=username, password=password
+    )
+    user.set_password(password)
 
     if email:
         user.email = email
@@ -23,9 +23,8 @@ def create_user(
     user.save()
 
 
-def get_user(user_id: int) -> QuerySet:
-    queryset = User.objects.get(id=user_id)
-    return queryset
+def get_user(user_id: int) -> User:
+    return get_user_model().objects.get(id=user_id)
 
 
 def update_user(
@@ -36,7 +35,7 @@ def update_user(
     first_name: str = None,
     last_name: str = None,
 ) -> None:
-    user = User.objects.get(id=user_id)
+    user = get_user_model().objects.get(id=user_id)
     if username:
         user.username = username
 
