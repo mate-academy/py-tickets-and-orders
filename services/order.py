@@ -22,10 +22,7 @@ def create_order(tickets: list, username: str, date: str = None) -> None:
 
 
 def get_orders(username: str = None) -> QuerySet:
-    queryset = Order.objects.all().order_by("-id")
-
     if username:
-        queryset = queryset.filter(user__username=username)\
-            .all().order_by("-id")
+        return Order.objects.filter(user__username=username).all()
 
-    return queryset
+    return Order.objects.all().order_by("-id")
