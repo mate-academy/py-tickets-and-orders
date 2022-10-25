@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.db.models import QuerySet
 
-from db.models import Order, Ticket, MovieSession
+from db.models import Order, Ticket
 
 
 def create_order(
@@ -18,18 +18,9 @@ def create_order(
             order.created_at = date_created
             order.save()
 
-        movie_sessions = {}
-
         for ticket in tickets:
-            # Attempting to reduce number of DB calls a little.
-            # For some reason I wasn't able to use `bulk_create()` here. :(
-            if (session_id := ticket["movie_session"]) not in movie_sessions:
-                movie_sessions[session_id] = MovieSession.objects.get(
-                    id=session_id
-                )
-
             Ticket.objects.create(
-                movie_session=movie_sessions[session_id],
+                movie_session_id=ticket["movie_session"],
                 order=order,
                 row=ticket["row"],
                 seat=ticket["seat"],
