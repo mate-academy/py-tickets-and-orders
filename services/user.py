@@ -12,7 +12,6 @@ def create_user(
     user = get_user_model().objects.create_user(
         username=username, password=password
     )
-    user.set_password(password)
 
     if email:
         user.email = email
