@@ -6,7 +6,6 @@ from services import order
 
 def main_test() -> None:
     print(Order.objects.first())
-
     print(Ticket.objects.first())
 
 
@@ -37,6 +36,3 @@ def main_test_orders() -> None:
 
 if __name__ == "__main__":
     pass
-    # main_test()
-    # main_test_ticket()
-    # main_test_orders()
