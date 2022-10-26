@@ -13,9 +13,9 @@ def create_user(
     get_user_model().objects.create_user(
         username=username,
         password=password,
-        email=email if isinstance(email, str) else "",
-        first_name=first_name if isinstance(first_name, str) else "",
-        last_name=last_name if isinstance(first_name, str) else "",
+        email=email if email is not None else "",
+        first_name=first_name if first_name is not None else "",
+        last_name=last_name if first_name is not None else "",
     )
 
 
@@ -41,11 +41,11 @@ def update_user(
         user.username = username
     if password:
         user.set_password(password)
-    if isinstance(email, str):
+    if email is not None:
         user.email = email
-    if isinstance(first_name, str):
+    if first_name is not None:
         user.first_name = first_name
-    if isinstance(last_name, str):
+    if last_name is not None:
         user.last_name = last_name
 
     user.save()
