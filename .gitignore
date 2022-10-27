@@ -2,7 +2,7 @@
 .vscode/
 *.iml
 .env
-.DS_Stor
+.DS_Store
 venv/
 .pytest_cache/
 **__pycache__/
