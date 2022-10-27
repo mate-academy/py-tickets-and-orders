@@ -280,14 +280,6 @@ def test_user_service_update_user_with_whole_data(users_data):
     )
 
 
-def test_order_service_get_orders_without_user(orders_data):
-    assert list(get_orders().values_list("user__username")) == [
-        ("user2",),
-        ("user1",),
-        ("user1",),
-    ]
-
-
 def test_order_service_get_orders_with_user(orders_data):
     assert list(get_orders(username="user1").values_list(
         "user__username"
