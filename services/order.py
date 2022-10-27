@@ -30,5 +30,4 @@ def get_orders(username: str = None) -> QuerySet:
         return Order.objects.filter(
             user__username=username
         ).order_by("-user")
-    else:
-        return Order.objects.all()
+    return Order.objects.order_by("-user")
