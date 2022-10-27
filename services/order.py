@@ -2,6 +2,7 @@ from django.db import transaction
 from django.db.models import QuerySet
 
 from db.models import Order, User, Ticket
+from services.user import get_user
 
 
 def create_order(
@@ -10,11 +11,10 @@ def create_order(
         date: str = None
 ) -> None:
     with transaction.atomic():
-        user = User.objects.get(username=username)
+        user = get_user(user_id=User.objects.get(username=username).id)
 
         order = Order.objects.create(
-            user=user,
-            created_at=date
+            user=user
         )
         if date:
             order.created_at = date
