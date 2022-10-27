@@ -63,9 +63,12 @@ class User(AbstractUser):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        to=settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.created_at)
 
     class Meta:
@@ -73,19 +76,22 @@ class Order(models.Model):
 
 
 class Ticket(models.Model):
-    movie_session = models.ForeignKey(to=MovieSession, on_delete=models.CASCADE)
+    movie_session = models.ForeignKey(
+        to=MovieSession,
+        on_delete=models.CASCADE
+    )
     order = models.ForeignKey(to=Order, on_delete=models.CASCADE)
     row = models.IntegerField()
     seat = models.IntegerField()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return (
-            f"{self.movie_session.movie.title}"
-            f"{self.movie_session.show_time}"
+            f"{self.movie_session.movie} "
+            f"{self.movie_session.show_time} "
             f"(row: {self.row}, seat: {self.seat})"
         )
 
-    def clean(self):
+    def clean(self) -> None:
         hall_rows = self.movie_session.cinema_hall.rows
         hall_row_seats = self.movie_session.cinema_hall.seats_in_row
 
@@ -104,11 +110,11 @@ class Ticket(models.Model):
 
     def save(
             self,
-            force_insert=False,
-            force_update=False,
+            force_insert: bool = False,
+            force_update: bool = False,
             using: str = None,
-            update_fields=None
-    ) -> any:
+            update_fields: str = None
+    ) -> None:
         self.full_clean()
 
         return super(Ticket, self).save(
