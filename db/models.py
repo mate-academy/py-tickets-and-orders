@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db.models import UniqueConstraint
-
+from typing import Any
 import settings
 
 
@@ -99,10 +99,10 @@ class Ticket(models.Model):
 
     def save(
             self,
-            force_insert=False,
-            force_update=False,
-            using=None,
-            update_field=None
+            force_insert: bool = False,
+            force_update: bool = False,
+            using: Any = None,
+            update_field: Any = None
     ) -> None:
         self.full_clean()
         return super(Ticket, self).save(
@@ -114,7 +114,10 @@ class Ticket(models.Model):
 
     class Meta:
         constraints = [
-            UniqueConstraint(fields=["row", "seat", "movie_session"], name="unique_constraints")
+            UniqueConstraint(
+                fields=["row", "seat", "movie_session"],
+                name="unique_constraints"
+            )
         ]
 
     def __str__(self) -> str:
