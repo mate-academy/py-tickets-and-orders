@@ -107,7 +107,7 @@ class Ticket(models.Model):
         force_update: bool = False,
         using: Any = None,
         update_fields: Any = None
-    ) -> Ticket:
+    ) -> None:
 
         self.full_clean()
 
