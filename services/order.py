@@ -14,8 +14,7 @@ def create_order(
 
         if date:
             order.created_at = date
-
-        order.save()
+            order.save()
 
         for ticket_info in tickets:
             Ticket.objects.create(
@@ -32,4 +31,4 @@ def get_orders(username: str = None) -> QuerySet:
     if username:
         return Order.objects.filter(user__username=username)
 
-    return Order.objects.order_by("-user")
+    return Order.objects.all()
