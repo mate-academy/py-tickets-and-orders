@@ -1,5 +1,4 @@
 from django.contrib.auth import get_user_model
-from django.db.models import QuerySet
 
 
 def create_user(username: str,
@@ -24,7 +23,7 @@ def create_user(username: str,
     new_user.save()
 
 
-def get_user(user_id: int) -> QuerySet:
+def get_user(user_id: int) -> get_user_model():
     return get_user_model().objects.get(id=user_id)
 
 
