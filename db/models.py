@@ -1,8 +1,9 @@
+from typing import Any
+
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import UniqueConstraint
-from typing import Any
 
 import settings
 
@@ -118,14 +119,14 @@ class Ticket(models.Model):
         ):
             raise ValidationError({
                 "row": f"row number must be in available range:"
-                f" (1, rows): (1, {self.movie_session.cinema_hall.rows})"
+                       f" (1, rows): (1, {self.movie_session.cinema_hall.rows})"
             })
         if not (
                 1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row
         ):
             raise ValidationError({
                 "seat": f"seat number must be in available range:"
-                f" (1, seats_in_row):"
+                        f" (1, seats_in_row):"
                         f" (1, {self.movie_session.cinema_hall.seats_in_row})"
             })
 
