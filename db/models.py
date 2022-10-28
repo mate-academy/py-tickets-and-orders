@@ -1,3 +1,5 @@
+from typing import Any
+
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
@@ -94,8 +96,9 @@ class Ticket(models.Model):
                           f" range: (1, seats_in_row): (1, "
                           f"{self.movie_session.cinema_hall.seats_in_row})"]})
 
-    def save(self, force_insert=False, force_update=False, using=None,
-             update_fields=None) -> super:
+    def save(self, force_insert: bool = False,
+             force_update: bool = False, using: Any = None,
+             update_fields: Any = None) -> Any:
         self.full_clean()
         return super(Ticket, self).save(
             force_insert, force_update, using, update_fields)
