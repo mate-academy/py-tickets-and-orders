@@ -29,7 +29,7 @@ def create_order(
 
 
 def get_orders(username: str = None) -> QuerySet[Order]:
-    orders = Order.objects.all().prefetch_related("user")
+    orders = Order.objects.prefetch_related("user")
 
     if username:
         orders = orders.filter(user__username=username)
