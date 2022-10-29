@@ -60,6 +60,12 @@ class Order(models.Model):
         related_name="orders"
     )
 
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self) -> str:
+        return str(self.created_at)
+
 
 class Ticket(models.Model):
     movie_session = models.ForeignKey(
@@ -79,16 +85,16 @@ class Ticket(models.Model):
     def clean(self) -> None:
         if not (1 <= self.row <= self.movie_session.cinema_hall.rows):
             raise ValidationError({
-                "row": f"row must be in range "
-                       f"[1, {self.movie_session.cinema_hall.rows}],"
-                       f" not {self.row}"
+                "row": [f"row number must be in available range: "
+                        f"(1, rows): "
+                        f"(1, {self.movie_session.cinema_hall.rows})"]
             })
 
         if not (1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row):
             raise ValidationError({
-                "seat": f"seat must be in range "
-                        f"[1, {self.movie_session.cinema_hall.seats_in_row}],"
-                        f" not {self.row}"
+                "seat": [f"seat number must be in available range: "
+                         f"(1, seats_in_row): "
+                         f"(1, {self.movie_session.cinema_hall.seats_in_row})"]
             })
 
     def save(
@@ -105,7 +111,10 @@ class Ticket(models.Model):
 
     class Meta:
         constraints = [
-            UniqueConstraint(fields=["row", "seat", "movie_session"], name="seat on session")
+            UniqueConstraint(
+                fields=["row", "seat", "movie_session"],
+                name="seat on session"
+            )
         ]
 
 
