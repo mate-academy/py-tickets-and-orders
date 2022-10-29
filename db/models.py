@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from typing import Any
 
 from django.contrib.auth.models import AbstractUser
@@ -74,8 +72,16 @@ class Order(models.Model):
 
 
 class Ticket(models.Model):
-    movie_session = models.ForeignKey("MovieSession", on_delete=models.CASCADE)
-    order = models.ForeignKey("Order", on_delete=models.CASCADE)
+    movie_session = models.ForeignKey(
+        "MovieSession",
+        on_delete=models.CASCADE,
+        related_name="movie_sessions"
+    )
+    order = models.ForeignKey(
+        "Order",
+        on_delete=models.CASCADE,
+        related_name="orders"
+    )
     row = models.IntegerField()
     seat = models.IntegerField()
 
@@ -113,7 +119,7 @@ class Ticket(models.Model):
             force_update: bool = False,
             using: Any = None,
             update_fields: Any = None
-    ) -> Ticket:
+    ) -> None:
         self.full_clean()
         return super(Ticket, self).save(
             force_insert=False,
