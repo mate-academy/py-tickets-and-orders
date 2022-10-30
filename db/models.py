@@ -1,3 +1,5 @@
+from typing import Any
+
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db.models import UniqueConstraint
@@ -100,9 +102,9 @@ class Ticket(models.Model):
     def save(
             self, force_insert: bool = False,
             force_update: bool = False,
-            using: bool = None,
-            update_fields: bool = None
-    ) -> callable:
+            using: Any = None,
+            update_fields: Any = None
+    ) -> None:
 
         self.full_clean()
         return super(Ticket, self).save(
