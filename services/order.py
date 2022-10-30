@@ -22,7 +22,9 @@ def create_order(tickets: list[dict],
                     row=ticket.get("row"),
                     seat=ticket.get("seat"),
                     order=order,
-                    movie_session_id=MovieSession.objects.get(id=ticket.get("movie_session"))
+                    movie_session_id=MovieSession.objects.get(
+                        id=ticket.get("movie_session"
+                                      ))
                 )
             ])
 
