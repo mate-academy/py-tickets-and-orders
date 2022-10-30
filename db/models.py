@@ -24,8 +24,8 @@ class Actor(models.Model):
 class Movie(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
-    actors = models.ManyToManyField(to=Actor)
-    genres = models.ManyToManyField(to=Genre)
+    actors = models.ManyToManyField(to=Actor, related_name="actors")
+    genres = models.ManyToManyField(to=Genre, related_name="genres")
 
     class Meta:
         indexes = [
@@ -50,16 +50,32 @@ class CinemaHall(models.Model):
 
 class MovieSession(models.Model):
     show_time = models.DateTimeField()
-    cinema_hall = models.ForeignKey(to=CinemaHall, on_delete=models.CASCADE)
-    movie = models.ForeignKey(to=Movie, on_delete=models.CASCADE)
+    cinema_hall = models.ForeignKey(
+        to=CinemaHall,
+        on_delete=models.CASCADE,
+        related_name="cinema_halls"
+    )
+    movie = models.ForeignKey(
+        to=Movie,
+        on_delete=models.CASCADE,
+        related_name="movies"
+    )
 
     def __str__(self) -> str:
         return f"{self.movie.title} {str(self.show_time)}"
 
 
+class User(AbstractUser):
+    pass
+
+
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey("User", on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="users"
+    )
 
     class Meta:
         ordering = ["-created_at"]
@@ -69,8 +85,16 @@ class Order(models.Model):
 
 
 class Ticket(models.Model):
-    movie_session = models.ForeignKey(MovieSession, on_delete=models.CASCADE)
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    movie_session = models.ForeignKey(
+        MovieSession,
+        on_delete=models.CASCADE,
+        related_name="movie_sessions"
+    )
+    order = models.ForeignKey(
+        Order,
+        on_delete=models.CASCADE,
+        related_name="orders"
+    )
     row = models.IntegerField()
     seat = models.IntegerField()
 
@@ -102,7 +126,7 @@ class Ticket(models.Model):
             force_update: bool = False,
             using: Any = None,
             update_fields: Any = None
-    ) -> Any:
+    ) -> None:
         self.full_clean()
         return super(Ticket, self).save(
             force_insert,
@@ -115,8 +139,5 @@ class Ticket(models.Model):
         return (
             f"{self.movie_session.movie.title} "
             f"{self.movie_session.show_time} "
-            f"(row: {self.row}, seat: {self.seat})")
-
-
-class User(AbstractUser):
-    pass
+            f"(row: {self.row}, seat: {self.seat})"
+        )
