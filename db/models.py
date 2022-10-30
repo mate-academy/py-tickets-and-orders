@@ -55,14 +55,13 @@ class MovieSession(models.Model):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        ordering = ["-created_at"]
-
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE
     )
+
+    class Meta:
+        ordering = ["-created_at"]
 
     def __str__(self) -> str:
         return f"{self.created_at}"
@@ -86,9 +85,11 @@ class Ticket(models.Model):
         ]
 
     def __str__(self) -> str:
-        return f"{self.movie_session.movie.title} " \
-               f"{self.movie_session.show_time} " \
-               f"(row: {self.row}, seat: {self.seat})"
+        return (
+            f"{self.movie_session.movie.title} "
+            f"{self.movie_session.show_time} "
+            f"(row: {self.row}, seat: {self.seat})"
+        )
 
     def clean(self) -> None:
         if not (1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row):
