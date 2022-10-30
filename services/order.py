@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.db.models import QuerySet
 
-from db.models import Order, Ticket
+from db.models import Order, Ticket, MovieSession
 
 
 def create_order(tickets: list[dict],
@@ -17,12 +17,14 @@ def create_order(tickets: list[dict],
             order.save()
 
         for ticket in tickets:
-            Ticket.objects.create(
-                row=ticket["row"],
-                seat=ticket["seat"],
-                order=order,
-                movie_session_id=ticket["movie_session"],
-            )
+            Ticket.objects.bulk_create([
+                Ticket(
+                    row=ticket.get("row"),
+                    seat=ticket.get("seat"),
+                    order=order,
+                    movie_session_id=MovieSession.objects.get(id=ticket.get("movie_session"))
+                )
+            ])
 
     return order
 
