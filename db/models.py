@@ -5,6 +5,8 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import UniqueConstraint
 
+import settings
+
 
 class User(AbstractUser):
     pass
@@ -35,9 +37,7 @@ class Movie(models.Model):
         return self.title
 
     class Meta:
-        indexes = [
-            models.Index(fields=["title"])
-        ]
+        indexes = [models.Index(fields=["title"])]
 
 
 class CinemaHall(models.Model):
@@ -63,7 +63,10 @@ class MovieSession(models.Model):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
 
     def __str__(self) -> str:
         return str(self.created_at)
@@ -83,44 +86,43 @@ class Ticket(models.Model):
 
     class Meta:
         constraints = [
-            UniqueConstraint(
-                fields=["row", "seat"],
-                name="row_seat"
-            )
+            UniqueConstraint(fields=["row", "seat"], name="row_seat")
         ]
 
     def __str__(self) -> str:
-        return f"{self.movie_session.movie.title} " \
-               f"{self.movie_session.show_time} (row: {self.row}, " \
-               f"seat: {self.seat})"
+        return (
+            f"{self.movie_session.movie.title} "
+            f"{self.movie_session.show_time} (row: {self.row}, "
+            f"seat: {self.seat})"
+        )
 
     def clean(self) -> None:
-        print(self.movie_session.cinema_hall.rows)
         if not (1 <= self.row <= self.movie_session.cinema_hall.rows):
-            raise ValidationError({
-                "row": f"row number must be in available range: (1, rows):"
-                       f" (1, {self.movie_session.cinema_hall.rows})"
-            })
+            raise ValidationError(
+                {
+                    "row": f"row number must be in available range: (1, rows):"
+                    f" (1, {self.movie_session.cinema_hall.rows})"
+                }
+            )
 
-        if not (
-                1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row
-        ):
-            raise ValidationError({
-                "seat": f"seat number must be in available range: "
-                        f"(1, seats_in_row):"
-                        f" (1, {self.movie_session.cinema_hall.seats_in_row})"
-            })
+        if not (1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row):
+            raise ValidationError(
+                {
+                    "seat": f"seat number must be in available range: "
+                    f"(1, seats_in_row):"
+                    f" (1, {self.movie_session.cinema_hall.seats_in_row})"
+                }
+            )
 
     def save(
-            self, force_insert: bool = False,
-            force_update: bool = False,
-            using: Any = None,
-            update_fields: Any = None) -> Any:
+        self,
+        force_insert: bool = False,
+        force_update: bool = False,
+        using: Any = None,
+        update_fields: Any = None,
+    ) -> Any:
         self.full_clean()
 
         return super(Ticket, self).save(
-            force_insert,
-            force_update,
-            using,
-            update_fields
+            force_insert, force_update, using, update_fields
         )
