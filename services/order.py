@@ -2,8 +2,7 @@ from datetime import datetime
 from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.db.models import QuerySet
-
-from db.models import Order, Ticket, MovieSession
+from db.models import Order, Ticket
 
 
 def create_order(
@@ -21,9 +20,7 @@ def create_order(
             Ticket.objects.create(
                 row=ticket["row"],
                 seat=ticket["seat"],
-                movie_session=MovieSession.objects.get(
-                    id=ticket["movie_session"]
-                ),
+                movie_session_id=ticket["movie_session"],
                 order=order
             )
 
