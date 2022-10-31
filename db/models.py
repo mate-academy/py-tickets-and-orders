@@ -81,7 +81,7 @@ class Ticket(models.Model):
         ]
 
     def __str__(self) -> str:
-        return (f"Matrix {self.movie_session.show_time} "
+        return (f"{self.movie_session.movie.title} {self.movie_session.show_time} "
                 f"(row: {self.row}, seat: {self.seat})")
 
     def clean(self) -> None:
