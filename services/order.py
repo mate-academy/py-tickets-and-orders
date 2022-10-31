@@ -21,9 +21,12 @@ def create_order(tickets: list[dict],
             order.save()
 
         for ticket in tickets:
-            ticket["movie_session_id"] = ticket.pop("movie_session")
-            Ticket.objects.create(order=order, **ticket)
-
+            Ticket.objects.create(
+                order=order,
+                movie_session_id=ticket["movie_session"],
+                row=ticket["row"],
+                seat=ticket["seat"]
+            )
         return order
 
 
