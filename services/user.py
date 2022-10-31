@@ -3,10 +3,10 @@ from django.contrib.auth import get_user_model
 from db.models import User
 
 
-def update_some_info(user: User,
-                     email: str = None,
-                     first_name: str = None,
-                     last_name: str = None) -> None:
+def update_personal_info(user: User,
+                         email: str = None,
+                         first_name: str = None,
+                         last_name: str = None) -> None:
     if email:
         user.email = email
 
@@ -26,7 +26,7 @@ def create_user(username: str,
                 last_name: str = None) -> None:
     user = get_user_model().objects.create_user(username=username,
                                                 password=password)
-    update_some_info(user, email, first_name, last_name)
+    update_personal_info(user, email, first_name, last_name)
 
 
 def get_user(user_id: int) -> User:
@@ -40,7 +40,7 @@ def update_user(user_id: int,
                 first_name: str = None,
                 last_name: str = None) -> None:
     user = get_user(user_id)
-    update_some_info(user, email, first_name, last_name)
+    update_personal_info(user, email, first_name, last_name)
 
     if username:
         user.username = username
