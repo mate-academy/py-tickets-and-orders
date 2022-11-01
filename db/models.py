@@ -28,13 +28,13 @@ class Movie(models.Model):
     actors = models.ManyToManyField(to=Actor)
     genres = models.ManyToManyField(to=Genre)
 
-    def __str__(self) -> str:
-        return self.title
-
     class Meta:
         indexes = [
             models.Index(fields=["title"])
         ]
+
+    def __str__(self) -> str:
+        return self.title
 
 
 class CinemaHall(models.Model):
