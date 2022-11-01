@@ -59,25 +59,26 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    def __str__(self) -> str:
-        return str(self.created_at)
-
     class Meta:
         ordering = ["-created_at"]
+
+    def __str__(self) -> str:
+        return str(self.created_at)
 
 
 class Ticket(models.Model):
     movie_session = models.ForeignKey(
-        MovieSession, on_delete=models.CASCADE, related_name="ticket")
+        MovieSession, on_delete=models.CASCADE, related_name="tickets")
     order = models.ForeignKey(
-        Order, on_delete=models.CASCADE, related_name="ticket")
+        Order, on_delete=models.CASCADE, related_name="tickets")
     row = models.IntegerField()
     seat = models.IntegerField()
 
-    def __str__(self) -> str:
-        return (
-            f"{self.movie_session.movie} {self.movie_session.show_time} "
-            f"(row: {self.row}, seat: {self.seat})")
+    class Meta:
+        constraints = [models.UniqueConstraint(
+            fields=["row", "seat", "movie_session"],
+            name="unique_seat"
+        )]
 
     def clean(self) -> None:
         cinema_hall = self.movie_session.cinema_hall
@@ -104,15 +105,14 @@ class Ticket(models.Model):
              force_insert: bool = False,
              force_update: bool = False,
              using: Any = None,
-             update_fields: Any = None) -> Any:
+             update_fields: Any = None) -> None:
         self.full_clean()
         return super(Ticket, self).save(force_insert,
                                         force_update,
                                         using,
                                         update_fields)
 
-    class Meta:
-        constraints = [models.UniqueConstraint(
-            fields=["row", "seat", "movie_session"],
-            name="unique_seat"
-        )]
+    def __str__(self) -> str:
+        return (
+            f"{self.movie_session.movie} {self.movie_session.show_time} "
+            f"(row: {self.row}, seat: {self.seat})")
