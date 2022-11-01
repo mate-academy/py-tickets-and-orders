@@ -60,7 +60,8 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(
         to=settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE)
+        on_delete=models.CASCADE
+    )
 
     class Meta:
         ordering = ["-created_at"]
@@ -72,10 +73,12 @@ class Order(models.Model):
 class Ticket(models.Model):
     movie_session = models.ForeignKey(
         to=MovieSession,
-        on_delete=models.CASCADE)
+        on_delete=models.CASCADE
+    )
     order = models.ForeignKey(
         to=Order,
-        on_delete=models.CASCADE)
+        on_delete=models.CASCADE
+    )
     row = models.IntegerField()
     seat = models.IntegerField()
 
@@ -118,4 +121,5 @@ class Ticket(models.Model):
             force_insert,
             force_update,
             using,
-            update_fields)
+            update_fields
+        )
