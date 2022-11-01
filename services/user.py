@@ -13,9 +13,9 @@ def create_user(
     get_user_model().objects.create_user(
         username=username,
         password=password,
-        email=email or None,
-        first_name=first_name or None,
-        last_name=last_name or None
+        email=email or "",
+        first_name=first_name or "",
+        last_name=last_name or ""
     )
 
 
