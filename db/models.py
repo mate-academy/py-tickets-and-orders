@@ -4,6 +4,8 @@ from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
 
+import settings
+
 
 class Genre(models.Model):
     name = models.CharField(max_length=255, unique=True)
@@ -69,7 +71,7 @@ class User(AbstractUser):
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(
-        to=User,
+        to=settings.AUTH_USER_MODEL,
         related_name="orders",
         on_delete=models.CASCADE
     )
@@ -97,9 +99,10 @@ class Ticket(models.Model):
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(name="ticket_constraints",
-                                    fields=["row", "seat", "movie_session"]
-                                    )
+            models.UniqueConstraint(
+                name="ticket_constraints",
+                fields=["row", "seat", "movie_session"]
+            )
         ]
 
     def __str__(self) -> str:
