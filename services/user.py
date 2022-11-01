@@ -22,8 +22,7 @@ def create_user(
     if last_name:
         user.last_name = last_name
 
-    if email or first_name or last_name:
-        user.save()
+    user.save()
 
     return user
 

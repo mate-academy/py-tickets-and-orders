@@ -17,17 +17,13 @@ def create_order(
             order.created_at = date
             order.save()
 
-        Ticket.objects.bulk_create(
-            [Ticket(
-                movie_session=MovieSession.objects.get(
-                    id=ticket["movie_session"]
-                ),
+        for ticket in tickets:
+            Ticket.objects.create(
+                movie_session_id=ticket["movie_session"],
                 order_id=order.id,
                 row=ticket["row"],
                 seat=ticket["seat"]
-            ) for ticket in tickets
-            ]
-        )
+            )
 
         return order
 
