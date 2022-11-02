@@ -70,11 +70,11 @@ class Order(models.Model):
         related_name="orders"
     )
 
-    def __str__(self) -> str:
-        return str(self.created_at)
-
     class Meta:
         ordering = ["-created_at"]
+
+    def __str__(self) -> str:
+        return str(self.created_at)
 
 
 class Ticket(models.Model):
