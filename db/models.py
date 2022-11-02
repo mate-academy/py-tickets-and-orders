@@ -87,7 +87,7 @@ class Ticket(models.Model):
     )
     row = models.IntegerField()
     seat = models.IntegerField()
-    
+
     class Meta:
         constraints = [
             UniqueConstraint(
@@ -130,7 +130,6 @@ class Ticket(models.Model):
             using,
             update_field
         )
-
 
     def __str__(self) -> str:
         return (
