@@ -64,11 +64,11 @@ class Order(models.Model):
         to=User, on_delete=models.CASCADE, related_name="orders"
     )
 
-    def __str__(self) -> str:
-        return str(self.created_at)
-
     class Meta:
         ordering = ["-created_at"]
+
+    def __str__(self) -> str:
+        return str(self.created_at)
 
 
 class Ticket(models.Model):
