@@ -16,18 +16,13 @@ def create_order(
             new_order.created_at = date
             new_order.save()
 
-        tickets = [
+        for ticket in tickets:
             Ticket(
                 row=ticket["row"],
                 seat=ticket["seat"],
                 movie_session_id=ticket["movie_session"],
                 order=new_order,
-            )
-            for ticket in tickets
-        ]
-
-        for ticket in tickets:
-            ticket.save()
+            ).save()
 
         return new_order
 
