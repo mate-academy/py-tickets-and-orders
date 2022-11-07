@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Any
+
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -113,8 +115,8 @@ class Ticket(models.Model):
         self,
         force_insert: bool = False,
         force_update: bool = False,
-        using: bool = None,
-        update_fields: bool = None,
+        using: Any = None,
+        update_fields: Any = None,
     ) -> None:
         self.full_clean()
         super(Ticket, self).save(

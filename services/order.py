@@ -17,12 +17,12 @@ def create_order(
             new_order.save()
 
         for ticket in tickets:
-            Ticket(
+            Ticket.objects.create(
                 row=ticket["row"],
                 seat=ticket["seat"],
                 movie_session_id=ticket["movie_session"],
                 order=new_order,
-            ).save()
+            )
 
         return new_order
 
