@@ -1,31 +1,35 @@
+from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.db.models import QuerySet
 
-from db.models import User, Order, Ticket
+from db.models import Order, Ticket
 
 
-def create_order(tickets: list, username: str, date: str = None) -> Order:
+def create_order(
+        tickets: list[dict],
+        username: str,
+        date: str = None
+) -> Order:
     with transaction.atomic():
-        user = User.objects.get(username=username)
-        new_order = Order.objects.create(user=user)
-
+        order = Order.objects.create(
+            user=get_user_model().objects.get(username=username)
+        )
         if date:
-            new_order.created_at = date
+            order.created_at = date
+        order.save()
 
-        new_order.save()
-
-        for ticket_data in tickets:
+        for ticket in tickets:
             Ticket.objects.create(
-                order=new_order,
-                row=ticket_data["row"],
-                seat=ticket_data["seat"],
-                movie_session_id=ticket_data["movie_session"]
+                order=order,
+                movie_session_id=ticket["movie_session"],
+                row=ticket["row"],
+                seat=ticket["seat"]
             )
-
-        return new_order
+    return order
 
 
 def get_orders(username: str = None) -> QuerySet:
+    orders = Order.objects.all()
     if username:
-        return Order.objects.filter(user__username=username)
-    return Order.objects.all()
+        orders = orders.filter(user__username=username)
+    return orders
