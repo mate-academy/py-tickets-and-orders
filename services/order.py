@@ -13,6 +13,9 @@ def create_order(
     with transaction.atomic():
         user = get_user_model().objects.get(username=username)
         order = Order.objects.create(user=user)
+        if date:
+            order.created_at = date
+            order.save()
         for ticket in tickets:
             Ticket.objects.create(
                 order=order,
@@ -20,9 +23,6 @@ def create_order(
                 row=ticket["row"],
                 seat=ticket["seat"]
             )
-        if date:
-            order.created_at = date
-            order.save()
         return order
 
 
