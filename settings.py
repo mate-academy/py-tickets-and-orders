@@ -25,4 +25,10 @@ USE_TZ = False
 
 INSTALLED_APPS = [
     "db",
+    "django.contrib.auth",
+    "django.contrib.contenttypes"
 ]
+
+
+def AUTH_USER_MODEL():
+    return None
