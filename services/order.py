@@ -16,7 +16,7 @@ def create_order(tickets: List[dict],
         new_order = Order.objects.create(user=user)
         if date:
             new_order.created_at = date
-        new_order.save()
+            new_order.save()
 
         for ticket in tickets:
             Ticket.objects.create(
@@ -29,9 +29,7 @@ def create_order(tickets: List[dict],
 
 
 def get_orders(username: str = None) -> QuerySet:
+    orders = Order.objects.all()
     if username:
-        user = get_user_model().objects.get(username=username)
-        orders = Order.objects.filter(user=user)
-    else:
-        orders = Order.objects.all()
+        orders = orders.filter(user__username=username)
     return orders
