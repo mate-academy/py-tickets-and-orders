@@ -23,6 +23,32 @@ USE_I18N = True
 
 USE_TZ = False
 
+AUTH_USER_MODEL = "db.User"
+
 INSTALLED_APPS = [
     "db",
+    "django.contrib.auth",
+    "django.contrib.contenttypes"
+]
+
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        "NAME": "django.contrib.auth."
+                "password_validation.UserAttributeSimilarityValidator",
+    },
+    {
+        "NAME": "django.contrib.auth."
+                "password_validation.MinimumLengthValidator",
+        "OPTIONS": {
+            "min_length": 9,
+        }
+    },
+    {
+        "NAME": "django.contrib.auth."
+                "password_validation.CommonPasswordValidator",
+    },
+    {
+        "NAME": "django.contrib.auth."
+                "password_validation.NumericPasswordValidator",
+    },
 ]
