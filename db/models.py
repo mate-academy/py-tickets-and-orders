@@ -3,6 +3,7 @@ from typing import Any
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models import UniqueConstraint
+from django.core.exceptions import ValidationError
 
 
 class Genre(models.Model):
@@ -68,10 +69,6 @@ class Order(models.Model):
         ordering = ["-created_at"]
 
 
-class ValidationError(Exception):
-    pass
-
-
 class Ticket(models.Model):
     movie_session = models.ForeignKey(
         to=MovieSession,
@@ -108,7 +105,7 @@ class Ticket(models.Model):
         if not (1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row):
             raise ValidationError({
                 "seat": [
-                    "row number must be in available range: "
+                    "seat number must be in available range: "
                     "(1, seats_in_row): "
                     f"(1, {self.movie_session.cinema_hall.seats_in_row})"
                 ]
