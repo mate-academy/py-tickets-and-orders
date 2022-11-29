@@ -10,7 +10,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 INSTALLED_APPS = [
     "db",
-    "django_extensions",
     "django.contrib.auth",
     "django.contrib.contenttypes"
 ]
