@@ -7,12 +7,12 @@ from db.models import User
 def create_user(
         username: str,
         password: str,
-        **other_fields) -> None:
+        **kwargs) -> None:
 
     get_user_model().objects.create_user(
         username=username,
         password=password,
-        **other_fields)
+        **kwargs)
 
 
 def get_user(user_id: int) -> QuerySet:
