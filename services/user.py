@@ -22,26 +22,26 @@ def get_user(user_id: int) -> User:
 def update_user(
         user_id: int,
         username: str = None,
-        password: str = False,
+        password: str = None,
         email: str = None,
         first_name: str = None,
         last_name: str = None
 ) -> None:
     user_to_update = get_user_model().objects.get(id=user_id)
 
-    if username:
+    if username is not None:
         user_to_update.username = username
 
-    if password:
+    if password is not None:
         user_to_update.set_password(password)
 
-    if email:
+    if email is not None:
         user_to_update.email = email
 
-    if first_name:
+    if first_name is not None:
         user_to_update.first_name = first_name
 
-    if last_name:
+    if last_name is not None:
         user_to_update.last_name = last_name
 
     user_to_update.save()
