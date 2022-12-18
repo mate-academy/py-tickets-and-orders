@@ -96,10 +96,12 @@ class Ticket(models.Model):
                         f"(1, {self.movie_session.cinema_hall.seats_in_row})"
             })
 
-    def save(self, force_insert: bool = False,
+    def save(self,
+             force_insert: bool = False,
              force_update: bool = False,
              using: bool = None,
-             update_fields: bool = None) -> None:
+             update_fields: bool = None
+             ) -> None:
         self.full_clean()
         super().save(force_insert, force_update, using, update_fields)
 
