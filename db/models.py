@@ -1,4 +1,9 @@
+from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import UniqueConstraint
+
+import settings
 
 
 class Genre(models.Model):
@@ -25,6 +30,11 @@ class Movie(models.Model):
     def __str__(self) -> str:
         return self.title
 
+    class Meta:
+        indexes = [
+            models.Index(fields=["title"])
+        ]
+
 
 class CinemaHall(models.Model):
     name = models.CharField(max_length=255)
@@ -46,3 +56,34 @@ class MovieSession(models.Model):
 
     def __str__(self) -> str:
         return f"{self.movie.title} {str(self.show_time)}"
+
+
+class Order(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+
+class Ticket(models.Model):
+    movie_session = models.ForeignKey("MovieSession", on_delete=models.CASCADE)
+    order = models.ForeignKey("Order", on_delete=models.CASCADE)
+    row = models.IntegerField()
+    seat = models.IntegerField()
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(fields=["movie_session", "row", "seat"], name="unique_ticket")
+        ]
+
+    def clean(self):
+        if not (1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row):
+            raise ValidationError(
+                {"seat": f"seat must be in range (1, {self.movie_session.cinema_hall.seats_in_row}), not {self.seat}"}
+            )
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        self.full_clean()
+        return super(Ticket, self).save(force_insert, force_update, using, update_fields)
+
+
+class User(AbstractUser):
+    pass
