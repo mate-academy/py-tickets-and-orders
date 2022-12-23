@@ -29,9 +29,7 @@ class Movie(models.Model):
     genres = models.ManyToManyField(to=Genre)
 
     class Meta:
-        indexes = [
-            models.Index(fields=["title"])
-        ]
+        indexes = [models.Index(fields=["title"])]
 
     def __str__(self) -> str:
         return self.title
@@ -79,19 +77,17 @@ class Ticket(models.Model):
     seat = models.IntegerField()
 
     def __str__(self) -> str:
-        return f"{self.movie_session.movie} " \
-               f"{self.movie_session.show_time} " \
-               f"(row: {self.row}, seat: {self.seat})"
+        return (
+            f"{self.movie_session.movie} "
+            f"{self.movie_session.show_time} "
+            f"(row: {self.row}, seat: {self.seat})"
+        )
 
     def clean(self) -> None:
         if not isinstance(self.seat, int) and not isinstance(self.row, int):
-            raise ValueError(
-                "seat and row must be integer"
-            )
+            raise ValueError("seat and row must be integer")
 
-        if (
-                self.seat > self.movie_session.cinema_hall.seats_in_row
-        ):
+        if self.seat > self.movie_session.cinema_hall.seats_in_row:
             raise ValidationError(
                 {
                     "seat": [
@@ -102,9 +98,7 @@ class Ticket(models.Model):
                 }
             )
 
-        if (
-                self.row > self.movie_session.cinema_hall.rows
-        ):
+        if self.row > self.movie_session.cinema_hall.rows:
             raise ValidationError(
                 {
                     "row": [
@@ -115,21 +109,21 @@ class Ticket(models.Model):
                 }
             )
 
-    def save(self, force_insert: bool = False,
-             force_update: bool = False,
-             using: Any = None,
-             update_fields: Any = None) -> object:
+    def save(
+        self,
+        force_insert: bool = False,
+        force_update: bool = False,
+        using: Any = None,
+        update_fields: Any = None,
+    ) -> object:
         self.full_clean()
-        return super(Ticket, self).save(force_insert,
-                                        force_update,
-                                        using,
-                                        update_fields)
+        return super(Ticket, self).save(
+            force_insert, force_update, using, update_fields
+        )
 
     class Meta:
         constraints = [
-            UniqueConstraint(
-                fields=["row", "seat"], name="unique_together"
-            )
+            UniqueConstraint(fields=["row", "seat"], name="unique_together")
         ]
 
 
