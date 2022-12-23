@@ -84,9 +84,7 @@ class Ticket(models.Model):
                f"seat: {self.seat})"
 
     def clean(self) -> None:
-        if self.row not in range(
-                1, self.movie_session.cinema_hall.rows + 1
-        ):
+        if not 1 <= self.row < self.movie_session.cinema_hall.rows + 1:
             raise ValidationError(
                 {
                     "row": [
@@ -95,9 +93,7 @@ class Ticket(models.Model):
                     ]
                 }
             )
-        if self.seat not in range(
-                1, self.movie_session.cinema_hall.seats_in_row
-        ):
+        if not 1 <= self.seat < self.movie_session.cinema_hall.seats_in_row:
             raise ValidationError(
                 {
                     "seat": [
