@@ -27,7 +27,7 @@ def update_user(
         last_name: str = None,
         password: str = None
 ) -> None:
-    user_to_update = get_user_model().objects.get(id=user_id)
+    user_to_update = get_user(user_id)
     if username:
         user_to_update.username = username
     if email:
