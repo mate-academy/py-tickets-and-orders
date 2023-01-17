@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import CharField, UniqueConstraint
+from django.db.models import UniqueConstraint
 
 from settings import AUTH_USER_MODEL
 
@@ -9,8 +9,8 @@ from settings import AUTH_USER_MODEL
 class Genre(models.Model):
     name = models.CharField(max_length=255, unique=True)
 
-    def __str__(self) -> CharField:
-        return self.name
+    def __str__(self) -> str:
+        return str(self.name)
 
 
 class Actor(models.Model):
@@ -32,8 +32,8 @@ class Movie(models.Model):
             models.Index(fields=["title"])
         ]
 
-    def __str__(self) -> CharField:
-        return self.title
+    def __str__(self) -> str:
+        return str(self.title)
 
 
 class CinemaHall(models.Model):
@@ -45,8 +45,8 @@ class CinemaHall(models.Model):
     def capacity(self) -> int:
         return self.rows * self.seats_in_row
 
-    def __str__(self) -> CharField:
-        return self.name
+    def __str__(self) -> str:
+        return str(self.name)
 
 
 class MovieSession(models.Model):
