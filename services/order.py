@@ -7,16 +7,16 @@ from datetime import datetime
 
 def create_order(tickets: List[dict],
                  username: str,
-                 date: datetime = None) -> None:
+                 date: str = None) -> Order:
     with transaction.atomic():
         user = User.objects.get(username=username)
         order = Order.objects.create(user=user)
         if date:
-            order.created_at = date
+            order.created_at = datetime.strptime(date, "%Y-%m-%d %H:%M")
             order.save()
         for ticket in tickets:
             Ticket.objects.create(
-                movie_session=ticket["movie_session"],
+                movie_session_id=ticket["movie_session"],
                 order=order,
                 row=ticket["row"],
                 seat=ticket["seat"]
