@@ -10,7 +10,7 @@ def create_order(
         date: str = None) -> None:
     with transaction.atomic():
         order = Order.objects.create(user=User.objects.get(username=username))
-        if date:
+        if date is not None:
             order.created_at = date
             order.save()
         for ticket in tickets:

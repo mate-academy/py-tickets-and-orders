@@ -31,3 +31,5 @@ INSTALLED_APPS = [
 ]
 
 AUTH_USER_MODEL = "db.User"
+
+DATE_INPUT_FORMATS = ["%m-%d-%Y %H:%M:%S"]
