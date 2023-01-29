@@ -108,8 +108,8 @@ class Ticket(models.Model):
             self,
             force_insert: bool = False,
             force_update: bool = False,
-            using: any = None,
-            update_fields: any = None
+            using: str | None = None,
+            update_fields: list | None = None
     ) -> None:
         self.full_clean()
         return super(Ticket, self). \
