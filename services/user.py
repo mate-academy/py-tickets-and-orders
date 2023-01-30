@@ -16,14 +16,9 @@ def create_user(
         username=username
     )
     user.set_password(password)
-    if email:
-        user.email = email
-    if first_name:
-        user.first_name = first_name
-    if last_name:
-        user.last_name = last_name
 
-    user.save()
+    update_user_optional_parameters(user, email, first_name, last_name)
+
     return user
 
 
@@ -44,6 +39,16 @@ def update_user(
         user.username = username
     if password:
         user.set_password(password)
+
+    update_user_optional_parameters(user, email, first_name, last_name)
+
+
+def update_user_optional_parameters(
+        user: User,
+        email: Optional[str] = None,
+        first_name: Optional[str] = None,
+        last_name: Optional[str] = None
+) -> None:
     if email:
         user.email = email
     if first_name:
