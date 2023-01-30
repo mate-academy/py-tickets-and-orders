@@ -54,8 +54,10 @@ class MovieSession(models.Model):
     movie = models.ForeignKey(to=Movie, on_delete=models.CASCADE)
 
     def __str__(self) -> str:
-        return f"{self.movie.title} " \
-               f"{self.show_time.strftime('%Y-%m-%d %H:%M:%S')}"
+        return (
+            f"{self.movie.title} "
+            f"{self.show_time.strftime('%Y-%m-%d %H:%M:%S')}"
+        )
 
 
 class Order(models.Model):
@@ -112,8 +114,9 @@ class Ticket(models.Model):
             update_fields: list | None = None
     ) -> None:
         self.full_clean()
-        return super(Ticket, self). \
-            save(force_insert, force_update, using, update_fields)
+        return super(Ticket, self).save(
+            force_insert, force_update, using, update_fields
+        )
 
 
 class User(AbstractUser):
