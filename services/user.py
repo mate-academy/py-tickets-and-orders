@@ -11,7 +11,7 @@ def create_user(
         first_name: Optional[str] = None,
         last_name: Optional[str] = None,
 ) -> User:
-    user = get_user_model().object.create_user(
+    user = get_user_model().objects.create_user(
         username=username,
         password=password
     )
