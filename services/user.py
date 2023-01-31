@@ -17,9 +17,9 @@ def create_user(
 
     if email:
         user.email = email
-    if first_name:
+    if first_name and len(last_name):
         user.first_name = first_name
-    if last_name:
+    if last_name and len(last_name):
         user.last_name = last_name
     return user.save()
 
@@ -43,10 +43,8 @@ def update_user(
         user.set_password(password)
     if email:
         user.email = email
-    user.save()
-    if first_name:
+    if first_name and len(last_name):
         user.first_name = first_name
-    if last_name:
+    if last_name and len(last_name):
         user.last_name = last_name
-
     user.save()
