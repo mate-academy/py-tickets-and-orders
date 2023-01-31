@@ -59,6 +59,9 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    class Meta:
+        ordering = ["-created_at"]
+
     def __str__(self) -> str:
         return self.created_at.strftime("%Y-%m-%d %H:%M:%S")
 
@@ -78,17 +81,27 @@ class Ticket(models.Model):
         )]
 
     def __str__(self) -> str:
-        return f"{self.movie_session} ({self.row}, {self.seat})"
+        return f"{self.movie_session} (row: {self.row}, seat: {self.seat})"
 
     def clean(self) -> None:
         if not (1 <= self.row <= self.movie_session.cinema_hall.rows):
             raise ValidationError({
-                "row": [f"row number must be in available range: (1, rows): "
-                        f"(1, {self.movie_session.cinema_hall.seats_in_row})"]
+                "row": ["row number must be in available range: (1, rows): "
+                        f"(1, {self.movie_session.cinema_hall.rows})"]
+            })
+        if not (1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row):
+            raise ValidationError({
+                "seat": ["seat number must be in available range: "
+                         "(1, seats_in_row): "
+                         f"(1, {self.movie_session.cinema_hall.seats_in_row})"]
             })
 
-    def save(self, force_insert=False, force_update=False, using=None,
-             update_fields=None) -> super:
+    def save(
+            self,
+            force_insert: bool = False,
+            force_update: bool = False,
+            using: str = None,
+            update_fields: str = None) -> super:
         self.full_clean()
         return super(Ticket, self).save(
             force_insert,
