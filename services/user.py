@@ -4,11 +4,11 @@ from django.contrib.auth.models import User
 
 
 def create_user(
-        username: str,
-        password: str,
-        email: str | None = None,
-        first_name: str | None = None,
-        last_name: str | None = None
+    username: str,
+    password: str,
+    email: str | None = None,
+    first_name: str | None = None,
+    last_name: str | None = None
 ) -> User:
     user = get_user_model().objects.create_user(
         username=username,
@@ -31,12 +31,12 @@ def get_user(user_id: int) -> User:
 
 
 def update_user(
-        user_id: int,
-        username: str | None = None,
-        password: str | None = None,
-        email: str | None = None,
-        first_name: str | None = None,
-        last_name: str | None = None
+    user_id: int,
+    username: str | None = None,
+    password: str | None = None,
+    email: str | None = None,
+    first_name: str | None = None,
+    last_name: str | None = None
 ) -> None:
     user = get_user(user_id)
     if username:
