@@ -68,7 +68,7 @@ class Order(models.Model):
                              on_delete=models.CASCADE)
 
     def __str__(self) -> str:
-        return f"{str(self.created_at)}"
+        return str(self.created_at)
 
     class Meta:
         ordering = ["-created_at"]
@@ -87,9 +87,11 @@ class Ticket(models.Model):
         ]
 
     def __str__(self) -> str:
-        return f"{self.movie_session.movie.title} " \
-               f"{str(self.movie_session.show_time)} " \
-               f"(row: {self.row}, seat: {self.seat})"
+        return (
+            f"{self.movie_session.movie.title} "
+            f"{str(self.movie_session.show_time)} "
+            f"(row: {self.row}, seat: {self.seat})"
+        )
 
     def clean(self) -> None:
         if not (1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row):
