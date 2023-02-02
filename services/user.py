@@ -8,9 +8,9 @@ from db.models import User
 def create_user(
     username: str,
     password: str,
-    email: Optional = None,
-    first_name: Optional = None,
-    last_name: Optional = None
+    email: Optional[str] = None,
+    first_name: Optional[str] = None,
+    last_name: Optional[str] = None
 ) -> None:
     user = get_user_model().objects.create_user(
         username=username,
@@ -31,11 +31,11 @@ def get_user(user_id: int) -> User:
 
 def update_user(
     user_id: int,
-    username: Optional = None,
-    password: Optional = None,
-    email: Optional = None,
-    first_name: Optional = None,
-    last_name: Optional = None
+    username: Optional[str] = None,
+    password: Optional[str] = None,
+    email: Optional[str] = None,
+    first_name: Optional[str] = None,
+    last_name: Optional[str] = None
 ) -> None:
     user = get_user(user_id)
     if username:
