@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Optional
 
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
@@ -112,8 +112,8 @@ class Ticket(models.Model):
         self,
         force_insert: bool = False,
         force_update: bool = False,
-        using: Any = None,
-        update_fields: Any = None
+        using: Optional = None,
+        update_fields: Optional = None
     ) -> None:
 
         self.full_clean()
