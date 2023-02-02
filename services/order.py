@@ -17,7 +17,7 @@ def create_order(
             order.created_at = date
             order.save()
 
-        tickets_list = [
+        Ticket.objects.bulk_create([
             Ticket(
                 order=order,
                 movie_session=MovieSession.objects.get(
@@ -26,9 +26,8 @@ def create_order(
                 row=ticket["row"],
                 seat=ticket["seat"]
             )
-            for ticket in tickets]
-
-        Ticket.objects.bulk_create(tickets_list)
+            for ticket in tickets
+        ])
 
 
 def get_orders(username: str = None) -> QuerySet[Order]:

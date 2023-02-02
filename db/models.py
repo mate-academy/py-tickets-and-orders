@@ -108,11 +108,13 @@ class Ticket(models.Model):
                        f"(1, {self.movie_session.cinema_hall.rows})"
             })
 
-    def save(self,
-             force_insert: bool = False,
-             force_update: bool = False,
-             using: Any = None,
-             update_fields: Any = None) -> None:
+    def save(
+        self,
+        force_insert: bool = False,
+        force_update: bool = False,
+        using: Any = None,
+        update_fields: Any = None
+    ) -> None:
 
         self.full_clean()
 
