@@ -1,5 +1,4 @@
 # Сheck Your Code Against the Following Points
-
 ## Don't Push db file
 ## Don't Forget to Add Migrations to your PR
 This is a required for the tests to pass.
