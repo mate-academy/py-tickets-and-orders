@@ -1,5 +1,8 @@
 # Сheck Your Code Against the Following Points
-## Don't Push db file
+
+## Don't Push db files
+Make sure you don't push db files (files with `.sqlite`, `.db3`, etc. extension).
+
 ## Don't Forget to Add Migrations to your PR
 This is a required for the tests to pass.
 
