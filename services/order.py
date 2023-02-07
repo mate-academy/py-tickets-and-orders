@@ -1,4 +1,3 @@
-import time
 from datetime import datetime
 from django.db.models import QuerySet
 from django.db import transaction
@@ -20,7 +19,9 @@ def create_order(
         Ticket.objects.bulk_create(
             [
                 Ticket(
-                    movie_session=MovieSession.objects.get(id=ticket["movie_session"]),
+                    movie_session=MovieSession.objects.get(
+                        id=ticket["movie_session"]
+                    ),
                     order=order,
                     row=ticket["row"],
                     seat=ticket["seat"],
