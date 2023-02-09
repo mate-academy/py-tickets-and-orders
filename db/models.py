@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import UniqueConstraint, QuerySet
+from django.db.models import UniqueConstraint
 
 import settings
 
@@ -65,7 +65,8 @@ class User(AbstractUser):
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(
-        to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE
+        to=settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
     )
 
     class Meta:
@@ -93,8 +94,10 @@ class Ticket(models.Model):
         ]
 
     def __str__(self) -> str:
-        return f"{self.movie_session.movie} {self.movie_session.show_time} " \
-               f"(row: {self.row}, seat: {self.seat})"
+        return (
+            f"{self.movie_session.movie} {self.movie_session.show_time} "
+            f"(row: {self.row}, seat: {self.seat})"
+        )
 
     def clean(self) -> None:
         max_rows = self.movie_session.cinema_hall.rows
@@ -111,6 +114,6 @@ class Ticket(models.Model):
                           f"(1, seats_in_row): (1, {max_seats})"]}
             )
 
-    def save(self, *args, **kwargs) -> QuerySet:
+    def save(self, *args, **kwargs) -> object:
         self.full_clean()
         return super(Ticket, self).save(*args, **kwargs)
