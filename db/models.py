@@ -106,15 +106,19 @@ class Ticket(models.Model):
         seat_valid = 1 <= self.seat <= available_seats
 
         if not row_valid:
-            raise ValidationError({
-                "row": "row number must be in available range: (1, rows): "
-                       f"(1, {available_rows})"
-            })
+            raise ValidationError(
+                {
+                    "row": "row number must be in available range: (1, rows): "
+                    f"(1, {available_rows})"
+                }
+            )
         if not seat_valid:
-            raise ValidationError({
-                "seat": "seat number must be in available range:"
-                        f" (1, seats_in_row): (1, {available_seats})"
-            })
+            raise ValidationError(
+                {
+                    "seat": "seat number must be in available range:"
+                    f" (1, seats_in_row): (1, {available_seats})"
+                }
+            )
 
     def save(self, *args, **kwargs) -> None:
         self.full_clean()

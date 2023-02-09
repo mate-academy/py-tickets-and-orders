@@ -14,13 +14,15 @@ def create_user(
         username=username,
         password=password
     )
-    if email:
-        user.email = email
-    if first_name:
-        user.first_name = first_name
-    if last_name:
-        user.last_name = last_name
-    user.save()
+    if email or first_name or last_name:
+        update_user(
+            user_id=user.id,
+            username=None,
+            password=None,
+            email=email,
+            first_name=first_name,
+            last_name=last_name
+        )
 
 
 def get_user(user_id: int) -> User:
