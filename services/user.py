@@ -17,8 +17,6 @@ def create_user(
     if email or first_name or last_name:
         update_user(
             user_id=user.id,
-            username=None,
-            password=None,
             email=email,
             first_name=first_name,
             last_name=last_name
