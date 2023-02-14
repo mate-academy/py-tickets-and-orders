@@ -29,6 +29,7 @@ def get_movie_by_id(movie_id: int) -> Movie:
     return get_object_or_404(Movie, pk=movie_id)
 
 
+@transaction.atomic()
 def create_movie(
         movie_title: str,
         movie_description: str,
@@ -36,16 +37,15 @@ def create_movie(
         actors_ids: Optional[list[int]] = None
 ) -> Movie:
 
-    with transaction.atomic():
-        new_movie = Movie.objects.create(
-            title=movie_title,
-            description=movie_description
-        )
+    new_movie = Movie.objects.create(
+        title=movie_title,
+        description=movie_description
+    )
 
-        if genres_ids:
-            new_movie.genres.set(genres_ids)
+    if genres_ids:
+        new_movie.genres.set(genres_ids)
 
-        if actors_ids:
-            new_movie.actors.set(actors_ids)
+    if actors_ids:
+        new_movie.actors.set(actors_ids)
 
-        return new_movie
+    return new_movie
