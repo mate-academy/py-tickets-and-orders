@@ -1,6 +1,7 @@
+from typing import Optional
 from django.db.models import QuerySet
 from db.models import Ticket
-from db.models import MovieSession
+from db.models import MovieSession, CinemaHall, Movie
 
 
 def create_movie_session(
@@ -13,7 +14,10 @@ def create_movie_session(
     )
 
 
-def get_movies_sessions(session_date: str = None) -> QuerySet:
+def get_movies_sessions(
+        session_date: Optional[str] = None
+) -> QuerySet:
+
     queryset = MovieSession.objects.all()
     if session_date:
         queryset = queryset.filter(show_time__date=session_date)
@@ -26,11 +30,18 @@ def get_movie_session_by_id(movie_session_id: int) -> MovieSession:
 
 def update_movie_session(
     session_id: int,
-    **kwargs,
+    show_time: Optional[str] = None,
+    cinema_hall: Optional[CinemaHall] = None,
+    movie: Optional[Movie] = None
 ) -> None:
+
     movie_session = MovieSession.objects.get(id=session_id)
-    for key, value in kwargs.items():
-        setattr(movie_session, key, value)
+    if show_time:
+        movie_session.show_time = show_time
+    if cinema_hall:
+        movie_session.cinema_hall = cinema_hall
+    if movie:
+        movie_session.movie = movie
     movie_session.save()
 
 
