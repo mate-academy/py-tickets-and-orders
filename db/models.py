@@ -1,5 +1,3 @@
-import datetime
-
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -70,9 +68,8 @@ class Order(models.Model):
     class Meta:
         ordering = ["-created_at"]
 
-    def __str__(self):
-        order = datetime.datetime.strftime(self.created_at, "%Y-%m-%d %H:%M:%S")
-        return order
+    def __str__(self) -> str:
+        return str(self.created_at)
 
 
 class Ticket(models.Model):
