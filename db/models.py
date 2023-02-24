@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -86,9 +88,9 @@ class Ticket(models.Model):
         ]
 
     def __str__(self) -> str:
-        return f"{self.movie_session.movie.title}" \
-               f" {self.movie_session.show_time} " \
-               f"(row: {self.row}, seat: {self.seat})"
+        return (f"{self.movie_session.movie.title}"
+                f" {self.movie_session.show_time} "
+                f"(row: {self.row}, seat: {self.seat})")
 
     def clean(self) -> None:
         if not (1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row):
@@ -104,9 +106,12 @@ class Ticket(models.Model):
             })
 
     def save(
-            self, force_insert: bool = False, force_update: bool = False,
-            using: bool = None, update_fields: bool = None
-    ) -> None:
+            self,
+            force_insert: bool | None = False,
+            force_update: bool | None = False,
+            using: bool | None = None,
+            update_fields: bool | None = None
+    ) -> Ticket:
         self.full_clean()
         return super(Ticket, self).save(
             force_insert, force_update, using, update_fields
