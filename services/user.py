@@ -38,7 +38,7 @@ def update_user(
         email: str = None,
         first_name: str = None,
         last_name: str = None
-):
+) -> None:
     user_to_update = User.objects.get(id=user_id)
 
     if password:
