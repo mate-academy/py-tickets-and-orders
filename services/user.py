@@ -2,6 +2,8 @@ from django.contrib.auth import get_user_model
 
 from typing import Optional
 
+from django.shortcuts import get_object_or_404
+
 
 def create_user(
         username: str,
@@ -27,7 +29,7 @@ def create_user(
 
 
 def get_user(user_id: int) -> get_user_model():
-    return get_user_model().objects.get(id=user_id)
+    return get_object_or_404(get_user_model(), id=user_id)
 
 
 def update_user(
