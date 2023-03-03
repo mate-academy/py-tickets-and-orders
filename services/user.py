@@ -1,3 +1,5 @@
+from typing import Optional
+
 from django.contrib.auth import get_user_model
 
 
@@ -20,11 +22,11 @@ def get_user(user_id: int) -> str:
 
 
 def update_user(user_id: int,
-                username: str = None,
-                password: str = None,
-                email: str = None,
-                first_name: str = None,
-                last_name: str = None) -> None:
+                username: Optional[str] = None,
+                password: Optional[str] = None,
+                email: Optional[str] = None,
+                first_name: Optional[str] = None,
+                last_name: Optional[str] = None) -> None:
     updated_user = get_user_model().objects.get(id=user_id)
     if username:
         updated_user.username = username
