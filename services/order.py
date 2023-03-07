@@ -1,8 +1,9 @@
 from typing import List
 
+from django.contrib.auth import get_user_model
 from django.db import transaction
 
-from db.models import Ticket, Order, User, MovieSession
+from db.models import Ticket, Order, MovieSession
 
 
 @transaction.atomic
@@ -11,7 +12,7 @@ def create_order(
         username: str,
         date: str = None
 ) -> None:
-    user_instance = User.objects.get(username=username)
+    user_instance = get_user_model().objects.get(username=username)
 
     order_instance = (Order.objects.create(user=user_instance))
 

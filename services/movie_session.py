@@ -1,7 +1,5 @@
 from typing import List
 
-from django.db.models import QuerySet
-
 from db.models import MovieSession, Ticket
 
 
@@ -15,11 +13,13 @@ def create_movie_session(
     )
 
 
-def get_movies_sessions(session_date: str = None) -> QuerySet:
-    queryset = MovieSession.objects.all()
+def get_movies_sessions(session_date: str = None) -> MovieSession:
+    movie_session = MovieSession.objects.all()
+
     if session_date:
-        queryset = queryset.filter(show_time__date=session_date)
-    return queryset
+        movie_session = movie_session.filter(show_time__date=session_date)
+
+    return movie_session
 
 
 def get_movie_session_by_id(movie_session_id: int) -> MovieSession:
