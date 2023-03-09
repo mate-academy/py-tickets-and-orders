@@ -29,15 +29,11 @@ def update_user(
 ) -> None:
     user = get_user_model().objects.get(id=user_id)
 
-    if username:
-        user.username = username
-    if password:
-        user.set_password(password)
-    if email:
-        user.email = email
-    if first_name:
-        user.first_name = first_name
-    if last_name:
-        user.last_name = last_name
-
+    arguments = ["username", "password", "email", "first_name", "last_name"]
+    for argument in arguments:
+        if locals()[argument]:
+            if argument == "password":
+                user.set_password(locals()[argument])
+            else:
+                setattr(user, argument, locals()[argument])
     user.save()
