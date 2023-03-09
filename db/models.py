@@ -105,7 +105,7 @@ class Ticket(models.Model):
 
     def save(self, *args, **kwargs) -> bool:
         self.full_clean()
-        return super(Ticket, self).save(*args, **kwargs)
+        return super().save(*args, **kwargs)
 
 
 class User(AbstractUser):

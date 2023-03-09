@@ -1,3 +1,5 @@
+from typing import Optional
+
 from django.db.models import QuerySet
 
 from django.db import transaction
@@ -7,7 +9,7 @@ from db.models import Movie
 def get_movies(
     genres_ids: list[int] = None,
     actors_ids: list[int] = None,
-    title: str = None
+    title: Optional[str] = None
 ) -> QuerySet:
     queryset = Movie.objects.all()
 
@@ -39,9 +41,9 @@ def create_movie(
             title=movie_title,
             description=movie_description,
         )
-        if genres_ids:
+        if genres_ids is not None:
             movie.genres.set(genres_ids)
-        if actors_ids:
+        if actors_ids is not None:
             movie.actors.set(actors_ids)
 
         return movie
