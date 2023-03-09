@@ -87,7 +87,7 @@ class Ticket(models.Model):
         constraints = [
             UniqueConstraint(
                 fields=["row", "seat", "movie_session"],
-                name="constrains"
+                name="unique_ticket"
             )
         ]
 
