@@ -1,4 +1,4 @@
-from typing import Optional
+from __future__ import annotations
 
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
@@ -125,14 +125,14 @@ class Ticket(models.Model):
 
     def save(
             self,
-            force_insert: Optional = False,
-            force_update: Optional = False,
-            using: Optional = None,
-            update_fields: Optional = None
+            force_insert: Ticket = False,
+            force_update: Ticket = False,
+            *args,
+            **kwargs
     ) -> None:
         self.full_clean()
         return super(
             Ticket, self
         ).save(
-            force_insert, force_update, using, update_fields
+            force_insert, force_update, *args, **kwargs
         )
