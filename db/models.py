@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Optional
 
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
@@ -77,7 +77,7 @@ class Order(models.Model):
         ordering = ["-created_at"]
 
     def __str__(self) -> str:
-        return f"{self.created_at}"
+        return self.created_at.strftime("%Y-%m-%d %H:%M:%S")
 
 
 class Ticket(models.Model):
@@ -103,9 +103,11 @@ class Ticket(models.Model):
         ]
 
     def __str__(self) -> str:
-        return f"{self.movie_session.movie.title} " \
-               f"{self.movie_session.show_time} " \
-               f"(row: {self.row}, seat: {self.seat})"
+        return (
+            f"{self.movie_session.movie.title} "
+            f"{self.movie_session.show_time} "
+            f"(row: {self.row}, seat: {self.seat})"
+        )
 
     def clean(self) -> None:
         if not 1 <= self.row <= self.movie_session.cinema_hall.rows:
@@ -123,10 +125,10 @@ class Ticket(models.Model):
 
     def save(
             self,
-            force_insert: Any = False,
-            force_update: Any = False,
-            using: Any = None,
-            update_fields: Any = None
+            force_insert: Optional = False,
+            force_update: Optional = False,
+            using: Optional = None,
+            update_fields: Optional = None
     ) -> None:
         self.full_clean()
         return super(
