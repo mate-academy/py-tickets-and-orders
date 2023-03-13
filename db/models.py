@@ -1,5 +1,3 @@
-from typing import Callable
-
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
