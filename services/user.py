@@ -41,7 +41,7 @@ def update_user(
 ) -> None:
     user_to_upd = get_user_model().objects.get(id=user_id)
 
-    if username:
+    if username is not None:
         user_to_upd.username = username
     if password:
         user_to_upd.set_password(password)

@@ -1,3 +1,5 @@
+from typing import Callable
+
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -101,9 +103,9 @@ class Ticket(models.Model):
         self,
         *args,
         **kwargs
-    ) -> super:
+    ) -> bool:
         self.full_clean()
-        return super(Ticket, self).save(*args, **kwargs)
+        return super().save(*args, **kwargs)
 
     class Meta:
         constraints = [
