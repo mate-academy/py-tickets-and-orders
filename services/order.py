@@ -1,4 +1,4 @@
-from db.models import Order, Ticket, User
+from db.models import Order, Ticket, User, MovieSession
 from django.db import transaction
 
 
@@ -8,11 +8,14 @@ def create_order(tickets: list[dict], username, date=None):
         order = Order.objects.create(user=user)
 
         for ticket in tickets:
-            Ticket.objects.create(order=order, **ticket)
+            movie_session = MovieSession.objects.get(id=ticket["movie_session"])
+            Ticket.objects.create(order=order, row=ticket["row"], seat=ticket["seat"], movie_session=movie_session)
 
         if date:
             order.created_at = date
             order.save()
+
+        return order
 
 
 def get_orders(username=None):
