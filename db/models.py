@@ -46,8 +46,16 @@ class CinemaHall(models.Model):
 
 class MovieSession(models.Model):
     show_time = models.DateTimeField()
-    cinema_hall = models.ForeignKey(to=CinemaHall, on_delete=models.CASCADE)
-    movie = models.ForeignKey(to=Movie, on_delete=models.CASCADE)
+    cinema_hall = models.ForeignKey(
+        to=CinemaHall,
+        on_delete=models.CASCADE,
+        related_name="movie_sessions"
+    )
+    movie = models.ForeignKey(
+        to=Movie,
+        on_delete=models.CASCADE,
+        related_name="movie_sessions"
+    )
 
     def __str__(self) -> str:
         return f"{self.movie.title} {str(self.show_time)}"
@@ -61,19 +69,28 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name="orders"
     )
 
     class Meta:
         ordering = ["-created_at"]
 
     def __str__(self) -> str:
-        return self.created_at.strftime("%Y-%m-%d %H:%M:%S")
+        return str(self.created_at)
 
 
 class Ticket(models.Model):
-    movie_session = models.ForeignKey(MovieSession, on_delete=models.CASCADE)
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    movie_session = models.ForeignKey(
+        MovieSession,
+        on_delete=models.CASCADE,
+        related_name="tickets"
+    )
+    order = models.ForeignKey(
+        Order,
+        on_delete=models.CASCADE,
+        related_name="tickets"
+    )
     row = models.IntegerField()
     seat = models.IntegerField()
 
@@ -91,22 +108,22 @@ class Ticket(models.Model):
                 f"(row: {self.row}, seat: {self.seat})")
 
     def clean(self) -> None:
-
-        if self.row > self.movie_session.cinema_hall.rows:
+        hall = self.movie_session.cinema_hall
+        if self.row > hall.rows or self.row < 1:
             raise ValidationError(
                 {"row": [
                     (f"row number must be in available range: "
                      f"(1, rows): "
-                     f"(1, {self.movie_session.cinema_hall.rows})")
+                     f"(1, {hall.rows})")
                 ]}
             )
 
-        if self.seat > self.movie_session.cinema_hall.seats_in_row:
+        if self.seat > hall.seats_in_row:
             raise ValidationError(
                 {"seat": [
                     (f"seat number must be in available range: "
                      f"(1, seats_in_row): "
-                     f"(1, {self.movie_session.cinema_hall.seats_in_row})")
+                     f"(1, {hall.seats_in_row})")
                 ]}
             )
 
