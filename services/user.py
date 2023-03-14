@@ -21,19 +21,13 @@ def get_user(user_id: int) -> User:
 
 def update_user(
         user_id: int,
-        username: str = None,
-        password: str = None,
-        email: str = None,
-        first_name: str = None,
-        last_name: str = None
+        **kwargs
 ) -> None:
     user = get_user_model().objects.get(id=user_id)
 
-    arguments = ["username", "password", "email", "first_name", "last_name"]
-    for argument in arguments:
-        if locals()[argument]:
-            if argument == "password":
-                user.set_password(locals()[argument])
-            else:
-                setattr(user, argument, locals()[argument])
+    for argument, value in kwargs.items():
+        if argument == "password":
+            user.set_password(value)
+        else:
+            setattr(user, argument, value)
     user.save()
