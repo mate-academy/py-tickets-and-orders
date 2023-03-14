@@ -1,8 +1,7 @@
 from typing import Optional
 from django.contrib.auth import get_user_model
 from django.db.models import QuerySet
-from django.http import Http404
-
+from django.shortcuts import get_object_or_404
 
 User = get_user_model()
 
@@ -25,11 +24,8 @@ def create_user(
 
 
 def get_user(user_id: int) -> User | None:
-    try:
-        user = User.objects.get(id=user_id)
-        return user
-    except User.DoesNotExist:
-        raise Http404("No User matches the given query.")
+    user = get_object_or_404(User, id=user_id)
+    return user
 
 
 def update_user(
@@ -40,11 +36,7 @@ def update_user(
         first_name: Optional[str] = None,
         last_name: Optional[str] = None
 ) -> User:
-    try:
-        user = User.objects.get(id=user_id)
-    except User.DoesNotExist:
-        raise Http404("No User matches the given query.")
-
+    user = get_object_or_404(User, id=user_id)
     if username is not None:
         user.username = username
 
