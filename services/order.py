@@ -22,5 +22,5 @@ def get_orders(username: str = None) -> QuerySet[Order]:
     user_orders = Order.objects.all()
     if username:
         user = get_user_model().objects.get(username=username)
-        return user_orders.filter(user=user)
+        user_orders = user_orders.filter(user=user)
     return user_orders
