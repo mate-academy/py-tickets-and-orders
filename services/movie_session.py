@@ -5,7 +5,7 @@ from db.models import MovieSession
 
 def get_taken_seats(movie_session_id: int) -> list[dict]:
     movie_session = MovieSession.objects.get(id=movie_session_id)
-    return list(movie_session.ticket_set.all().values("row", "seat"))
+    return list(movie_session.tickets.all().values("row", "seat"))
 
 
 def create_movie_session(
