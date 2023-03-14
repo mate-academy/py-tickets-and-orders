@@ -78,7 +78,7 @@ u = User.objects.create_user(
 )
 ```
 
-4. Use `get_user_model()` insted of `User`, it is the best practice.
+4. Use `get_user_model()` instead of `User`, it is the best practice.
 
 Good example:
 ```python
