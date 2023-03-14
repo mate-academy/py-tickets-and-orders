@@ -21,12 +21,11 @@ def create_order(
 
         for ticket_data in tickets:
             row, seat, movie_session_id = ticket_data.values()
-            movie_session = MovieSession.objects.get(id=movie_session_id)
             Ticket.objects.create(
                 order=new_order,
                 row=row,
                 seat=seat,
-                movie_session=movie_session,
+                movie_session_id=movie_session_id,
             )
         return new_order
 
