@@ -78,7 +78,12 @@ class Ticket(models.Model):
     seat = models.IntegerField()
 
     class Meta:
-        unique_together = ["row", "seat", "movie_session"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["row", "seat", "movie_session"],
+                name="row_seat_movie_session_constraint"
+            )
+        ]
 
     def clean(self) -> None:
         if not (1 <= self.row <= self.movie_session.cinema_hall.rows):
