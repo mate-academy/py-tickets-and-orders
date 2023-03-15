@@ -57,7 +57,10 @@ class MovieSession(models.Model):
     movie = models.ForeignKey(to=Movie, on_delete=models.CASCADE)
 
     def __str__(self) -> str:
-        return f"{self.movie.title} {str(self.show_time)}"
+        return (
+            f"{self.movie.title} "
+            f"{str(self.show_time.strftime('%Y-%m-%d %H:%M:%S'))}"
+        )
 
 
 class Order(models.Model):
@@ -71,7 +74,7 @@ class Order(models.Model):
         ordering = ["-created_at"]
 
     def __str__(self) -> str:
-        return f"{self.created_at}"
+        return f"{self.created_at.strftime('%Y-%m-%d %H:%M:%S')}"
 
 
 class Ticket(models.Model):
@@ -89,8 +92,10 @@ class Ticket(models.Model):
         ]
 
     def __str__(self) -> str:
-        return f"{self.movie_session.__str__()}" \
-               f" (row: {self.row}, seat: {self.seat})"
+        return (
+            f"{self.movie_session.__str__()} "
+            f"(row: {self.row}, seat: {self.seat})"
+        )
 
     def clean(self) -> None:
         if self.seat > self.movie_session.cinema_hall.seats_in_row:
