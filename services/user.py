@@ -13,7 +13,6 @@ def create_user(
         username=username,
         password=password
     )
-    user.set_password(password)
     if email:
         user.email = email
     if first_name:
