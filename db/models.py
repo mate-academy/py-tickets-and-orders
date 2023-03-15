@@ -60,15 +60,16 @@ class MovieSession(models.Model):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             on_delete=models.CASCADE
-                             )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
 
     class Meta:
         ordering = ["-created_at"]
 
     def __str__(self) -> str:
-        return f"{self.created_at.strftime('%Y-%m-%d %H:%M:%S')}"
+        return f"{self.created_at}"
 
 
 class Ticket(models.Model):
@@ -107,15 +108,17 @@ class Ticket(models.Model):
             update_fields: any = None
     ) -> None:
         self.full_clean()
-        return super(Ticket, self).save(force_insert,
-                                        force_update,
-                                        using,
-                                        update_fields)
+        return super(Ticket, self).save(
+            force_insert,
+            force_update,
+            using,
+            update_fields
+        )
 
     def __str__(self) -> str:
         return (
             f"{self.movie_session.movie.title} "
-            f"{self.movie_session.show_time.strftime('%Y-%m-%d %H:%M:%S')} "
+            f"{self.movie_session.show_time} "
             f"(row: {self.row}, seat: {self.seat})"
         )
 
