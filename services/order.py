@@ -15,9 +15,8 @@ def create_order(
         user = get_user_model().objects.get(username=username)
         new_order = Order.objects.create(user=user)
         if date:
-            created_at_format = datetime.strptime(date, "%Y-%m-%d %H:%M")
-            new_order.created_at = created_at_format
-            new_order.save()
+            new_order.created_at = date
+        new_order.save()
 
         for ticket_data in tickets:
             row, seat, movie_session_id = ticket_data.values()
@@ -34,6 +33,6 @@ def get_orders(username: str = None) -> QuerySet:
     queryset = Order.objects.all()
 
     if username:
-        user = get_user_model().objects.get(username=username)
-        return queryset.filter(user=user)
+        queryset = queryset.filter(user__username=username)
+
     return queryset
