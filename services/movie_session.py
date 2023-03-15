@@ -31,14 +31,24 @@ def update_movie_session(
     cinema_hall_id: int = None,
 ) -> None:
     movie_session = MovieSession.objects.get(id=session_id)
+
     if show_time:
         movie_session.show_time = show_time
     if movie_id:
         movie_session.movie_id = movie_id
     if cinema_hall_id:
         movie_session.cinema_hall_id = cinema_hall_id
+
     movie_session.save()
 
 
 def delete_movie_session_by_id(session_id: int) -> None:
     MovieSession.objects.get(id=session_id).delete()
+
+
+def get_taken_seats(movie_session_id: int) -> list[dict]:
+    tickets = get_movie_session_by_id(movie_session_id).tickets.all()
+    taken_seats = [
+        {"row": ticket.row, "seat": ticket.seat} for ticket in tickets
+    ]
+    return taken_seats
