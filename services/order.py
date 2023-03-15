@@ -13,9 +13,13 @@ def create_order(tickets: list[dict], username: str, date: str = None) -> None:
         new_order.created_at = date
         new_order.save()
     for ticket in tickets:
-        ticket["movie_session_id"] = ticket["movie_session"]
-        del ticket["movie_session"]
-        Ticket.objects.create(**ticket, order=new_order)
+        row, seat, movie_session = ticket.values()
+        Ticket.objects.create(
+            row=row,
+            seat=seat,
+            movie_session_id=movie_session,
+            order=new_order
+        )
 
 
 def get_orders(username: str = None) -> QuerySet[Order]:
