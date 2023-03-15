@@ -47,7 +47,7 @@ def update_user(
         first_name: Optional[str] = None,
         last_name: Optional[str] = None
 ) -> None:
-    up_user = get_user_model().objects.get(id=user_id)
+    up_user = get_object_or_404(get_user_model(), id=user_id)
     if username:
         up_user.username = username
 
