@@ -86,7 +86,8 @@ class Ticket(models.Model):
     movie_session = models.ForeignKey(
         MovieSession,
         on_delete=models.CASCADE,
-        related_name="tickets")
+        related_name="tickets"
+    )
     order = models.ForeignKey(
         Order,
         on_delete=models.CASCADE,
@@ -133,7 +134,7 @@ class Ticket(models.Model):
             force_update: bool = False,
             using: str = None,
             update_fields: str = None
-    ) -> models.Model:
+    ) -> None:
         self.full_clean()
         return super(Ticket, self).save(
             force_insert, force_update, using, update_fields
