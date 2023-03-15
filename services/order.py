@@ -23,14 +23,15 @@ def create_order(
 
         for ticket in tickets:
             Ticket.objects.create(
-                movie_session_id=ticket["movie_session"],
+                movie_session_id=ticket.get("movie_session"),
                 order=order,
-                row=ticket["row"],
-                seat=ticket["seat"]
+                row=ticket.get("row"),
+                seat=ticket.get("seat")
             )
 
 
 def get_orders(username: str = None) -> QuerySet:
+    order = Order.objects.all()
     if username:
-        return Order.objects.filter(user__username=username)
-    return Order.objects.all()
+        order = order.filter(user__username=username)
+    return order
