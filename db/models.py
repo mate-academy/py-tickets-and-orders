@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -49,8 +50,16 @@ class CinemaHall(models.Model):
 
 class MovieSession(models.Model):
     show_time = models.DateTimeField()
-    cinema_hall = models.ForeignKey(CinemaHall, on_delete=models.CASCADE)
-    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+    cinema_hall = models.ForeignKey(
+        CinemaHall,
+        on_delete=models.CASCADE,
+        related_name="movie_sessions"
+    )
+    movie = models.ForeignKey(
+        Movie,
+        on_delete=models.CASCADE,
+        related_name="movie_sessions"
+    )
 
     def __str__(self) -> str:
         return f"{self.movie.title} {str(self.show_time)}"
@@ -110,6 +119,6 @@ class Ticket(models.Model):
                 )
             })
 
-    def save(self, *args, **kwargs) -> Ticket:
+    def save(self, *args, **kwargs) -> None:
         self.full_clean()
         return super(Ticket, self).save(*args, **kwargs)
