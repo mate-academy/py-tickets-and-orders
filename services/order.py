@@ -1,4 +1,3 @@
-import datetime
 from typing import Optional
 
 from django.db import transaction
@@ -11,7 +10,7 @@ from db.models import Order, Ticket
 def create_order(
     tickets: list[dict],
     username: str,
-    date: Optional[datetime] = None
+    date: Optional[str] = None
 ) -> None:
     with transaction.atomic():
         user = get_user_model().objects.get(username=username)
