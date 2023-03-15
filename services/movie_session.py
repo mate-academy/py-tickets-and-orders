@@ -2,8 +2,7 @@ from typing import List, Dict
 
 from django.db.models import QuerySet
 
-from db.models import MovieSession
-from db.models import Ticket
+from db.models import MovieSession, Ticket
 
 
 def create_movie_session(
