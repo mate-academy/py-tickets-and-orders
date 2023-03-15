@@ -19,8 +19,7 @@ def create_order(tickets: list[dict], username: str, date: str = None) -> None:
 
 
 def get_orders(username: str = None) -> QuerySet[Order]:
-    user_orders = Order.objects.all()
+    orders = Order.objects.all()
     if username:
-        user = get_user_model().objects.get(username=username)
-        user_orders = user_orders.filter(user=user)
-    return user_orders
+        orders = orders.filter(user__username=username)
+    return orders
