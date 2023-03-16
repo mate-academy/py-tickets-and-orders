@@ -19,13 +19,16 @@ class Actor(models.Model):
 
 
 class Movie(models.Model):
-    title = models.CharField(max_length=255, db_index=True)
+    title = models.CharField(max_length=255)
     description = models.TextField()
     actors = models.ManyToManyField(to=Actor)
     genres = models.ManyToManyField(to=Genre)
 
     def __str__(self) -> str:
         return self.title
+
+    class Meta:
+        indexes = [models.Index(fields=["title"])]
 
 
 class CinemaHall(models.Model):
@@ -82,26 +85,31 @@ class Ticket(models.Model):
         ]
 
     def clean(self) -> None:
-        c_hall_rows = self.movie_session.cinema_hall.rows
-        c_hall_seat = self.movie_session.cinema_hall.seats_in_row
-        if self.row < 1 or self.row > c_hall_rows:
+        if not (1 <= self.row <= self.movie_session.cinema_hall.rows):
             raise ValidationError(
                 {
-                    "row": f"row number must be in available "
-                           f"range: (1, rows): (1, {c_hall_rows})"
+                    "row": f"row number must be in available range: (1, rows):"
+                           f" (1, {self.movie_session.cinema_hall.rows})"
                 }
             )
-        if self.seat < 1 or self.seat > c_hall_seat:
+        if not (1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row):
             raise ValidationError(
                 {
-                    "seat": f"seat number must be in available "
-                            f"range: (1, seats_in_row): (1, {c_hall_seat})"
+                    "seat": f"seat number must be in available range: "
+                            f"(1, seats_in_row): (1, "
+                            f"{self.movie_session.cinema_hall.seats_in_row})"
                 }
             )
 
-    def save(self, *args, **kwargs) -> None:
+    def save(
+        self,
+        force_insert: bool = False,
+        force_update: bool = False,
+        using: str = None,
+        update_fields: str = None
+    ) -> None:
         self.full_clean()
-        super().save(*args, **kwargs)
+        return super(Ticket, self).save(force_insert, force_update)
 
     def __str__(self) -> str:
         return (f"{self.movie_session.movie.title} "
