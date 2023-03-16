@@ -2,6 +2,8 @@ from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
 
+import settings
+
 
 class Genre(models.Model):
     name = models.CharField(max_length=255, unique=True)
@@ -57,13 +59,16 @@ class MovieSession(models.Model):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey("User", on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
 
     class Meta:
         ordering = ["-created_at"]
 
     def __str__(self) -> str:
-        return f"{self.created_at.strftime('%Y-%m-%d %H:%M:%S')}"
+        return f"{self.created_at}"
 
 
 class Ticket(models.Model):
@@ -87,21 +92,25 @@ class Ticket(models.Model):
 
     def clean(self) -> None:
         if not 1 <= self.row <= self.movie_session.cinema_hall.rows:
-            raise ValidationError({"row": [
-                f"row number must be in available range: (1, rows): "
-                f"(1, {self.movie_session.cinema_hall.rows})"]})
+            raise ValidationError(
+                {"row": ["row number must be in available range: "
+                         "(1, rows): "
+                         f"(1, {self.movie_session.cinema_hall.rows})"]}
+            )
         elif not 1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row:
-            raise ValidationError({"seat": [
-                f"seat number must be in available range: "
-                f"(1, seats_in_row): "
-                f"(1, {self.movie_session.cinema_hall.seats_in_row})"]})
+            raise ValidationError(
+                {"seat": ["seat number must be in available range: "
+                          "(1, seats_in_row): (1, "
+                          f"{self.movie_session.cinema_hall.seats_in_row})"]}
+            )
 
     def save(
             self,
             force_insert: bool = False,
             force_update: bool = False,
             using: str = None,
-            update_fields: list = None) -> None:
+            update_fields: list = None
+    ) -> None:
         self.full_clean()
         return super().save(force_insert, force_update, using, update_fields)
 
