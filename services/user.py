@@ -29,20 +29,21 @@ def update_user(user_id: int,
                 password: (str | int) = None,
                 email: str = None,
                 first_name: str = None,
-                last_name: str = None) -> None:
+                last_name: str = None) -> get_user_model:
     user_ = get_user(user_id)
     if password is not None:
         user_.set_password(password)
-        user_.save()
+
     if username is not None:
         user_.username = username
-        user_.save()
+
     if email is not None:
         user_.email = email
-        user_.save()
+
     if first_name is not None:
         user_.first_name = first_name
-        user_.save()
+
     if last_name is not None:
         user_.last_name = last_name
-        user_.save()
+
+    return user_.save()
