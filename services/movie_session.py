@@ -51,11 +51,9 @@ def delete_movie_session_by_id(session_id: int) -> None:
 def get_taken_seats(
         movie_session_id: int
 ) -> list:
-    tickets = Ticket.objects.filter(
-        movie_session_id=movie_session_id
-    )
     taken_seats = [
-        {"row": info.row, "seat": info.seat}
-        for info in tickets
+        taken_seat for taken_seat in Ticket.objects.filter(
+            movie_session_id=movie_session_id
+        ).values("row", "seat")
     ]
     return taken_seats
