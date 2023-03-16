@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.db.models import QuerySet
 
-from db.models import Order, Ticket, User
+from db.models import Order, Ticket
 
 
 @transaction.atomic
@@ -30,5 +30,5 @@ def create_order(
 
 def get_orders(username: str = None) -> QuerySet:
     if username:
-        return User.objects.get(username=username).orders.all()
+        return get_user_model().objects.get(username=username).orders.all()
     return Order.objects.all()
