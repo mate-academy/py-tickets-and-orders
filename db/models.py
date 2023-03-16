@@ -81,7 +81,7 @@ class Ticket(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(fields=["row", "seat", "movie_session"],
-                                    name="unique_row_seat_session")
+                                    name="row_seat_session")
         ]
 
     def __str__(self) -> str:
@@ -90,7 +90,7 @@ class Ticket(models.Model):
                 f"(row: {self.row}, seat: {self.seat})")
 
     def clean(self) -> None:
-        if not 1 < self.row <= self.movie_session.cinema_hall.rows:
+        if not 1 <= self.row <= self.movie_session.cinema_hall.rows:
             raise ValidationError({
                 "row": [
                     "row number must be in available range: "
@@ -98,7 +98,7 @@ class Ticket(models.Model):
                     f"(1, {self.movie_session.cinema_hall.rows})"
                 ]
             })
-        if not 1 < self.seat <= self.movie_session.cinema_hall.seats_in_row:
+        if not 1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row:
             raise ValidationError({
                 "seat": [
                     "seat number must be in "
