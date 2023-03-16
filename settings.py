@@ -27,7 +27,7 @@ INSTALLED_APPS = [
     "db",
     "django.contrib.auth",
     "django.contrib.contenttypes",
-    "django_extensions"
+    "django_extensions",
 
 ]
 
