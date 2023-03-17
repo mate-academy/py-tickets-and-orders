@@ -1,3 +1,4 @@
+import datetime
 from typing import Optional
 
 from django.db import transaction
@@ -7,9 +8,20 @@ from db.models import Order, Ticket, User
 
 
 @transaction.atomic
-def create_order(tickets: list, username: str, date: str = None) -> Order:
+def create_order(
+        tickets: list,
+        username: str,
+        date: Optional[str] = None
+) -> Order:
+
     user = User.objects.get(username=username)
-    order = Order.objects.create(user=user, created_at=date)
+    if date is not None:
+        date = datetime.datetime.strptime(date, "%Y-%m-%d %H:%M")
+        order = Order.objects.create(user=user)
+        order.created_at = date
+        order.save()
+    else:
+        order = Order.objects.create(user=user)
     for ticket_data in tickets:
         Ticket.objects.create(
             order=order,
