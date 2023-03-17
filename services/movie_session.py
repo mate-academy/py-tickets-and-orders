@@ -1,7 +1,7 @@
 from django.db.models import QuerySet
 
 from db.models import MovieSession, Ticket
-from typing import List, Dict
+from typing import List, Dict, Optional
 
 
 def create_movie_session(
@@ -27,9 +27,9 @@ def get_movie_session_by_id(movie_session_id: int) -> MovieSession:
 
 def update_movie_session(
         session_id: int,
-        show_time: str = None,
-        movie_id: int = None,
-        cinema_hall_id: int = None,
+        show_time: Optional[str] = None,
+        movie_id: Optional[str] = None,
+        cinema_hall_id: Optional[str] = None,
 ) -> None:
     movie_session = MovieSession.objects.get(id=session_id)
     if show_time:
