@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.db.models import QuerySet
 
@@ -11,7 +12,7 @@ def create_order(
 ) -> None:
     with transaction.atomic():
         new_order = Order.objects.create(
-            user=User.objects.get(username=username)
+            user=get_user_model().objects.get(username=username)
         )
         if date:
             new_order.created_at = date
