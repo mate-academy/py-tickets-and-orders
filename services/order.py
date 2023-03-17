@@ -10,7 +10,7 @@ def create_order(
         tickets: list[dict],
         username: str,
         date: datetime = None
-) -> None:
+) -> Order:
     order = Order.objects.create(user=get_user_model()
                                  .objects.get(username=username))
 
@@ -29,7 +29,7 @@ def create_order(
     return order
 
 
-def get_orders(username: str = None) -> None:
+def get_orders(username: str = None) -> Order:
     if username:
         return Order.objects.filter(user__username=username)
     return Order.objects.all()
