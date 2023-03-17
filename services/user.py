@@ -8,7 +8,8 @@ def create_user(
         password: str,
         **kwargs
 ) -> User:
-    new_user = get_user_model().objects.create_user(username=username, **kwargs)
+    new_user = get_user_model().objects.create_user(
+        username=username, **kwargs)
     new_user.set_password(password)
     new_user.save()
     return new_user
