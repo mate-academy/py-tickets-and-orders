@@ -71,7 +71,11 @@ class User(AbstractUser):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="orders"    
+    )
 
     class Meta:
         ordering = ["-created_at"]
@@ -81,8 +85,16 @@ class Order(models.Model):
 
 
 class Ticket(models.Model):
-    movie_session = models.ForeignKey(MovieSession, on_delete=models.CASCADE)
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    movie_session = models.ForeignKey(
+        MovieSession,
+        on_delete=models.CASCADE,
+        related_name="tickets"
+    )
+    order = models.ForeignKey(
+        Order,
+        on_delete=models.CASCADE,
+        related_name="tickets"    
+    )
     row = models.IntegerField()
     seat = models.IntegerField()
 
@@ -121,4 +133,4 @@ class Ticket(models.Model):
 
     def save(self, *args, **kwargs) -> None:
         self.full_clean()
-        return super(Ticket, self).save(*args, **kwargs)
+        return super().save(*args, **kwargs)
