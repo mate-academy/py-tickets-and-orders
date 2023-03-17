@@ -1,5 +1,5 @@
 import datetime
-from typing import Optional
+from typing import Optional, List
 
 from django.db import transaction
 from django.db.models import QuerySet
@@ -9,7 +9,7 @@ from db.models import Order, Ticket, User
 
 @transaction.atomic
 def create_order(
-        tickets: list,
+        tickets: List[dict],
         username: str,
         date: Optional[str] = None
 ) -> Order:
