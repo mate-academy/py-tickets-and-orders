@@ -1,5 +1,3 @@
-from typing import NoReturn
-
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
@@ -81,7 +79,7 @@ class Ticket(models.Model):
                 f" {self.movie_session.show_time}"
                 f" (row: {self.row}, seat: {self.seat})")
 
-    def clean(self) -> NoReturn:
+    def clean(self) -> None:
         cinema_hall = self.movie_session.cinema_hall
         if self.row > cinema_hall.rows:
             error_message = (
