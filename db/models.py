@@ -74,7 +74,7 @@ class Order(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name="orders"    
+        related_name="orders"
     )
 
     class Meta:
@@ -93,7 +93,7 @@ class Ticket(models.Model):
     order = models.ForeignKey(
         Order,
         on_delete=models.CASCADE,
-        related_name="tickets"    
+        related_name="tickets"
     )
     row = models.IntegerField()
     seat = models.IntegerField()
