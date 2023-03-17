@@ -32,7 +32,7 @@ def update_user(
     first_name: str = None,
     last_name: str = None,
 ) -> None:
-    user = User.objects.get(id=user_id)
+    user = get_user_model().objects.get(id=user_id)
 
     if username:
         user.username = username
@@ -49,4 +49,4 @@ def update_user(
 
 
 def get_user(user_id: int) -> User:
-    return User.objects.get(id=user_id)
+    return get_user_model().objects.get(id=user_id)
