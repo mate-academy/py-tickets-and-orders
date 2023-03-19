@@ -14,6 +14,7 @@ DATABASES = {
         "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
     }
 }
+AUTH_USER_MODEL = "db.User"
 
 LANGUAGE_CODE = "en-us"
 
@@ -24,5 +25,7 @@ USE_I18N = True
 USE_TZ = False
 
 INSTALLED_APPS = [
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
     "db",
 ]
