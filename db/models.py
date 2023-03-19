@@ -1,3 +1,5 @@
+from settings import AUTH_USER_MODEL
+
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -59,10 +61,13 @@ class User(AbstractUser):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        AUTH_USER_MODEL,
+        related_name="orders",
+        on_delete=models.CASCADE)
 
     class Meta:
-        ordering = ["-user"]
+        ordering = ["-created_at"]
 
     def __str__(self) -> str:
         return f"{self.created_at}"
