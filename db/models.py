@@ -25,11 +25,11 @@ class Movie(models.Model):
     description = models.TextField()
     actors = models.ManyToManyField(
         to=Actor,
-        related_name="actors"
+        related_name="movies"
     )
     genres = models.ManyToManyField(
         to=Genre,
-        related_name="genres"
+        related_name="movies"
     )
 
     def __str__(self) -> str:
@@ -54,12 +54,12 @@ class MovieSession(models.Model):
     cinema_hall = models.ForeignKey(
         to=CinemaHall,
         on_delete=models.CASCADE,
-        related_name="cinema_hall"
+        related_name="movie_session"
     )
     movie = models.ForeignKey(
         to=Movie,
         on_delete=models.CASCADE,
-        related_name="movie"
+        related_name="movie_session"
     )
 
     def __str__(self) -> str:
@@ -71,7 +71,7 @@ class Order(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name="user"
+        related_name="orders"
     )
 
     class Meta:
@@ -85,12 +85,12 @@ class Ticket(models.Model):
     movie_session = models.ForeignKey(
         MovieSession,
         on_delete=models.CASCADE,
-        related_name="movie_session"
+        related_name="tickets"
     )
     order = models.ForeignKey(
         Order,
         on_delete=models.CASCADE,
-        related_name="order"
+        related_name="tickets"
     )
     row = models.IntegerField()
     seat = models.IntegerField()
