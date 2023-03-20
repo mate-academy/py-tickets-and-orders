@@ -1,6 +1,4 @@
-from django.db.models import F
-
-from db.models import MovieSession
+from db.models import MovieSession, Ticket
 
 
 def create_movie_session(
@@ -46,8 +44,7 @@ def delete_movie_session_by_id(session_id: int) -> None:
 
 def get_taken_seats(movie_session_id: int) -> list[dict]:
     return list(
-        MovieSession.objects
-        .filter(id=movie_session_id)
-        .annotate(row=F("ticket__row"), seat=F("ticket__seat"))
+        Ticket.objects
+        .filter(movie_session_id=movie_session_id)
         .values("row", "seat")
     )
