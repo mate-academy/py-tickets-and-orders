@@ -20,11 +20,10 @@ def create_user(
     if last_name:
         user.last_name = last_name
     user.save()
-    return user
 
 
 def get_user(user_id: int) -> User:
-    return User.objects.get(id=user_id)
+    return get_user_model().objects.get(id=user_id)
 
 
 def update_user(
@@ -47,4 +46,3 @@ def update_user(
     if last_name:
         user.last_name = last_name
     user.save()
-    return user
