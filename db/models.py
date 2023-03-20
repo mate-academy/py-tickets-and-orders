@@ -60,12 +60,12 @@ class MovieSession(models.Model):
     cinema_hall = models.ForeignKey(
         to=CinemaHall,
         on_delete=models.CASCADE,
-        related_name="cinema_hall"
+        related_name="movie_sessions"
     )
     movie = models.ForeignKey(
         to=Movie,
         on_delete=models.CASCADE,
-        related_name="movie"
+        related_name="movie_sessions"
     )
 
     def __str__(self) -> str:
@@ -77,7 +77,7 @@ class Order(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name="user"
+        related_name="orders"
     )
 
     class Meta:
@@ -91,12 +91,12 @@ class Ticket(models.Model):
     movie_session = models.ForeignKey(
         MovieSession,
         on_delete=models.CASCADE,
-        related_name="movie_session"
+        related_name="tickets"
     )
     order = models.ForeignKey(
         Order,
         on_delete=models.CASCADE,
-        related_name="order"
+        related_name="tickets"
     )
     row = models.IntegerField()
     seat = models.IntegerField()
@@ -113,17 +113,18 @@ class Ticket(models.Model):
                 f"(row: {self.row}, seat: {self.seat})")
 
     def clean(self) -> None:
-        if not (1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row):
+        cinema_hall = self.movie_session.cinema_hall
+        if not (1 <= self.seat <= cinema_hall.seats_in_row):
             raise ValidationError({
                 "seat": f"seat number must be in "
                         f"available range: (1, seats_in_row): "
-                        f"(1, {self.movie_session.cinema_hall.seats_in_row})"
+                        f"(1, {cinema_hall.seats_in_row})"
             })
-        if not (1 <= self.row <= self.movie_session.cinema_hall.rows):
+        if not (1 <= self.row <= cinema_hall.rows):
             raise ValidationError({
                 "row": f"row number must be in "
                        f"available range: (1, rows): "
-                       f"(1, {self.movie_session.cinema_hall.rows})"
+                       f"(1, {cinema_hall.rows})"
             })
 
     def save(

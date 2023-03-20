@@ -5,10 +5,12 @@ from db.models import User
 
 def create_user(
         username: str,
+        password: str,
         **kwargs
 ) -> User:
     new_user = get_user_model().objects.create_user(
         username=username,
+        password=password,
         **kwargs
     )
     return new_user
