@@ -10,8 +10,7 @@ def create_user(username: str,
         username=username,
         password=password,
     )
-    if kwargs:
-        get_user_model().objects.filter(username=username).update(**kwargs)
+    get_user_model().objects.filter(username=username).update(**kwargs)
 
 
 def get_user(user_id: int) -> User:

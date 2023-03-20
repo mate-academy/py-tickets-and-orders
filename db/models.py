@@ -61,24 +61,32 @@ class User(AbstractUser):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+    user = models.ForeignKey(to=settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE,
                              related_name="orders")
 
-    def __str__(self) -> str:
-        return str(self.created_at)
-
     class Meta:
         ordering = ["-created_at"]
+
+    def __str__(self) -> str:
+        return str(self.created_at)
 
 
 class Ticket(models.Model):
     movie_session = models.ForeignKey(to=MovieSession,
                                       on_delete=models.CASCADE,
                                       related_name="tickets")
-    order = models.ForeignKey(to=Order, on_delete=models.CASCADE)
+    order = models.ForeignKey(to=Order,
+                              on_delete=models.CASCADE,
+                              related_name="tickets")
     row = models.IntegerField()
     seat = models.IntegerField()
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(fields=["row", "seat", "movie_session"],
+                             name="row_seat_session_unique")
+        ]
 
     def __str__(self) -> str:
         return (
@@ -87,28 +95,23 @@ class Ticket(models.Model):
             f"(row: {self.row}, seat: {self.seat})"
         )
 
-    class Meta:
-        constraints = [
-            UniqueConstraint(fields=["row", "seat", "movie_session"],
-                             name="row_seat_session_unique")
-        ]
-
     def clean(self) -> None:
-        if self.row > self.movie_session.cinema_hall.rows:
+        cinema_hall = self.movie_session.cinema_hall
+        if self.row > cinema_hall.rows:
             raise ValidationError(
                 {
                     "row": [f"row number must be in available range: "
                             f"(1, rows): "
-                            f"(1, {self.movie_session.cinema_hall.rows})"]
+                            f"(1, {cinema_hall.rows})"]
                 }
             )
-        if self.seat > self.movie_session.cinema_hall.seats_in_row:
+        if self.seat > cinema_hall.seats_in_row:
             raise ValidationError(
                 {
                     "seat": [
                         f"seat number must be in available range: "
                         f"(1, seats_in_row): "
-                        f"(1, {self.movie_session.cinema_hall.seats_in_row})"
+                        f"(1, {cinema_hall.seats_in_row})"
                     ]
                 }
             )
