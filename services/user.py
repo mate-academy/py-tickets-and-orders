@@ -23,7 +23,7 @@ def create_user(
     new_user.save()
 
 
-def get_user(user_id: int) -> User.objects:
+def get_user(user_id: int) -> User:
     return get_user_model().objects.get(id=user_id)
 
 
@@ -48,3 +48,5 @@ def update_user(
     if password:
         user.set_password(password)
     user.save()
+
+get_user(user_id=1)
