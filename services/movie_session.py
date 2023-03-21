@@ -1,6 +1,7 @@
 from django.db.models import QuerySet
 
-from db.models import MovieSession
+from db.models import MovieSession, Ticket
+from django.shortcuts import get_object_or_404
 
 
 def create_movie_session(
@@ -42,3 +43,15 @@ def update_movie_session(
 
 def delete_movie_session_by_id(session_id: int) -> None:
     MovieSession.objects.get(id=session_id).delete()
+
+
+def get_taken_seats(movie_session_id: int) -> list[dict[str, int]]:
+    movie_session = get_object_or_404(MovieSession, id=movie_session_id)
+    tickets = Ticket.objects.filter(movie_session=movie_session)
+    return [
+        {
+            "row": ticket.row,
+            "seat": ticket.seat
+        }
+        for ticket in tickets
+    ]
