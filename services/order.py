@@ -5,12 +5,15 @@ from db.models import Order, User, Ticket
 
 
 @transaction.atomic
-def create_order(tickets: list, username: str, date: str = None) -> Order:
+def create_order(tickets: list,
+                 username: str,
+                 date: str = None) -> None:
     order = Order.objects.create(user=User.objects.get(username=username))
 
     if date:
         order.created_at = date
-        order.save()
+
+    order.save()
 
     for ticket in tickets:
         Ticket.objects.create(
@@ -20,11 +23,8 @@ def create_order(tickets: list, username: str, date: str = None) -> Order:
             order=order
         )
 
-    return order
-
 
 def get_orders(username: str = None) -> QuerySet:
-    with transaction.atomic():
-        if username is not None:
-            return Order.objects.filter(user__username=username)
+    if username is not None:
+        return Order.objects.filter(user__username=username)
     return Order.objects.all()

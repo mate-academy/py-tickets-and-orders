@@ -54,10 +54,10 @@ class MovieSession(models.Model):
     show_time = models.DateTimeField()
     cinema_hall = models.ForeignKey(to=CinemaHall,
                                     on_delete=models.CASCADE,
-                                    related_name="movies")
+                                    related_name="movie_sessions")
     movie = models.ForeignKey(to=Movie,
                               on_delete=models.CASCADE,
-                              related_name="movies")
+                              related_name="movie_sessions")
 
     def __str__(self) -> str:
         return f"{self.movie.title} {str(self.show_time)}"
@@ -67,25 +67,32 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE,
-                             related_name="customer")
-
-    def __str__(self) -> str:
-        return str(self.created_at)
+                             related_name="orders")
 
     class Meta:
         ordering = ["-created_at"]
 
+    def __str__(self) -> str:
+        return str(self.created_at)
+
 
 class Ticket(models.Model):
-    movie_session = models.ForeignKey(MovieSession, on_delete=models.CASCADE)
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    movie_session = models.ForeignKey(MovieSession,
+                                      on_delete=models.CASCADE,
+                                      related_name="tickets")
+    order = models.ForeignKey(Order,
+                              on_delete=models.CASCADE,
+                              related_name="tickets")
     row = models.IntegerField()
     seat = models.IntegerField()
 
+    class Meta:
+        unique_together = ["row", "seat", "movie_session"]
+
     def __str__(self) -> str:
-        return f"{self.movie_session.movie.title}" \
-               f" {self.movie_session.show_time}" \
-               f" (row: {self.row}, seat: {self.seat})"
+        return (f"{self.movie_session.movie.title}"
+                f" {self.movie_session.show_time}"
+                f" (row: {self.row}, seat: {self.seat})")
 
     def clean(self) -> None:
         if not (1 <= self.row <= self.movie_session.cinema_hall.rows):
@@ -99,9 +106,6 @@ class Ticket(models.Model):
                 {
                     "seat": ["seat number must be in available range:"
                              " (1, seats_in_row): (1, 12)"]})
-
-    class Meta:
-        unique_together = ["row", "seat", "movie_session"]
 
     def save(self,
              force_insert: Any = False,
