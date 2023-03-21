@@ -17,7 +17,7 @@ def get_user(user_id: int) -> User:
     return get_user_model().objects.get(id=user_id)
 
 
-def update_user(user_id: int, password: str = None, **kwargs) -> User:
+def update_user(user_id: int, password: str = None, **kwargs) -> None:
     user_to_update = get_user_model().objects.filter(id=user_id)
     if kwargs:
         user_to_update.update(**kwargs)
@@ -25,4 +25,3 @@ def update_user(user_id: int, password: str = None, **kwargs) -> User:
         user_to_update = user_to_update.get(id=user_id)
         user_to_update.set_password(password)
         user_to_update.save()
-    return user_to_update
