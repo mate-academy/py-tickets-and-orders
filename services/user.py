@@ -24,5 +24,5 @@ def get_user(user_id: int) -> User:
 def update_user(user_id: int, password: str = None, **kwargs) -> None:
     fields_to_update = kwargs.copy()
     if password:
-        fields_to_update['password'] = make_password(password)
+        fields_to_update["password"] = make_password(password)
     get_user_model().objects.filter(id=user_id).update(**fields_to_update)
