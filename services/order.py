@@ -5,13 +5,12 @@ from typing import Optional
 from django.db import transaction
 from django.db.models import QuerySet
 
-
 from db.models import Order, Ticket, User, MovieSession
 
 
 @transaction.atomic
 def create_order(
-    tickets: dict,
+        tickets: dict,
         username: str,
         date: Optional[datetime.datetime] = None
 ) -> Order:
