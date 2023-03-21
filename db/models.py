@@ -64,7 +64,8 @@ class Order(models.Model):
     user = models.ForeignKey(
         AUTH_USER_MODEL,
         related_name="orders",
-        on_delete=models.CASCADE)
+        on_delete=models.CASCADE
+    )
 
     class Meta:
         ordering = ["-created_at"]

@@ -9,7 +9,7 @@ def create_user(
         email: str = None,
         first_name: str = None,
         last_name: str = None
-) -> User:
+):
     user = get_user_model().objects.create_user(
         username=username, password=password
     )
@@ -33,7 +33,7 @@ def update_user(
         email: str = None,
         first_name: str = None,
         last_name: str = None
-) -> User:
+):
     user = get_user_model().objects.get(id=user_id)
     if username:
         user.username = username
