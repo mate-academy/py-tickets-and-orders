@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.contrib.auth.hashers import make_password
 
 from db.models import User
 
@@ -21,8 +22,7 @@ def get_user(user_id: int) -> User:
 
 
 def update_user(user_id: int, password: str = None, **kwargs) -> None:
-    user = get_user(user_id)
+    fields_to_update = kwargs.copy()
     if password:
-        user.set_password(password)
-        user.save()
-    get_user_model().objects.filter(id=user_id).update(**kwargs)
+        fields_to_update['password'] = make_password(password)
+    get_user_model().objects.filter(id=user_id).update(**fields_to_update)
