@@ -3,6 +3,7 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import AbstractUser
 from django.db.models import UniqueConstraint
+from django.conf import settings
 
 
 class Genre(models.Model):
@@ -23,8 +24,8 @@ class Actor(models.Model):
 class Movie(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
-    actors = models.ManyToManyField(to=Actor)
-    genres = models.ManyToManyField(to=Genre)
+    actors = models.ManyToManyField(to=Actor, related_name="movies")
+    genres = models.ManyToManyField(to=Genre, related_name="movies")
 
     class Meta:
         indexes = [
@@ -50,8 +51,16 @@ class CinemaHall(models.Model):
 
 class MovieSession(models.Model):
     show_time = models.DateTimeField()
-    cinema_hall = models.ForeignKey(to=CinemaHall, on_delete=models.CASCADE)
-    movie = models.ForeignKey(to=Movie, on_delete=models.CASCADE)
+    cinema_hall = models.ForeignKey(
+        to=CinemaHall,
+        on_delete=models.CASCADE,
+        related_name="movie_sessions"
+    )
+    movie = models.ForeignKey(
+        to=Movie,
+        on_delete=models.CASCADE,
+        related_name="movie_sessions"
+    )
 
     def __str__(self) -> str:
         return f"{self.movie.title} {str(self.show_time)}"
@@ -63,7 +72,11 @@ class User(AbstractUser):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="orders"
+    )
 
     class Meta:
         ordering = ["-created_at"]
@@ -75,9 +88,14 @@ class Order(models.Model):
 class Ticket(models.Model):
     movie_session = models.ForeignKey(
         to=MovieSession,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name="tickets"
     )
-    order = models.ForeignKey(to=Order, on_delete=models.CASCADE)
+    order = models.ForeignKey(
+        to=Order,
+        on_delete=models.CASCADE,
+        related_name="tickets"
+    )
     row = models.IntegerField(help_text="the row of the seat")
     seat = models.IntegerField(help_text="number of the seat in row")
 
