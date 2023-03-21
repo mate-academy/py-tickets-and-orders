@@ -130,7 +130,12 @@ class Ticket(models.Model):
     ) -> "Ticket":
         self.full_clean()
 
-        return super(Ticket, self).save()
+        return super(Ticket, self).save(
+            force_insert,
+            force_update,
+            using,
+            update_fields
+        )
 
     def __str__(self) -> str:
         return f"{self.movie_session} (row: {self.row}, seat: {self.seat})"
