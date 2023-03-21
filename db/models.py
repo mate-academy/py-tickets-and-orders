@@ -58,7 +58,7 @@ class MovieSession(models.Model):
     movie = models.ForeignKey(to=Movie, on_delete=models.CASCADE)
 
     def __str__(self) -> str:
-        return f"{self.movie.title} {str(self.show_time)}"
+        return f"{self.movie.title} {self.show_time}"
 
 
 class Order(models.Model):
@@ -137,7 +137,7 @@ class Ticket(models.Model):
     def __str__(self) -> str:
         return (
             f"{self.movie_session.movie.title} "
-            f"{str(self.movie_session.show_time)} "
+            f"{self.movie_session.show_time} "
             f"(row: {self.row}, seat: {self.seat})"
         )
 
