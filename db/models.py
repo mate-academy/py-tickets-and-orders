@@ -51,7 +51,9 @@ class CinemaHall(models.Model):
 class MovieSession(models.Model):
     show_time = models.DateTimeField()
     cinema_hall = models.ForeignKey(
-        to=CinemaHall, on_delete=models.CASCADE
+        to=CinemaHall,
+        related_name="movie_sessions",
+        on_delete=models.CASCADE,
     )
     movie = models.ForeignKey(to=Movie, on_delete=models.CASCADE)
 
@@ -62,7 +64,9 @@ class MovieSession(models.Model):
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE
+        settings.AUTH_USER_MODEL,
+        related_name="orders",
+        on_delete=models.CASCADE,
     )
 
     def __str__(self) -> str:
@@ -74,9 +78,11 @@ class Order(models.Model):
 
 class Ticket(models.Model):
     movie_session = models.ForeignKey(
-        MovieSession, on_delete=models.CASCADE
+        MovieSession, related_name="tickets", on_delete=models.CASCADE
     )
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    order = models.ForeignKey(
+        Order, related_name="tickets", on_delete=models.CASCADE
+    )
     row = models.IntegerField()
     seat = models.IntegerField()
 
@@ -93,24 +99,25 @@ class Ticket(models.Model):
             raise ValidationError(
                 {
                     "row": [
-                        (f"row number must be in available range: "
-                         f"(1, rows): "
-                         f"(1, {self.movie_session.cinema_hall.rows})")
+                        (
+                            f"row number must be in available range: "
+                            f"(1, rows): "
+                            f"(1, {self.movie_session.cinema_hall.rows})"
+                        )
                     ]
                 }
             )
 
-        if (
-            not 1
-            <= self.seat
-            <= self.movie_session.cinema_hall.seats_in_row
-        ):
+        if not 1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row:
             raise ValidationError(
                 {
                     "seat": [
-                        (f"seat number must be in available range: "
-                         f"(1, seats_in_row): "
-                         f"(1, {self.movie_session.cinema_hall.seats_in_row})")
+                        (
+                            f"seat number must be in available range: "
+                            f"(1, seats_in_row): "
+                            f"(1, "
+                            f"{self.movie_session.cinema_hall.seats_in_row})"
+                        )
                     ]
                 }
             )
@@ -128,9 +135,11 @@ class Ticket(models.Model):
         )
 
     def __str__(self) -> str:
-        return (f"{self.movie_session.movie.title} "
-                f"{str(self.movie_session.show_time)} "
-                f"(row: {self.row}, seat: {self.seat})")
+        return (
+            f"{self.movie_session.movie.title} "
+            f"{str(self.movie_session.show_time)} "
+            f"(row: {self.row}, seat: {self.seat})"
+        )
 
 
 class User(AbstractUser):
