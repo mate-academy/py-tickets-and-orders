@@ -42,11 +42,11 @@ def update_movie_session(
     cinema_hall_id: Optional[int] = None,
 ) -> None:
     movie_session = MovieSession.objects.get(id=session_id)
-    if show_time:
+    if show_time is not None:
         movie_session.show_time = show_time
-    if movie_id:
+    if movie_id is not None:
         movie_session.movie_id = movie_id
-    if cinema_hall_id:
+    if cinema_hall_id is not None:
         movie_session.cinema_hall_id = cinema_hall_id
     movie_session.save()
 

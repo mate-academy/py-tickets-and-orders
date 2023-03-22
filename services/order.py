@@ -13,7 +13,7 @@ def create_order(
     with transaction.atomic():
         order = Order(user=User.objects.get(username=username))
         order.save()
-        if date:
+        if date is not None:
             order.created_at = datetime.strptime(date, "%Y-%m-%d %H:%M")
             order.save()
 
@@ -27,6 +27,6 @@ def create_order(
 
 
 def get_orders(username: str = None) -> QuerySet:
-    if username:
+    if username is not None:
         return Order.objects.filter(user__username=username)
     return Order.objects.all()
