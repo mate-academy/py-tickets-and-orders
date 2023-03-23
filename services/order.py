@@ -7,7 +7,6 @@ from django.contrib.auth import get_user_model
 from db.models import Order, Ticket
 
 
-
 def create_order(
         tickets: list[dict],
         username: str,
