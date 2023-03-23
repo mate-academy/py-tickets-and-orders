@@ -1,9 +1,10 @@
 from typing import Any
+
 from django.db import models
+from django.conf import settings
+from django.db.models import UniqueConstraint
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import AbstractUser
-from django.db.models import UniqueConstraint
-from django.conf import settings
 
 
 class Genre(models.Model):
@@ -123,7 +124,8 @@ class Ticket(models.Model):
             })
 
     def save(
-            self, force_insert: bool = False,
+            self,
+            force_insert: bool = False,
             force_update: bool = False,
             using: Any = None,
             update_fields: Any = None
