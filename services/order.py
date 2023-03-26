@@ -1,7 +1,8 @@
 from django.db import transaction
 from django.db.models import QuerySet
 from typing import List, Dict, Optional
-from db.models import Order, Ticket, MovieSession, User
+from db.models import Order, Ticket, MovieSession
+from services.user import User
 
 
 @transaction.atomic
