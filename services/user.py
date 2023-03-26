@@ -5,11 +5,11 @@ User = get_user_model()
 
 
 def create_user(
-    username: str,
-    password: str,
-    email: str = None,
-    first_name: str = None,
-    last_name: str = None
+    username: Optional[str],
+    password: Optional[str],
+    email: Optional[str] = None,
+    first_name: Optional[str] = None,
+    last_name: Optional[str] = None
 ) -> User:
     user = User(username=username)
     user.set_password(password)
