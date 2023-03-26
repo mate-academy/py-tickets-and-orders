@@ -3,8 +3,6 @@ from typing import Optional
 from django.contrib.auth import get_user_model
 from django.db.models import QuerySet
 
-from db.models import User
-
 
 def create_user(
         username: str,
@@ -33,7 +31,7 @@ def create_user(
 def get_user(
         user_id: int
 ) -> QuerySet:
-    return User.objects.get(id=user_id)
+    return get_user_model().objects.get(id=user_id)
 
 
 def update_user(
