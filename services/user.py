@@ -11,11 +11,11 @@ def create_user(
     last_name: Optional[str] = None
 ) -> None:
     current_user = {"username": username, "password": password}
-    if email:
+    if email is not None:
         current_user["email"] = email
-    if first_name:
+    if first_name is not None:
         current_user["first_name"] = first_name
-    if last_name:
+    if last_name is not None:
         current_user["last_name"] = last_name
 
     get_user_model().objects.create_user(**current_user)
@@ -36,15 +36,15 @@ def update_user(
     user: User = get_user_model()
     current_user = user.objects.filter(id=user_id)
 
-    if username:
+    if username is not None:
         current_user.update(username=username)
-    if password:
+    if password is not None:
         current_user_for_password = get_user(user_id)
         current_user_for_password.set_password(password)
         current_user_for_password.save()
-    if email:
+    if email is not None:
         current_user.update(email=email)
-    if first_name:
+    if first_name is not None:
         current_user.update(first_name=first_name)
-    if last_name:
+    if last_name is not None:
         current_user.update(last_name=last_name)
