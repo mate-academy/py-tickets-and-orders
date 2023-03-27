@@ -36,6 +36,5 @@ def create_order(
 def get_orders(username: Optional[str] = None) -> QuerySet:
     query_set = Order.objects.all()
     if username:
-        user = get_user_model().objects.get(username=username)
-        query_set = query_set.filter(user_id=user.id)
+        query_set = query_set.filter(user__username=username)
     return query_set
