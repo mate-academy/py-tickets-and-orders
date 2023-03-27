@@ -3,6 +3,8 @@ from typing import Optional
 from django.contrib.auth import get_user_model
 from django.db.models import QuerySet
 
+from db.models import User
+
 
 def create_user(
         username: str,
@@ -16,14 +18,7 @@ def create_user(
         password=password
     )
 
-    if email:
-        user.email = email
-
-    if first_name:
-        user.first_name = first_name
-
-    if last_name:
-        user.last_name = last_name
+    data_check(user, email, first_name, last_name)
 
     user.save()
 
@@ -49,11 +44,21 @@ def update_user(
         user.username = username
     if password:
         user.set_password(password)
-    if email:
-        user.email = email
-    if first_name:
-        user.first_name = first_name
-    if username:
-        user.last_name = last_name
+
+    data_check(user, email, first_name, last_name)
 
     user.save()
+
+
+def data_check(user_model: User,
+               email: Optional[str] = None,
+               first_name: Optional[str] = None,
+               last_name: Optional[str] = None) -> None:
+    if email:
+        user_model.email = email
+
+    if first_name:
+        user_model.first_name = first_name
+
+    if last_name:
+        user_model.last_name = last_name

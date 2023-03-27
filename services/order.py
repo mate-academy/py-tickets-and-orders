@@ -20,7 +20,7 @@ def create_order(
         user=user
     )
 
-    if date:
+    if date is not None:
         new_order.created_at = date
         new_order.save()
 
