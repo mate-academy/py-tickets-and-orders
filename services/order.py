@@ -1,4 +1,6 @@
 from datetime import datetime
+from typing import Optional
+
 from django.db.models import QuerySet
 from django.db import transaction
 from db.models import Order, Ticket, MovieSession
@@ -6,7 +8,9 @@ from django.contrib.auth import get_user_model
 
 
 def create_order(
-        tickets: list, username: str, date: datetime = None
+        tickets: list,
+        username: str,
+        date: Optional[str] = None,
 ) -> None:
     with transaction.atomic():
         order = Order.objects.create(
