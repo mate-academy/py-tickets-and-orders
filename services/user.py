@@ -8,8 +8,8 @@ def create_user(
         username: str,
         password: str,
         email: Optional[str] = None,
-        first_name: Optional[str] = None,
-        last_name: Optional[str] = None,
+        first_name: Optional[str] = "",
+        last_name: Optional[str] = "",
 ) -> None:
     get_user_model().objects.create_user(
         username=username,
