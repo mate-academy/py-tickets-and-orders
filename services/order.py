@@ -1,6 +1,7 @@
 import datetime
 from typing import Optional
 
+
 from django.db import transaction
 from django.db.models import QuerySet
 
@@ -14,11 +15,14 @@ def create_order(
         date: Optional[datetime.datetime] = None
 ) -> None:
     user = User.objects.get(username=username)
-    order = Order.objects.create(user=user)
 
-    if date:
+    if date is not None:
+        date = datetime.datetime.strptime(date, "%Y-%m-%d %H:%M")
+        order = Order.objects.create(user=user)
         order.created_at = date
         order.save()
+    else:
+        order = Order.objects.create(user=user)
 
     for ticket in tickets:
         Ticket.objects.create(
@@ -29,7 +33,7 @@ def create_order(
         )
 
 
-def get_orders(username: Optional[str] = None) -> Order | QuerySet[Order]:
+def get_orders(username: Optional[str] = None) -> QuerySet:
     if username:
         return Order.objects.filter(user__username=username)
     return Order.objects.all()
