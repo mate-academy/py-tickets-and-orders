@@ -1,6 +1,5 @@
-from typing import List
+from typing import Optional, List
 
-import init_django_orm  # noqa: F401 щоб імпортувати,
 from django.db import transaction
 from django.db.models import QuerySet
 from django.contrib.auth import get_user_model
@@ -10,7 +9,7 @@ from db.models import Order, Ticket
 def create_order(
     tickets: List[dict],
     username: str,
-    date: str = None,
+    date: Optional[str] = None,
 ) -> Ticket:
 
     with transaction.atomic():
@@ -31,10 +30,9 @@ def create_order(
     return new_ticket
 
 
-def get_orders(username: str = None) -> QuerySet:
+def get_orders(username: Optional[str] = None) -> QuerySet:
     queryset = Order.objects.all()
     if username:
-        find_user = get_user_model().objects.get(username=username)
-        queryset = queryset.filter(user_id=find_user.id)
+        queryset = queryset.filter(user__username=username)
 
     return queryset

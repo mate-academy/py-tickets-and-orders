@@ -1,5 +1,5 @@
-from typing import List
-import init_django_orm  # noqa: F401
+from typing import Optional, List
+
 from django.db.models import QuerySet
 
 from db.models import MovieSession, Ticket
@@ -15,7 +15,7 @@ def create_movie_session(
     )
 
 
-def get_movies_sessions(session_date: str = None) -> QuerySet:
+def get_movies_sessions(session_date: Optional[str] = None) -> QuerySet:
     queryset = MovieSession.objects.all()
     if session_date:
         queryset = queryset.filter(show_time__date=session_date)
@@ -28,9 +28,9 @@ def get_movie_session_by_id(movie_session_id: int) -> MovieSession:
 
 def update_movie_session(
     session_id: int,
-    show_time: str = None,
-    movie_id: int = None,
-    cinema_hall_id: int = None,
+    show_time: Optional[str] = None,
+    movie_id: Optional[int] = None,
+    cinema_hall_id: Optional[int] = None,
 ) -> None:
     movie_session = MovieSession.objects.get(id=session_id)
     if show_time:
@@ -48,7 +48,7 @@ def delete_movie_session_by_id(session_id: int) -> None:
 
 def get_taken_seats(movie_session_id: int) -> List[dict]:
     queryset = Ticket.objects.filter(movie_session_id=movie_session_id)
-    print(queryset)
+
     list_of_order = []
     for ticket in queryset:
         list_of_order.append(
