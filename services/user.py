@@ -2,16 +2,10 @@ from db.models import User
 
 
 def save_user_data(user: User, arguments: dict) -> None:
-    for key, value in arguments.items():
-        if key == "email":
-            user.email = value
-        if key == "first_name":
-            user.first_name = value
-        if key == "last_name":
-            user.last_name = value
-        if key == "username":
-            user.username = value
-        if key == "password":
+    for field, value in arguments.items():
+        if field in ["email", "first_name", "last_name", "username"]:
+            setattr(user, field, value)
+        elif field == "password":
             user.set_password(value)
 
         user.save()
