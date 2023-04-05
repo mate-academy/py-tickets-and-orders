@@ -119,7 +119,7 @@ class Ticket(models.Model):
             self,
             force_insert: bool = False,
             force_update: bool = False,
-            using: str = None,
+            using: Optional[str] = None,
             update_fields: Optional[list[str]] = None
     ) -> None:
         self.full_clean()

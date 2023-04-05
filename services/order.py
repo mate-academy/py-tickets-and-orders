@@ -8,32 +8,32 @@ from django.shortcuts import get_object_or_404
 from db.models import Order, User, Ticket, MovieSession
 
 
+@transaction.atomic
 def create_order(
         tickets: list[dict[str, int]],
         username: str,
         date: Optional[datetime.date] = None
 ) -> Order:
-    with transaction.atomic():
-        user = get_object_or_404(User, username=username)
-        order = Order.objects.create(user=user)
+    user = get_object_or_404(User, username=username)
+    order = Order.objects.create(user=user)
 
-        if date:
-            order.created_at = date
+    if date:
+        order.created_at = date
 
-        for ticket in tickets:
-            Ticket.objects.create(
-                row=ticket.get("row"),
-                seat=ticket.get("seat"),
-                movie_session=get_object_or_404(
-                    MovieSession,
-                    id=ticket.get("movie_session")
-                ),
-                order=order
-            )
+    for ticket in tickets:
+        Ticket.objects.create(
+            row=ticket.get("row"),
+            seat=ticket.get("seat"),
+            movie_session=get_object_or_404(
+                MovieSession,
+                id=ticket.get("movie_session")
+            ),
+            order=order
+        )
 
-        order.save()
+    order.save()
 
-        return order
+    return order
 
 
 def get_orders(username: Optional[str] = None) -> QuerySet:
