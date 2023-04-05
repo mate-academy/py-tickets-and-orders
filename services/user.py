@@ -10,25 +10,21 @@ def create_user(
         password: str,
         email: Optional[str] = None,
         first_name: Optional[str] = None,
-        last_name: Optional[str] = None
+        last_name: Optional[str] = None,
 ) -> User:
+    user_data = {
+        "username": username,
+        "password": password,
+    }
 
-    created_user = get_user_model().objects.create_user(
-        username=username,
-        password=password,
-    )
-    updated_user = get_user_model().objects.get(username=username)
     if email:
-        updated_user.email = email
-
+        user_data["email"] = email
     if first_name:
-        updated_user.first_name = first_name
-
+        user_data["first_name"] = first_name
     if last_name:
-        updated_user.last_name = last_name
+        user_data["last_name"] = last_name
 
-    updated_user.save()
-
+    created_user = get_user_model().objects.create_user(**user_data)
     return created_user
 
 

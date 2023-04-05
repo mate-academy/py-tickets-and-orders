@@ -47,14 +47,9 @@ def delete_movie_session_by_id(session_id: int) -> None:
 
 
 def get_taken_seats(movie_session_id: int) -> List[dict]:
-    queryset = Ticket.objects.filter(movie_session_id=movie_session_id)
+    queryset = Ticket.objects.filter(movie_session_id=movie_session_id).values(
+        "row",
+        "seat"
+    )
 
-    list_of_order = []
-    for ticket in queryset:
-        list_of_order.append(
-            {
-                "row": ticket.row,
-                "seat": ticket.seat,
-            }
-        )
-    return list_of_order
+    return list(queryset)
