@@ -1,3 +1,5 @@
+from typing import Optional
+
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 
@@ -70,14 +72,17 @@ class Order(models.Model):
     class Meta:
         ordering = ["-created_at"]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.created_at)
 
 
 class Ticket(models.Model):
     row = models.IntegerField()
     seat = models.IntegerField()
-    movie_session = models.ForeignKey(to=MovieSession, on_delete=models.CASCADE)
+    movie_session = models.ForeignKey(
+        to=MovieSession,
+        on_delete=models.CASCADE
+    )
     order = models.ForeignKey(to=Order, on_delete=models.DO_NOTHING)
 
     class Meta:
@@ -86,12 +91,12 @@ class Ticket(models.Model):
                              name="unique_ticket_row_seat_movie_session")
         ]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(f"{self.movie_session.movie.title} "
-                   f"{self.order.created_at} "
+                   f"{self.movie_session.show_time} "
                    f"(row: {self.row}, seat: {self.seat})")
 
-    def clean(self):
+    def clean(self) -> None:
         if not (
                 1 <= self.row <= self.movie_session.cinema_hall.rows
         ):
@@ -104,12 +109,19 @@ class Ticket(models.Model):
                 1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row
         ):
             raise ValidationError({
-                "seat": "seat number must be in available range: (1, seats_in_row): "
-                        f"(1, {self.movie_session.cinema_hall.seats_in_row})"
+                "seat":
+                    "seat number must be in available range: "
+                    "(1, seats_in_row): "
+                    f"(1, {self.movie_session.cinema_hall.seats_in_row})"
             })
 
-    def save(self, force_insert=False, force_update=False, using=None,
-             update_fields=None):
+    def save(
+            self,
+            force_insert: bool = False,
+            force_update: bool = False,
+            using: str = None,
+            update_fields: Optional[list[str]] = None
+    ) -> None:
         self.full_clean()
         return super(Ticket, self).save(force_insert, force_update, using)
 

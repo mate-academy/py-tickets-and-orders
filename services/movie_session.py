@@ -3,7 +3,7 @@ from typing import Optional
 from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
 
-from db.models import MovieSession
+from db.models import MovieSession, Ticket
 
 
 def create_movie_session(
@@ -39,10 +39,10 @@ def get_movie_session_by_id(movie_session_id: int) -> MovieSession:
 
 
 def update_movie_session(
-    session_id: int,
-    show_time: Optional[str] = None,
-    movie_id: Optional[str] = None,
-    cinema_hall_id: Optional[str] = None,
+        session_id: int,
+        show_time: Optional[str] = None,
+        movie_id: Optional[str] = None,
+        cinema_hall_id: Optional[str] = None,
 ) -> MovieSession:
     movie_session_to_update = get_object_or_404(
         MovieSession,
@@ -67,3 +67,13 @@ def delete_movie_session_by_id(session_id: int) -> int:
     movie_session_to_delete = get_movie_session_by_id(session_id)
 
     return movie_session_to_delete.delete()
+
+
+def get_taken_seats(movie_session_id: int) -> list[dict[str, int]]:
+    return [
+        {"row": ticket.row, "seat": ticket.seat}
+        for ticket in Ticket.objects.filter(
+            movie_session_id=movie_session_id
+        )
+        .select_related("movie_session")
+    ]

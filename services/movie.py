@@ -1,5 +1,6 @@
 from typing import Optional
 
+from django.db import transaction
 from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
 
@@ -20,7 +21,7 @@ def get_movies(
         queryset = queryset.filter(actors__id__in=actors_ids)
 
     if title:
-        queryset = queryset.filter(title=title)
+        queryset = queryset.filter(title__icontains=title)
 
     return queryset
 
@@ -35,15 +36,16 @@ def create_movie(
         genres_ids: Optional[list[int]] = None,
         actors_ids: Optional[list[int]] = None
 ) -> Movie:
-    new_movie = Movie.objects.create(
-        title=movie_title,
-        description=movie_description
-    )
+    with transaction.atomic():
+        new_movie = Movie.objects.create(
+            title=movie_title,
+            description=movie_description
+        )
 
-    if genres_ids:
-        new_movie.genres.set(genres_ids)
+        if genres_ids:
+            new_movie.genres.set(genres_ids)
 
-    if actors_ids:
-        new_movie.actors.set(actors_ids)
+        if actors_ids:
+            new_movie.actors.set(actors_ids)
 
-    return new_movie
+        return new_movie
