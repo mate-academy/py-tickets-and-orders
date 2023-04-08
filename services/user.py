@@ -13,8 +13,8 @@ def create_user(
         password=password,
     )
 
-    for key, value in kwargs.items():
-        setattr(new_user, key, value)
+    for field_name, value in kwargs.items():
+        setattr(new_user, field_name, value)
 
     new_user.save()
 
@@ -26,10 +26,10 @@ def get_user(user_id: int) -> User:
 def update_user(user_id: int, **kwargs) -> None:
     user = get_user_model().objects.get(id=user_id)
 
-    for key, value in kwargs.items():
-        if key == "password":
+    for field_name, value in kwargs.items():
+        if field_name == "password":
             user.set_password(value)
         else:
-            setattr(user, key, value)
+            setattr(user, field_name, value)
 
     user.save()
