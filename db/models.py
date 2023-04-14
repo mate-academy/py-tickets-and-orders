@@ -59,7 +59,7 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"Order:{self.created_at}"
 
 
@@ -78,13 +78,13 @@ class Ticket(models.Model):
             )
         ]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"Ticket:" \
                f"{self.movie_session.movie.title} " \
                f"{self.movie_session.show_time} " \
                f"(row: {self.row}, seat: {self.seat})"
 
-    def clean(self):
+    def clean(self) -> None:
         if not (1 <= self.row <= self.movie_session.cinema_hall.rows):
             raise ValidationError({
                 "row": f"row number must be in available range: (1, rows): "
@@ -96,8 +96,13 @@ class Ticket(models.Model):
                         f"(1, {self.movie_session.cinema_hall.seats_in_row})"
             })
 
-    def save(self, force_insert=False, force_update=False, using=None,
-             update_fields=None):
+    def save(
+            self,
+            force_insert: bool = False,
+            force_update: bool = False,
+            using: str = None,
+            update_fields: str = None
+    ) -> None:
         self.full_clean()
         return super(Ticket, self).save(
             force_insert, force_update, using, update_fields
