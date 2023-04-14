@@ -31,5 +31,4 @@ def create_order(tickets: list,
 def get_orders(username: Optional[str] = None) -> QuerySet:
     if username:
         return Order.objects.filter(user__username=username)
-    else:
-        return Order.objects.all()
+    return Order.objects.all()
