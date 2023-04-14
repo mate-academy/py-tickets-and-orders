@@ -29,8 +29,8 @@ def get_movie_session_by_id(movie_session_id: int) -> MovieSession:
 def update_movie_session(
         session_id: int,
         show_time: Optional[str] = "",
-        movie_id: Optional[int] = "",
-        cinema_hall_id: Optional[int] = "",
+        movie_id: Optional[int] = None,
+        cinema_hall_id: Optional[int] = None,
 ) -> None:
     movie_session = MovieSession.objects.get(id=session_id)
     if show_time:
@@ -46,7 +46,7 @@ def delete_movie_session_by_id(session_id: int) -> None:
     MovieSession.objects.get(id=session_id).delete()
 
 
-def get_taken_seats(movie_session_id: int) -> list[dict]:
+def get_taken_seats(movie_session_id: int) -> list[QuerySet]:
     queryset = Ticket.objects.filter(
         movie_session_id=movie_session_id
     ).values("row", "seat")
