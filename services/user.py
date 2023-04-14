@@ -6,7 +6,7 @@ from db.models import User
 def create_user(
         username: str,
         password: str,
-        email: Optional[str] = "",
+        email: Optional[str] = None,
         first_name: Optional[str] = "",
         last_name: Optional[str] = ""
 ) -> User:
@@ -27,11 +27,11 @@ def get_user(user_id: int) -> User:
 
 def update_user(
         user_id: int,
-        username: Optional[str] = "",
-        password: Optional[str] = "",
-        email: Optional[str] = "",
-        first_name: Optional[str] = "",
-        last_name: Optional[str] = ""
+        username: Optional[str] = None,
+        password: Optional[str] = None,
+        email: Optional[str] = None,
+        first_name: Optional[str] = None,
+        last_name: Optional[str] = None
 ) -> None:
     user_to_update = get_user(user_id)
 

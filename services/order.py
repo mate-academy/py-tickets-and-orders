@@ -11,7 +11,7 @@ from db.models import Order, Ticket
 def create_order(
         tickets: list[dict],
         username: str,
-        date: Optional[str] = "",
+        date: Optional[str] = None,
 ) -> None:
     order = Order.objects.create(
         user=get_user_model().objects.get(username=username)
@@ -30,7 +30,7 @@ def create_order(
         )
 
 
-def get_orders(username: Optional[str] = "") -> QuerySet:
+def get_orders(username: Optional[str] = None) -> QuerySet:
     if username:
         return Order.objects.filter(user__username=username)
 
