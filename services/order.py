@@ -8,7 +8,7 @@ from db.models import Order, Ticket, MovieSession
 
 
 @transaction.atomic
-def create_order(tickets: list,
+def create_order(tickets: list[dict],
                  username: str,
                  date: Optional[str] = None
                  ) -> None:
@@ -21,14 +21,16 @@ def create_order(tickets: list,
 
     for ticket in tickets:
         movies_session = MovieSession.objects.get(id=ticket["movie_session"])
-        Ticket.objects.create(movie_session=movies_session,
-                              order=order,
-                              row=ticket["row"],
-                              seat=ticket["seat"]
-                              )
+        Ticket.objects.create(
+            movie_session=movies_session,
+            order=order,
+            row=ticket["row"],
+            seat=ticket["seat"]
+        )
 
 
 def get_orders(username: Optional[str] = None) -> QuerySet:
+    queryset = Order.objects.all()
     if username:
         return Order.objects.filter(user__username=username)
-    return Order.objects.all()
+    return queryset
