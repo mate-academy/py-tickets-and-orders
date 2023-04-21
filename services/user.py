@@ -12,7 +12,7 @@ def set_data(
         first_name: Optional[str] = None,
         last_name: Optional[str] = None,
         password: Optional[str] = None
-        ) -> None:
+) -> None:
     if username:
         user.username = username
     if email:
@@ -32,7 +32,7 @@ def create_user(
         email: Optional[str] = None,
         first_name: Optional[str] = None,
         last_name: Optional[str] = None
-        ) -> None:
+) -> None:
     user = get_user_model().objects.create_user(
         username=username, password=password)
     set_data(user=user,
@@ -53,7 +53,7 @@ def update_user(
         email: Optional[str] = None,
         first_name: Optional[str] = None,
         last_name: Optional[str] = None
-        ) -> None:
+) -> None:
     user = get_user_model().objects.get(id=user_id)
     set_data(user=user,
              username=username,
