@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.auth",
     "django_extensions",
+
 ]
 
 AUTH_USER_MODEL = "db.User"
