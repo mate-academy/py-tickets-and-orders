@@ -13,15 +13,15 @@ def set_data(
         last_name: Optional[str] = None,
         password: Optional[str] = None
 ) -> None:
-    if username:
+    if username is not None:
         user.username = username
-    if email:
+    if email is not None:
         user.email = email
-    if first_name:
+    if first_name is not None:
         user.first_name = first_name
-    if last_name:
+    if last_name is not None:
         user.last_name = last_name
-    if password:
+    if password is not None:
         user.set_password(password)
     user.save()
 
