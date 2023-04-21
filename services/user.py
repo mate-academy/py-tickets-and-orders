@@ -5,12 +5,14 @@ from django.db.models import QuerySet
 from db.models import User
 
 
-def set_data(user: User,
-             username: Optional[str],
-             email: Optional[str] = None,
-             first_name: Optional[str] = None,
-             last_name: Optional[str] = None,
-             password: Optional[str] = None,) -> None:
+def set_data(
+        user: User,
+        username: Optional[str],
+        email: Optional[str] = None,
+        first_name: Optional[str] = None,
+        last_name: Optional[str] = None,
+        password: Optional[str] = None
+        ) -> None:
     if username:
         user.username = username
     if email:
@@ -24,12 +26,13 @@ def set_data(user: User,
     user.save()
 
 
-def create_user(username: str,
-                password: str,
-                email: Optional[str] = None,
-                first_name: Optional[str] = None,
-                last_name: Optional[str] = None
-                ) -> None:
+def create_user(
+        username: str,
+        password: str,
+        email: Optional[str] = None,
+        first_name: Optional[str] = None,
+        last_name: Optional[str] = None
+        ) -> None:
     user = get_user_model().objects.create_user(
         username=username, password=password)
     set_data(user=user,
@@ -43,13 +46,14 @@ def get_user(user_id: int) -> QuerySet:
     return get_user_model().objects.get(id=user_id)
 
 
-def update_user(user_id: int,
-                username: Optional[str] = None,
-                password: Optional[str] = None,
-                email: Optional[str] = None,
-                first_name: Optional[str] = None,
-                last_name: Optional[str] = None
-                ) -> None:
+def update_user(
+        user_id: int,
+        username: Optional[str] = None,
+        password: Optional[str] = None,
+        email: Optional[str] = None,
+        first_name: Optional[str] = None,
+        last_name: Optional[str] = None
+        ) -> None:
     user = get_user_model().objects.get(id=user_id)
     set_data(user=user,
              username=username,
