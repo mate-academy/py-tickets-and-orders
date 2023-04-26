@@ -8,7 +8,7 @@ from db.models import Order, Ticket, User
 
 @transaction.atomic
 def create_order(
-        tickets: list[Ticket],
+        tickets: list[dict],
         username: str,
         date: Optional[str] = None
 ) -> Order:
