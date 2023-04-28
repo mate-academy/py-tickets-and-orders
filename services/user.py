@@ -50,7 +50,7 @@ def update_user(
         first_name: Optional[str] = None,
         last_name: Optional[str] = None
 ) -> None:
-    user_to_update = User.objects.get(id=user_id)
+    user_to_update = get_user(user_id)
 
     if username:
         user_to_update.username = username
