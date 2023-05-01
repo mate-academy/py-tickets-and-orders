@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from db.models import User
 
 
-def create_or_update_email_and_f_l_name(
+def update_user_information(
         user: User,
         email: Optional[str] = None,
         first_name: Optional[str] = None,
@@ -32,7 +32,7 @@ def create_user(
         password=password,
     )
 
-    create_or_update_email_and_f_l_name(
+    update_user_information(
         user=user,
         email=email,
         first_name=first_name,
@@ -63,7 +63,7 @@ def update_user(
     if password is not None:
         user.set_password(password)
 
-    create_or_update_email_and_f_l_name(
+    update_user_information(
         user=user,
         email=email,
         first_name=first_name,
