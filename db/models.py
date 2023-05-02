@@ -76,9 +76,9 @@ class Ticket(models.Model):
     seat = models.IntegerField()
 
     def __str__(self) -> str:
-        return f"{self.movie_session.movie} " \
-               f"{self.movie_session.show_time}" \
-               f" (row: {self.row}, seat: {self.seat})"
+        return (f"{self.movie_session.movie} "
+                f"{self.movie_session.show_time}"
+                f" (row: {self.row}, seat: {self.seat})")
 
     def clean(self) -> None:
         if not 1 <= self.row <= self.movie_session.cinema_hall.rows:
@@ -98,8 +98,8 @@ class Ticket(models.Model):
         self,
         force_insert: bool = False,
         force_update: bool = False,
-        using: str = None,
-        update_fields: str = None
+        using: str | None = None,
+        update_fields: str | None = None
     ) -> None:
         self.full_clean()
         super(Ticket, self).save(
