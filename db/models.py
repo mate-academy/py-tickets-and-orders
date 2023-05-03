@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Optional
 
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
@@ -83,9 +83,11 @@ class Ticket(models.Model):
         ]
 
     def __str__(self) -> str:
-        return f"{self.movie_session.movie.title} " \
-               f"{self.movie_session.show_time} " \
-               f"(row: {self.row}, seat: {self.seat})"
+        return (
+            f"{self.movie_session.movie.title} "
+            f"{self.movie_session.show_time} "
+            f"(row: {self.row}, seat: {self.seat})"
+        )
 
     def clean(self) -> None:
         if not (1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row):
@@ -103,8 +105,8 @@ class Ticket(models.Model):
 
     def save(self, force_insert: bool = False,
              force_update: bool = False,
-             using: Any = None,
-             update_fields: Any = None
+             using: Optional[Any] = None,
+             update_fields: Optional[Any] = None
              ) -> None:
         self.full_clean()
         return super(Ticket, self).save(force_insert, force_update,
