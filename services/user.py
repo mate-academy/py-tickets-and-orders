@@ -1,6 +1,7 @@
 from typing import Optional
 
 from django.contrib.auth import get_user_model
+from django.db.models import QuerySet
 
 from settings import AUTH_USER_MODEL
 
@@ -29,7 +30,7 @@ def update_user(user_id: int,
                 password: Optional[str] = None,
                 email: Optional[str] = None,
                 first_name: Optional[str] = None,
-                last_name: Optional[str] = None) -> AUTH_USER_MODEL:
+                last_name: Optional[str] = None) -> QuerySet:
     get_user_id = get_user_model().objects.get(id=user_id)
     if username:
         get_user_id.username = username
