@@ -30,15 +30,15 @@ def update_user(user_id: int,
                 email: Optional[str] = None,
                 first_name: Optional[str] = None,
                 last_name: Optional[str] = None) -> None:
-    get_user_id = get_user_model().objects.get(id=user_id)
+    user = get_user_model().objects.get(id=user_id)
     if username:
-        get_user_id.username = username
+        user.username = username
     if password:
-        get_user_id.set_password(password)
+        user.set_password(password)
     if email:
-        get_user_id.email = email
+        user.email = email
     if first_name:
-        get_user_id.first_name = first_name
+        user.first_name = first_name
     if last_name:
-        get_user_id.last_name = last_name
-    get_user_id.save()
+        user.last_name = last_name
+    user.save()
