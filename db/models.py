@@ -63,7 +63,7 @@ class Order(models.Model):
         ordering = ["-created_at"]
 
     def __str__(self) -> str:
-        return f"Order: {self.created_at.strftime('%Y-%m-%d %H:%M:%S')}"
+        return f"{self.created_at.strftime('%Y-%m-%d %H:%M:%S')}"
 
 
 class Ticket(models.Model):
@@ -87,24 +87,24 @@ class Ticket(models.Model):
         if not (1 <= self.row <= self.movie_session.cinema_hall.rows):
             raise ValueError(
                 {
-                    "row": "['row number must be in available range:"
-                    f" (1, rows): (1, {self.movie_session.cinema_hall.rows})']"
+                    'row': "['row number must be in available range: (1, rows): "
+                           f"(1, {self.movie_session.cinema_hall.rows})']"
                 }
             )
         if not (1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row):
             raise ValueError(
                 {
-                    "seat": "['seat number must be in available range:"
+                    'seat': "['seat number must be in available range:"
                     " (1, seats_in_row):"
                     f" (1, {self.movie_session.cinema_hall.seats_in_row})']"
                 }
             )
 
     def save(
-        self, force_insert=False,
-        force_update=True,
-        using=None,
-        update_fields=None
+        self, force_insert: bool = False,
+        force_update: bool = True,
+        using: str = None,
+        update_fields: list = None
     ) -> None:
         self.full_clean()
         return super(Ticket, self).save(
