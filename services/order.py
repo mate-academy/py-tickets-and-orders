@@ -1,4 +1,7 @@
+from typing import Optional
+
 from django.db import transaction
+from django.db.models import QuerySet
 
 from db.models import User, Order, Ticket
 
@@ -6,7 +9,7 @@ from db.models import User, Order, Ticket
 def create_order(
         tickets: list[dict],
         username: str,
-        date: int = None
+        date: Optional[int] = None
 ) -> Order:
     with transaction.atomic():
         if username:
@@ -29,7 +32,7 @@ def create_order(
         return order
 
 
-def get_orders(username: str = None) -> Order:
+def get_orders(username: Optional[str] = None) -> QuerySet[Order]:
     if username:
         return Order.objects.filter(user__username=username)
     return Order.objects.order_by("-user__username")
