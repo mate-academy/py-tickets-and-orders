@@ -30,8 +30,6 @@ def create_order(
 
 
 def get_orders(username: str = None) -> Order:
-    with transaction.atomic():
-        if username:
-            return Order.objects.filter(user__username=username)
-        else:
-            return Order.objects.all().order_by("-user__username")
+    if username:
+        return Order.objects.filter(user__username=username)
+    return Order.objects.order_by("-user__username")
