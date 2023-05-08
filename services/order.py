@@ -9,24 +9,22 @@ from django.db import transaction
 from db.models import Order, Ticket
 
 
+@transaction.atomic()
 def create_order(
     tickets: list[dict], username: str, date: Optional[str] = None
 ) -> None:
-    with transaction.atomic():
-        user = get_user_model().objects.get(username=username)
-        order = Order.objects.create(user=user)
-        if date:
-            order.created_at = datetime.strptime(date, "%Y-%m-%d %H:%M")
-        order.save()
-        for ticket_data in tickets:
-            ticket = Ticket(
-                order=order,
-                row=ticket_data["row"],
-                seat=ticket_data["seat"],
-                movie_session=ticket_data["movie_session"],
-                username=username,
+    user = get_user_model().objects.get(username=username)
+    order = Order.objects.create(user=user)
+    if date:
+        order.created_at = datetime.strptime(date, "%Y-%m-%d %H:%M")
+    order.save()
+    for ticket_data in tickets:
+        Ticket.objects.create(
+            order=order,
+            row=ticket_data["row"],
+            seat=ticket_data["seat"],
+            movie_session_id=ticket_data["movie_session"],
             )
-            ticket.save()
 
 
 def get_orders(username: Optional[str] = None) -> None:
