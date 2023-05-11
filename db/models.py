@@ -1,3 +1,5 @@
+from typing import Optional
+
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
@@ -80,9 +82,11 @@ class Ticket(models.Model):
     seat = models.IntegerField()
 
     def __str__(self) -> str:
-        return f"{self.movie_session.movie.title}" \
-               f" {self.movie_session.show_time} " \
-               f"(row: {self.row}, seat: {self.seat})"
+        return (
+            f"{self.movie_session.movie.title} "
+            f"{self.movie_session.show_time} "
+            f"(row: {self.row}, seat: {self.seat})"
+        )
 
     def clean(self) -> None:
         rows = self.movie_session.cinema_hall.rows
@@ -103,7 +107,7 @@ class Ticket(models.Model):
             force_insert: str = False,
             force_update: str = False,
             using: str = False,
-            update_fields: str = None
+            update_fields: Optional[str] = None
     ) -> QuerySet:
         self.full_clean()
         return super(Ticket, self).save(
