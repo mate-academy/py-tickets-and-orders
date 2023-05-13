@@ -1,5 +1,25 @@
+from typing import Optional
+
 from django.contrib.auth import get_user_model
 from django.db.models import QuerySet
+
+
+def check_optional_parameters_and_set(
+        user: QuerySet,
+        email: Optional[str],
+        first_name: Optional[str],
+        last_name: Optional[str]
+) -> None:
+    if email:
+        user.email = email
+
+    if first_name:
+        user.first_name = first_name
+
+    if last_name:
+        user.last_name = last_name
+
+    user.save()
 
 
 def create_user(
@@ -14,16 +34,9 @@ def create_user(
         password=password,
     )
 
-    if email:
-        new_user.email = email
-
-    if first_name:
-        new_user.first_name = first_name
-
-    if last_name:
-        new_user.last_name = last_name
-
-    new_user.save()
+    check_optional_parameters_and_set(
+        new_user, email, first_name, last_name
+    )
 
 
 def get_user(user_id: int) -> QuerySet:
@@ -32,11 +45,11 @@ def get_user(user_id: int) -> QuerySet:
 
 def update_user(
     user_id: int,
-    username: str = None,
-    password: str = None,
-    email: str = None,
-    first_name: str = None,
-    last_name: str = None,
+    username: Optional[str] = None,
+    password: Optional[str] = None,
+    email: Optional[str] = None,
+    first_name: Optional[str] = None,
+    last_name: Optional[str] = None,
 ) -> None:
     up_user = get_user_model().objects.get(id=user_id)
 
@@ -46,13 +59,6 @@ def update_user(
     if password:
         up_user.set_password(password)
 
-    if email:
-        up_user.email = email
-
-    if first_name:
-        up_user.first_name = first_name
-
-    if last_name:
-        up_user.last_name = last_name
-
-    up_user.save()
+    check_optional_parameters_and_set(
+        up_user, email, first_name, last_name
+    )

@@ -1,5 +1,5 @@
 import datetime
-from typing import List
+from typing import List, Optional
 
 from django.contrib.auth import get_user_model
 from django.db import transaction
@@ -32,8 +32,8 @@ def create_order(
         order.save()
 
 
-def get_orders(username: str = None) -> QuerySet:
+def get_orders(username: Optional[str] = None) -> QuerySet:
     if username:
-        user = get_user_model().objects.get(username=username)
-        return Order.objects.filter(user_id=user.id)
+        return Order.objects.filter(user__username=username)
+
     return Order.objects.all()
