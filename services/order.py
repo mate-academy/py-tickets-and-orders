@@ -1,27 +1,30 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Union
 
 from django.db import transaction
+from django.db.models import QuerySet
 
-from db.models import Order, User, Ticket
+from db.models import Order, User, Ticket, MovieSession
 
 
 def create_order(
     tickets: list[dict],
     username: str,
-    date: Optional[datetime] = None
+    date: Optional[str] = None
 ) -> None:
     with transaction.atomic():
         user = User.objects.get(username=username)
-        kwargs = {"user": user}
+        order = Order.objects.create(user=user)
         if date:
-            kwargs.update({"created_at": date})
-        order = Order.objects.create(**kwargs)
+            order.created_at = datetime.strptime(date, "%Y-%m-%d %H:%M")
+        order.save()
 
         for ticket in tickets:
             Ticket.objects.create(
                 order=order,
-                movie_session=ticket["movie_session"],
+                movie_session=MovieSession.objects.get(
+                    id=ticket["movie_session"]
+                ),
                 row=ticket["row"],
                 seat=ticket["seat"]
             )
@@ -29,7 +32,7 @@ def create_order(
 
 def get_orders(
     username: Optional[str] = None
-):
+) -> Union[QuerySet, User]:
     if username:
         return User.objects.get(username=username).order_set.all()
     return Order.objects.all()

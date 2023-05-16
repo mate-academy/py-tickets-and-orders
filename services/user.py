@@ -1,6 +1,5 @@
 from typing import Optional
 
-from django.contrib.auth import models
 
 from db.models import User
 
@@ -11,18 +10,19 @@ def create_user(
     email: Optional[str] = None,
     first_name: Optional[str] = None,
     last_name: Optional[str] = None,
-):
+) -> User:
     user = User.objects.create_user(
         username=username,
         password=password
     )
 
     if email:
-        user.email.set(email)
+        user.email = email
     if first_name:
-        user.first_name.set(first_name)
+        user.first_name = first_name
     if last_name:
-        user.last_name.set(last_name)
+        user.last_name = last_name
+    user.save()
     return user
 
 
@@ -41,8 +41,14 @@ def update_user(
     user = User.objects.get(id=user_id)
 
     for arg in locals().keys():
-        if arg != "id" and arg != "password" and locals()[arg] is not None:
-            user[arg] = locals()[arg]
+        if username:
+            user.username = username
         if password:
             user.set_password(password)
+        if email:
+            user.email = email
+        if first_name:
+            user.first_name = first_name
+        if last_name:
+            user.last_name = last_name
     user.save()
