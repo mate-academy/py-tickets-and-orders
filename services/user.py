@@ -40,15 +40,14 @@ def update_user(
 ) -> None:
     user = User.objects.get(id=user_id)
 
-    for arg in locals().keys():
-        if username:
-            user.username = username
-        if password:
-            user.set_password(password)
-        if email:
-            user.email = email
-        if first_name:
-            user.first_name = first_name
-        if last_name:
-            user.last_name = last_name
+    if username:
+        user.username = username
+    if password:
+        user.set_password(password)
+    if email:
+        user.email = email
+    if first_name:
+        user.first_name = first_name
+    if last_name:
+        user.last_name = last_name
     user.save()
