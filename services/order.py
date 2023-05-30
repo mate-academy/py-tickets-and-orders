@@ -3,12 +3,13 @@ from django.db.models import QuerySet
 from django.contrib.auth import get_user_model
 from db.models import Order, Ticket
 from django.utils import timezone
+from typing import Optional
 
 
 def create_order(
         tickets: list[dict],
         username: str,
-        date: str = None
+        date: Optional[str] = None
 ) -> Order:
     with transaction.atomic():
         user = get_user_model().objects.get(username=username)
@@ -30,5 +31,4 @@ def create_order(
 def get_orders(username: str = None) -> QuerySet:
     if username:
         return Order.objects.filter(user__username=username)
-    else:
-        return Order.objects.all()
+    return Order.objects.all()
