@@ -33,5 +33,5 @@ def get_orders(username: Optional[str] = None) -> QuerySet:
     if username:
         return Order.objects.filter(
             user__username=username
-        ).values_list("created_at")
+        )
     return Order.objects.all()
