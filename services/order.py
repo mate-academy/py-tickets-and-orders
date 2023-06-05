@@ -18,11 +18,11 @@ def create_order(tickets: list[dict], username: str, date: str = None) -> None:
         try:
             created_at = datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
             order.created_at = created_at
-            order.save()
         except ValueError:
             created_at = datetime.strptime(date, "%Y-%m-%d %H:%M")
             order.created_at = created_at
-            order.save()
+
+    order.save()
 
     for ticket in tickets:
         Ticket.objects.create(
