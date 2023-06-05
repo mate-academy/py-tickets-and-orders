@@ -1,3 +1,5 @@
+from typing import Optional
+
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
@@ -120,7 +122,7 @@ class Ticket(models.Model):
              force_insert: bool = False,
              force_update: bool = False,
              using: str = None,
-             update_fields: list[str] = None) -> bool:
+             update_fields: Optional[list[str]] = None) -> bool:
         self.full_clean()
         return super(Ticket, self).save(force_insert,
                                         force_update,

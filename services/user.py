@@ -7,9 +7,9 @@ from db.models import User
 
 def create_user(username: str,
                 password: str,
-                email: Optional[str] = "",
-                first_name: Optional[str] = "",
-                last_name: Optional[str] = "") -> None:
+                email: str = "",
+                first_name: str = "",
+                last_name: str = "") -> None:
 
     get_user_model().objects.create_user(
         username=username,
