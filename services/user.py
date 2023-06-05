@@ -20,10 +20,9 @@ def get_user(user_id: int) -> User:
     return get_user_model().objects.get(pk=user_id)
 
 
-def update_user(user_id: int, password: str = None, **kwargs):
+def update_user(user_id: int, password: str = None, **kwargs) -> None:
     user = get_user(user_id)
-    if password:
-        user.set_password(password)
+    user.set_password(password) if password else None
     for field, value in kwargs.items():
         setattr(user, field, value)
     user.save()
