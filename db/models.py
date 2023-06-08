@@ -65,44 +65,57 @@ class Order(models.Model):
         on_delete=models.CASCADE
     )
 
+    def __str__(self) -> str:
+        return self.created_at.__str__()
+
     class Meta:
         ordering = ["-created_at"]
 
 
 class Ticket(models.Model):
-    movie_session = models.ForeignKey("MovieSession", on_delete=models.CASCADE)
-    order = models.ForeignKey("Order", on_delete=models.CASCADE)
+    movie_session = models.ForeignKey(MovieSession, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
     row = models.IntegerField()
     seat = models.IntegerField()
+
+    def __str__(self) -> str:
+        return f"{self.movie_session} (row: {self.row}, seat: {self.seat})"
+
+    def clean(self) -> None:
+        if not (1 <= self.row <= self.movie_session.cinema_hall.rows):
+            raise ValidationError(
+                {
+                    "row": f"row number must be in available range: "
+                    f"(1, rows): "
+                    f"(1, {self.movie_session.cinema_hall.rows})",
+                }
+            )
+        if not (1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row):
+            raise ValidationError(
+                {
+                    "seat": f"seat number must be in available range: "
+                    f"(1, seats_in_row): "
+                    f"(1, {self.movie_session.cinema_hall.seats_in_row})"
+                }
+            )
+
+    def save(
+        self,
+        force_insert: bool = False,
+        force_update: bool = False,
+        using: object = None,
+        update_fields: object = None,
+    ) -> None:
+        self.full_clean()
+        return super().save(force_insert, force_update, using, update_fields)
 
     class Meta:
         constraints = [
             UniqueConstraint(
-                name="unique_ticket",
-                fields=["movie_session", "row", "seat"]
+                fields=["row", "seat", "movie_session"],
+                name="unique_ticket"
             )
         ]
-
-    def clean(self) -> None:
-        if not (1 < self.row <= self.movie_session.cinema_hall.rows):
-            raise ValidationError({
-                "row": f"row must be in range (1, "
-                       f"{self.movie_session.cinema_hall.rows}),"
-                       f" not {self.row}"
-            })
-
-        if not (1 < self.seat <= self.movie_session.cinema_hall.seats_in_row):
-            raise ValidationError({
-                "seat": f"seat must be in range (1, "
-                        f"{self.movie_session.cinema_hall.seats_in_row}),"
-                        f" not {self.seat}"
-            })
-
-    def save(self, *args, **kwargs) -> None:
-        self.full_clean()
-        return (
-            super(Ticket, self).save(*args, **kwargs)
-        )
 
 
 class User(AbstractUser):
