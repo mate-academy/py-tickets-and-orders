@@ -1,3 +1,5 @@
+from typing import Optional
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 
@@ -20,7 +22,11 @@ def get_user(user_id: int) -> User:
     return get_user_model().objects.get(pk=user_id)
 
 
-def update_user(user_id: int, password: str = None, **kwargs) -> None:
+def update_user(
+        user_id: int,
+        password: Optional[str] = None,
+        **kwargs
+) -> None:
     user = get_user(user_id)
     user.set_password(password) if password else None
     for field, value in kwargs.items():

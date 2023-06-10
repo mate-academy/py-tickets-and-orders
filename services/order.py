@@ -6,9 +6,15 @@ from django.db.models import QuerySet
 
 from db.models import Ticket, Order
 
+from typing import Dict, List, Optional
+
 
 @transaction.atomic
-def create_order(tickets: list[dict], username: str, date: str = None) -> None:
+def create_order(
+        tickets: List[Dict[str, int]],
+        username: str,
+        date: Optional[str] = None
+) -> None:
     user = get_user_model().objects.get(username=username)
 
     order = Order.objects.create(
@@ -33,7 +39,7 @@ def create_order(tickets: list[dict], username: str, date: str = None) -> None:
         )
 
 
-def get_orders(username: str = None) -> QuerySet:
+def get_orders(username: Optional[str] = None) -> QuerySet:
     orders = Order.objects.all()
     if username:
         orders = orders.filter(user__username=username)
