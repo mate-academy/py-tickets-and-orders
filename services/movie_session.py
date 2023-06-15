@@ -42,3 +42,12 @@ def update_movie_session(
 
 def delete_movie_session_by_id(session_id: int) -> None:
     MovieSession.objects.get(id=session_id).delete()
+
+
+def get_taken_seats(movie_session_id: int) -> list[dict]:
+    movie_session = get_movie_session_by_id(movie_session_id=movie_session_id)
+    print(movie_session)
+    ordered_tickets = []
+    for ticket in movie_session.ticket_set.all():
+        ordered_tickets.append({"row": ticket.row, "seat": ticket.seat})
+    return ordered_tickets
