@@ -1,5 +1,3 @@
-from typing import Optional
-
 from db.models import User
 
 
@@ -36,11 +34,3 @@ def update_user(
         setattr(user, attribute, value)
 
     user.save()
-
-
-
-
-
-
-
-
