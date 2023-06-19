@@ -41,19 +41,16 @@ def update_user(
 ) -> None:
     user_to_update = get_user(user_id)
 
-    if username:
-        user_to_update.username = username
+    attributes = {
+        "username": username,
+        "password": password,
+        "email": email,
+        "first_name": first_name,
+        "last_name": last_name
+    }
 
-    if password:
-        user_to_update.set_password(password)
-
-    if email:
-        user_to_update.email = email
-
-    if first_name:
-        user_to_update.first_name = first_name
-
-    if last_name:
-        user_to_update.last_name = last_name
+    for attribute, value in attributes.items():
+        if value:
+            setattr(user_to_update, attribute, value)
 
     user_to_update.save()
