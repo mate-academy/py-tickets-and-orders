@@ -43,7 +43,6 @@ def update_user(
 
     attributes = {
         "username": username,
-        "password": password,
         "email": email,
         "first_name": first_name,
         "last_name": last_name
@@ -52,5 +51,7 @@ def update_user(
     for attribute, value in attributes.items():
         if value:
             setattr(user_to_update, attribute, value)
+        if password:
+            user_to_update.set_password(password)
 
     user_to_update.save()
