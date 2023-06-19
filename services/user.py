@@ -6,23 +6,14 @@ from db.models import User
 def create_user(
         username: str,
         password: str,
-        email: Optional[str] = None,
-        first_name: Optional[str] = None,
-        last_name: Optional[str] = None,
+        **kwargs
 ) -> None:
     new_user = User.objects.create_user(
         username=username,
         password=password
     )
-    attributes = {
-        "email": email,
-        "first_name": first_name,
-        "last_name": last_name
-    }
-
-    for attribute, value in attributes.items():
-        if value:
-            setattr(new_user, attribute, value)
+    for attribute, value in kwargs.items():
+        setattr(new_user, attribute, value)
 
     new_user.save()
 
@@ -33,25 +24,23 @@ def get_user(user_id: int) -> User:
 
 def update_user(
         user_id: int,
-        username: Optional[str] = None,
-        password: Optional[str] = None,
-        email: Optional[str] = None,
-        first_name: Optional[str] = None,
-        last_name: Optional[str] = None,
+        password: str = None,
+        **kwargs
 ) -> None:
-    user_to_update = get_user(user_id)
+    user = get_user(user_id=user_id)
 
-    attributes = {
-        "username": username,
-        "email": email,
-        "first_name": first_name,
-        "last_name": last_name
-    }
+    if password:
+        user.set_password(password)
 
-    for attribute, value in attributes.items():
-        if value:
-            setattr(user_to_update, attribute, value)
-        if password:
-            user_to_update.set_password(password)
+    for attribute, value in kwargs.items():
+        setattr(user, attribute, value)
 
-    user_to_update.save()
+    user.save()
+
+
+
+
+
+
+
+
