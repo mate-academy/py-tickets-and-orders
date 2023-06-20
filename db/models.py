@@ -1,4 +1,7 @@
+from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import UniqueConstraint
 
 
 class Genre(models.Model):
@@ -17,7 +20,7 @@ class Actor(models.Model):
 
 
 class Movie(models.Model):
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=255, db_index=True)
     description = models.TextField()
     actors = models.ManyToManyField(to=Actor)
     genres = models.ManyToManyField(to=Genre)
@@ -46,3 +49,49 @@ class MovieSession(models.Model):
 
     def __str__(self) -> str:
         return f"{self.movie.title} {str(self.show_time)}"
+
+
+class Order(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey("User", on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.created_at}"
+
+
+class Ticket(models.Model):
+    row = models.IntegerField()
+    seat = models.IntegerField()
+    movie_session = models.ForeignKey("MovieSession", on_delete=models.CASCADE)
+    order = models.ForeignKey("Order", on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.movie_session} (row: {self.row}, seat: {self.seat})"
+
+    def clean(self):
+        if self.seat > self.movie_session.cinema_hall.seats_in_row:
+            raise ValidationError({
+                'seat': f'seat number must be in available range: (1, seats_in_row):'
+                f' (1, {self.movie_session.cinema_hall.seats_in_row})'
+        })
+        if self.row > self.movie_session.cinema_hall.rows:
+            raise ValidationError({
+                'row': f'row number must be in available range: (1, rows):'
+                       f' (1, {self.movie_session.cinema_hall.rows})'
+            })
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        self.full_clean()
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(fields=["row", "seat", "movie_session"], name="unique_ticket_seat_row")
+        ]
+
+
+class User(AbstractUser):
+    pass
