@@ -1,3 +1,5 @@
+from typing import Optional, Iterable
+
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -56,9 +58,9 @@ class Order(models.Model):
     user = models.ForeignKey("User", on_delete=models.CASCADE)
 
     class Meta:
-        ordering = ['-created_at']
+        ordering = ["-created_at"]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.created_at}"
 
 
@@ -68,28 +70,47 @@ class Ticket(models.Model):
     movie_session = models.ForeignKey("MovieSession", on_delete=models.CASCADE)
     order = models.ForeignKey("Order", on_delete=models.CASCADE)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.movie_session} (row: {self.row}, seat: {self.seat})"
 
-    def clean(self):
+    def clean(self) -> None:
         if self.seat > self.movie_session.cinema_hall.seats_in_row:
-            raise ValidationError({
-                'seat': f'seat number must be in available range: (1, seats_in_row):'
-                f' (1, {self.movie_session.cinema_hall.seats_in_row})'
-        })
+            raise ValidationError(
+                {
+                    "seat": f"seat number must be "
+                            f"in available range: (1, seats_in_row):"
+                    f" (1, {self.movie_session.cinema_hall.seats_in_row})"
+                }
+            )
         if self.row > self.movie_session.cinema_hall.rows:
-            raise ValidationError({
-                'row': f'row number must be in available range: (1, rows):'
-                       f' (1, {self.movie_session.cinema_hall.rows})'
-            })
+            raise ValidationError(
+                {
+                    "row": f"row number must be in available range: (1, rows):"
+                    f" (1, {self.movie_session.cinema_hall.rows})"
+                }
+            )
 
-    def save(self, force_insert=False, force_update=False, using=None,
-             update_fields=None):
+    def save(
+            self,
+            force_insert: bool = False,
+            force_update: bool = False,
+            using: Optional[str] = None,
+            update_fields: Optional[Iterable[str]] = None
+    ) -> None:
         self.full_clean()
+        super().save(
+            force_insert=force_insert,
+            force_update=force_update,
+            using=using,
+            update_fields=update_fields,
+        )
 
     class Meta:
         constraints = [
-            UniqueConstraint(fields=["row", "seat", "movie_session"], name="unique_ticket_seat_row")
+            UniqueConstraint(
+                fields=["row", "seat", "movie_session"],
+                name="unique_ticket_seat_row"
+            )
         ]
 
 
