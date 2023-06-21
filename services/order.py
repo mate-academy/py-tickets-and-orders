@@ -10,16 +10,14 @@ from db.models import Order, Ticket, User
 def create_order(
         tickets: list[dict],
         username: str,
-        date: Optional[str] = None
+        date: Optional[datetime] = None
 ) -> None:
     user = User.objects.get(username=username)
 
-    if date:
-        created_at = datetime.strptime(date, "%Y-%m-%d %H:%M")
-    else:
-        created_at = None
-
-    order = Order.objects.create(user=user, created_at=created_at)
+    order = Order.objects.create(user=user)
+    if date is not None:
+        order.created_at = date
+        order.save()
 
     for ticket_data in tickets:
         row = ticket_data["row"]

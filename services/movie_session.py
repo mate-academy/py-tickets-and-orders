@@ -50,6 +50,3 @@ def get_taken_seats(movie_session_id: int) -> list:
         "row", "seat"
     )
     return list(taken_seats)
-
-
-Ticket.objects.create(row=2, seat=1, movie_session_id=1, order_id=1)
