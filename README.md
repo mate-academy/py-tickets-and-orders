@@ -48,7 +48,6 @@ movie_session = MovieSession.objects.create(
     movie_id=1, 
     cinema_hall=cinema_hall)
 order = Order.objects.create(user_id=1)
-
 ticket = Ticket.objects.create(
     movie_session=movie_session,
     order=order,
