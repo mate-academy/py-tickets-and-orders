@@ -2,6 +2,7 @@ from typing import Optional
 from django.db import transaction
 from django.db.models import QuerySet
 from django.contrib.auth import get_user_model
+from datetime import datetime
 
 from db.models import Order, Ticket
 
@@ -18,6 +19,7 @@ def create_order(
     new_order = Order.objects.create(user=user_order)
 
     if date:
+        date = datetime.strptime(date, "%Y-%m-%d %H:%M")
         new_order.created_at = date
     new_order.save()
 
