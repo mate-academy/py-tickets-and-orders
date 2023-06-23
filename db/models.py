@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
+from typing import Optional
 
 import settings
 
@@ -69,7 +70,7 @@ class Order(models.Model):
         ordering = ["-created_at"]
 
     def __str__(self) -> str:
-        return f"{self.created_at}"
+        return str(self.created_at)
 
 
 class Ticket(models.Model):
@@ -116,10 +117,10 @@ class Ticket(models.Model):
 
     def save(
             self,
-            force_insert: bool = False,
-            force_update: bool = False,
-            using: str = None,
-            update_fields: list = None
+            force_insert: Optional[bool] = False,
+            force_update: Optional[bool] = False,
+            using: Optional[str] = None,
+            update_fields: Optional[list] = None
     ) -> None:
         self.full_clean()
         super().save(force_insert, force_update, using, update_fields)
