@@ -1,6 +1,7 @@
 from typing import Optional
 
 from django.db import transaction
+from django.db.models import QuerySet
 
 from db.models import Order, User, Ticket
 from services.movie_session import get_movie_session_by_id
@@ -8,7 +9,7 @@ from services.movie_session import get_movie_session_by_id
 
 def create_order(
         tickets: list[dict],
-        username: User,
+        username: str,
         date: Optional[str] = None
 ) -> None:
 
@@ -29,8 +30,8 @@ def create_order(
             )
 
 
-def get_orders(username: Optional[str] = None) -> Order:
+def get_orders(username: Optional[str] = None) -> QuerySet[Order]:
+    queryset = Order.objects.all()
     if username:
-        user = User.objects.get(username=username)
-        return Order.objects.filter(user=user)
-    return Order.objects.all()
+        queryset = queryset.filter(user__username=username)
+    return queryset
