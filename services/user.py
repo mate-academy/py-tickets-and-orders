@@ -2,20 +2,18 @@ from django.contrib.auth import get_user_model
 from db.models import User
 
 
-def create_user(username: str, password: str, email: str = None,
-                first_name: str = None, last_name: str = None) -> None:
-    if email is None:
-        email = ""
-    if first_name is None:
-        first_name = ""
-    if last_name is None:
-        last_name = ""
+def create_user(username: str, password: str, **kwargs) -> None:
+    default_kwargs = {
+        "email": "",
+        "first_name": "",
+        "last_name": ""
+    }
+    kwargs = {**default_kwargs, **kwargs}
+
     get_user_model().objects.create_user(
         username=username,
         password=password,
-        email=email,
-        first_name=first_name,
-        last_name=last_name,
+        **kwargs
     )
 
 
@@ -23,24 +21,18 @@ def get_user(user_id: int) -> User:
     return get_user_model().objects.get(id=user_id)
 
 
-def update_user(user_id: int, username: str = None, password: str = None,
-                email: str = None,
-                first_name: str = None, last_name: str = None) -> None:
+def update_user(user_id: int, **kwargs) -> None:
     user = get_user(user_id)
 
-    if username:
-        user.username = username
+    fields_to_update = ["username", "password", "email", "first_name",
+                        "last_name"]
 
-    if password:
-        user.set_password(password)
-
-    if email:
-        user.email = email
-
-    if first_name:
-        user.first_name = first_name
-
-    if last_name:
-        user.last_name = last_name
+    for field in fields_to_update:
+        if field in kwargs:
+            value = kwargs[field]
+            if field == "password":
+                user.set_password(value)
+            else:
+                setattr(user, field, value)
 
     user.save()
