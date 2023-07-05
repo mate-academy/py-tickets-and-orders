@@ -24,15 +24,14 @@ def get_user(user_id: int) -> User:
 def update_user(user_id: int, **kwargs) -> None:
     user = get_user(user_id)
 
-    fields_to_update = ["username", "password", "email", "first_name",
-                        "last_name"]
+    fields_to_update = [
+        "username", "password", "email", "first_name", "last_name"
+    ]
 
-    for field in fields_to_update:
-        if field in kwargs:
-            value = kwargs[field]
-            if field == "password":
+    for key, value in kwargs.items():
+        if key in fields_to_update:
+            if key == "password":
                 user.set_password(value)
             else:
-                setattr(user, field, value)
-
+                setattr(user, key, value)
     user.save()
