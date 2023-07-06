@@ -9,9 +9,11 @@ from db.models import Order, Ticket, MovieSession
 @transaction.atomic()
 def create_order(tickets: list[dict],
                  username: str,
-                 date: datetime.date = None) -> None:
-    user = get_user_model().objects.get(username=username)
-    order = Order.objects.create(user=user)
+                 date: datetime = None) -> None:
+
+    order = Order.objects.create(
+        user=get_user_model().objects.get(username=username)
+    )
 
     if date:
         order.created_at = date
@@ -25,11 +27,11 @@ def create_order(tickets: list[dict],
         row=ticket["row"],
         seat=ticket["seat"]
     ) for ticket in tickets]
+
     Ticket.objects.bulk_create(tickets_list)
 
 
 def get_orders(username: str = None) -> Order:
     if username:
-        user = get_user_model().objects.get(username=username)
-        return Order.objects.filter(user=user)
+        return Order.objects.filter(user__username=username)
     return Order.objects.all()

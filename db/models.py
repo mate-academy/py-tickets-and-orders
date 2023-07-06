@@ -3,6 +3,8 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from typing import Iterable
 
+import settings
+
 
 class Genre(models.Model):
     name = models.CharField(max_length=255, unique=True)
@@ -62,13 +64,14 @@ class User(AbstractUser):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-
-    def __str__(self) -> str:
-        return f"{self.created_at}"
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE)
 
     class Meta:
         ordering = ["-created_at"]
+
+    def __str__(self) -> str:
+        return str(self.created_at)
 
 
 class Ticket(models.Model):
@@ -93,7 +96,8 @@ class Ticket(models.Model):
             raise ValidationError({
                 "row": f"row number must be in available range: "
                        f"(1, rows): "
-                       f"(1, {self.movie_session.cinema_hall.rows})"})
+                       f"(1, {self.movie_session.cinema_hall.rows})"
+            })
         if not 1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row:
             raise ValidationError({
                 "seat": f"seat number must be in available range: "
