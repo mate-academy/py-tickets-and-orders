@@ -1,7 +1,7 @@
 from typing import Optional
 from django.db import transaction
 
-from db.models import Ticket, Order, MovieSession, User
+from db.models import Ticket, Order, User, MovieSession
 
 
 def create_order(tickets: list, username: str,
