@@ -9,8 +9,10 @@ def create_user(username: str,
     user = get_user_model().objects.create_user(
         username=username, password=password
     )
+    fields = ["email", "first_name", "last_name"]
+
     for field, data in kwargs.items():
-        if data:
+        if data and field in fields:
             setattr(user, field, data)
 
     user.save()
@@ -24,9 +26,10 @@ def update_user(user_id: int,
                 password: str = None,
                 **kwargs) -> None:
     user = get_user(user_id)
+    fields = ["username", "email", "first_name", "last_name"]
 
     for field, data in kwargs.items():
-        if data:
+        if data and field in fields:
             setattr(user, field, data)
 
     if password:

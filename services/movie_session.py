@@ -33,9 +33,10 @@ def update_movie_session(
     **kwargs,
 ) -> None:
     movie_session = get_movie_session_by_id(session_id)
+    fields = ["show_time", "cinema_hall", "movie"]
 
     for field, data in kwargs.items():
-        if data:
+        if data and field in fields:
             setattr(movie_session, field, data)
 
     movie_session.save()
