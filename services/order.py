@@ -10,9 +10,9 @@ def create_order(
         username: str,
         date: str = None
 ) -> None:
-    with transaction.atomic():
-        user = get_user_model().objects.get(username=username)
+    user = get_user_model().objects.get(username=username)
 
+    with transaction.atomic():
         order = Order.objects.create(
             user=user
         )
