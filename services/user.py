@@ -3,9 +3,6 @@ from django.contrib.auth import get_user_model
 from db.models import User
 
 
-VALID_USER_ATTRIBUTES = ["email", "first_name", "last_name"]
-
-
 def create_user(
         username: str,
         password: str,
@@ -17,7 +14,7 @@ def create_user(
     )
 
     for attr, value in kwargs.items():
-        if attr in VALID_USER_ATTRIBUTES:
+        if attr in ["email", "first_name", "last_name"]:
             setattr(user, attr, value)
     user.save()
 
@@ -36,6 +33,6 @@ def update_user(
         user.set_password(password)
 
     for attr, value in kwargs.items():
-        if attr in VALID_USER_ATTRIBUTES:
+        if attr in ["email", "first_name", "last_name", "username"]:
             setattr(user, attr, value)
     user.save()
