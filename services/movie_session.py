@@ -17,8 +17,10 @@ def get_movies_sessions(
     session_date: str = None
 ) -> QuerySet[MovieSession]:
     sessions = MovieSession.objects.all()
+
     if session_date:
         sessions = sessions.filter(show_time__date=session_date)
+
     return sessions
 
 
@@ -28,18 +30,13 @@ def get_movie_session_by_id(movie_session_id: int) -> MovieSession:
 
 def update_movie_session(
     session_id: int,
-    show_time: str = None,
-    movie_id: int = None,
-    cinema_hall_id: int = None,
+    **kwargs,
 ) -> None:
     movie_session = get_movie_session_by_id(session_id)
 
-    if show_time:
-        movie_session.show_time = show_time
-    if movie_id:
-        movie_session.movie_id = movie_id
-    if cinema_hall_id:
-        movie_session.cinema_hall_id = cinema_hall_id
+    for field, data in kwargs.items():
+        if field in kwargs:
+            setattr(movie_session, field, data)
 
     movie_session.save()
 

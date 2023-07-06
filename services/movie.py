@@ -10,6 +10,7 @@ def get_movies(
     actors_ids: list[int] = None,
 ) -> QuerySet[Movie]:
     movies = Movie.objects.all()
+
     if title:
         movies = movies.filter(title__icontains=title)
     if genres_ids:
@@ -35,8 +36,10 @@ def create_movie(
         title=movie_title,
         description=movie_description,
     )
+
     if genres_ids:
         movie.genres.set(genres_ids)
     if actors_ids:
         movie.actors.set(actors_ids)
+
     movie.save()
