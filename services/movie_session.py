@@ -5,8 +5,8 @@ from db.models import MovieSession
 
 def create_movie_session(
     movie_show_time: str, movie_id: int, cinema_hall_id: int
-) -> MovieSession:
-    return MovieSession.objects.create(
+) -> None:
+    MovieSession.objects.create(
         show_time=movie_show_time,
         movie_id=movie_id,
         cinema_hall_id=cinema_hall_id,
@@ -26,17 +26,13 @@ def get_movie_session_by_id(movie_session_id: int) -> MovieSession:
 
 def update_movie_session(
     session_id: int,
-    show_time: str = None,
-    movie_id: int = None,
-    cinema_hall_id: int = None,
+    **kwargs
 ) -> None:
     movie_session = MovieSession.objects.get(id=session_id)
-    if show_time:
-        movie_session.show_time = show_time
-    if movie_id:
-        movie_session.movie_id = movie_id
-    if cinema_hall_id:
-        movie_session.cinema_hall_id = cinema_hall_id
+
+    for attr, value in kwargs.items():
+        if attr in ["show_time", "movie_id", "cinema_hall_id"]:
+            setattr(movie_session, attr, value)
     movie_session.save()
 
 
@@ -45,12 +41,8 @@ def delete_movie_session_by_id(session_id: int) -> None:
 
 
 def get_taken_seats(movie_session_id: int) -> list[dict]:
-    return [
-        {
-            "row": ticket.row,
-            "seat": ticket.seat
-        }
-        for ticket in MovieSession.objects.get(
+    return list(
+        MovieSession.objects.get(
             id=movie_session_id
-        ).tickets.all()
-    ]
+        ).tickets.values("row", "seat")
+    )
