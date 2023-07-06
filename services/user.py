@@ -10,7 +10,7 @@ def create_user(username: str,
         username=username, password=password
     )
     for field, data in kwargs.items():
-        if field in kwargs:
+        if data:
             setattr(user, field, data)
 
     user.save()
