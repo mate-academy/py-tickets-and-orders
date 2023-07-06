@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from db.models import User
 
 
-VALID_USER_ATTRIBUTES = ['email', 'first_name', 'last_name']
+VALID_USER_ATTRIBUTES = ["email", "first_name", "last_name"]
 
 
 def create_user(
