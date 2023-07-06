@@ -15,12 +15,13 @@ def create_user(
         password=password,
     )
 
-    update_user(
-        user_id=user.id,
-        email=email,
-        first_name=first_name,
-        last_name=last_name
-    )
+    if any([email, first_name, last_name]):
+        update_user(
+            user_id=user.id,
+            email=email,
+            first_name=first_name,
+            last_name=last_name
+        )
 
 
 def get_user(user_id: int) -> settings.AUTH_USER_MODEL:

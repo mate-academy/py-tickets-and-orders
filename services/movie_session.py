@@ -47,10 +47,4 @@ def delete_movie_session_by_id(session_id: int) -> None:
 def get_taken_seats(movie_session_id: int) -> list[dict]:
     tickets = MovieSession.objects.get(id=movie_session_id).ticket_set.all()
 
-    return [
-        {
-            "row": ticket.row,
-            "seat": ticket.seat
-        }
-        for ticket in tickets
-    ]
+    return list(tickets.values("row", "seat"))
