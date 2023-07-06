@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from typing import Any
+from settings import AUTH_USER_MODEL
 
 
 class Genre(models.Model):
@@ -25,13 +26,13 @@ class Movie(models.Model):
     actors = models.ManyToManyField(to=Actor)
     genres = models.ManyToManyField(to=Genre)
 
-    def __str__(self) -> str:
-        return self.title
-
     class Meta:
         indexes = [
             models.Index(fields=["title"])
         ]
+
+    def __str__(self) -> str:
+        return self.title
 
 
 class CinemaHall(models.Model):
@@ -62,13 +63,14 @@ class User(AbstractUser):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-
-    def __str__(self) -> str:
-        return str(self.created_at)
+    user = models.ForeignKey(AUTH_USER_MODEL,
+                             on_delete=models.CASCADE)
 
     class Meta:
         ordering = ["-created_at"]
+
+    def __str__(self) -> str:
+        return str(self.created_at)
 
 
 class Ticket(models.Model):
