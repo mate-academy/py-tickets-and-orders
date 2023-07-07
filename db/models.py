@@ -79,16 +79,12 @@ class Ticket(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=("row", "seat"), name="unique_row_seat"
+                fields=("row", "seat", "movie_session"), name="unique_ticket"
             ),
         ]
 
     def __str__(self) -> str:
-        return (
-            f"{self.movie_session.movie.title} "
-            f"{self.movie_session.show_time} "
-            f"(row: {self.row}, seat: {self.seat})"
-        )
+        return f"{self.movie_session} (row: {self.row}, seat: {self.seat})"
 
     def clean(self) -> None:
         if not (1 <= self.row <= self.movie_session.cinema_hall.rows):
