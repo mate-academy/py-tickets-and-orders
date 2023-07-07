@@ -6,17 +6,23 @@ from db.models import User
 def create_user(
     username: str,
     password: str,
-    email: str = "",
-    first_name: str = "",
-    last_name: str = ""
-) -> User:
-    return get_user_model().objects.create_user(
+    **kwargs
+) -> None:
+    user = get_user_model().objects.create_user(
         username=username,
-        password=password,
-        email=email,
-        first_name=first_name,
-        last_name=last_name
+        password=password
     )
+    fields = (
+        "username",
+        "email",
+        "first_name",
+        "last_name"
+    )
+    for data in kwargs:
+        if data in fields:
+            setattr(user, data, kwargs[data])
+
+    user.save()
 
 
 def get_user(user_id: int) -> User:
