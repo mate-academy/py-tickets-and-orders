@@ -100,8 +100,8 @@ class Ticket(models.Model):
             raise ValidationError(
                 {
                     "row": [
-                        f"row number must be in available range: "
-                        f"(1, rows): (1, {self.movie_session.cinema_hall.rows})"
+                        f"row number must be in available range: (1, rows): "
+                        f"(1, {self.movie_session.cinema_hall.rows})"
                     ]
                 }
             )
@@ -117,10 +117,13 @@ class Ticket(models.Model):
             )
 
     def save(
-            self, force_insert=False,
-            force_update=False,
-            using=None,
-            update_fields=None
+            self,
+            force_insert: bool = False,
+            force_update: bool = False,
+            using: str = None,
+            update_fields: list[str] = None
     ) -> None:
         self.full_clean()
-        return super(Ticket, self).save(force_insert, force_update, using, update_fields)
+        return super(Ticket, self).save(
+            force_insert, force_update, using, update_fields
+        )
