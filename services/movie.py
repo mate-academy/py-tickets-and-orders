@@ -9,18 +9,18 @@ def get_movies(
     actors_ids: list[int] = None,
     title: str = None
 ) -> QuerySet:
-    queryset = Movie.objects.all()
+    movies = Movie.objects.all()
 
     if genres_ids:
-        queryset = queryset.filter(genres__id__in=genres_ids)
+        movies = movies.filter(genres__id__in=genres_ids)
 
     if actors_ids:
-        queryset = queryset.filter(actors__id__in=actors_ids)
+        movies = movies.filter(actors__id__in=actors_ids)
 
     if title:
-        queryset = queryset.filter(title__icontains=title)
+        movies = movies.filter(title__icontains=title)
 
-    return queryset
+    return movies
 
 
 def get_movie_by_id(movie_id: int) -> Movie:
