@@ -4,6 +4,8 @@ from typing import Any
 from django.db import models
 from django.db.models import UniqueConstraint
 
+from settings import AUTH_USER_MODEL
+
 
 class Genre(models.Model):
     name = models.CharField(max_length=255, unique=True)
@@ -63,7 +65,7 @@ class User(AbstractUser):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def __str__(self) -> str:
         return str(self.created_at)
