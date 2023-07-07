@@ -6,11 +6,17 @@ from db.models import User
 def create_user(username: str,
                 password: str,
                 **kwargs) -> None:
-    get_user_model().objects.create_user(
+    user = get_user_model().objects.create_user(
         username=username,
         password=password,
-        **kwargs
     )
+
+    fields = ["username", "email", "first_name", "last_name"]
+    for data_field, data in kwargs.items():
+        if data and (data_field in fields):
+            setattr(user, data_field, data)
+
+    user.save()
 
 
 def get_user(user_id: int) -> User:
@@ -22,10 +28,12 @@ def update_user(user_id: int,
                 **kwargs) -> None:
     user = get_user(user_id)
 
+    fields = ["username", "email", "first_name", "last_name"]
+    for data_field, data in kwargs.items():
+        if data and (data_field in fields):
+            setattr(user, data_field, data)
+
     if password:
         user.set_password(password)
-
-    for data_field, data in kwargs.items():
-        setattr(user, data_field, data)
 
     user.save()
