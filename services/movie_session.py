@@ -48,8 +48,4 @@ def get_taken_seats(movie_session_id: int) -> list[dict]:
     movie_session = get_movie_session_by_id(movie_session_id)
     tickets = movie_session.ticket_set.all()
 
-    tickets_list = []
-    for ticket in tickets:
-        tickets_list.append({"row": ticket.row, "seat": ticket.seat})
-
-    return tickets_list
+    return [{"row": ticket.row, "seat": ticket.seat} for ticket in tickets]
