@@ -1,4 +1,3 @@
-from datetime import datetime
 from typing import List, Dict
 
 from django.contrib.auth import get_user_model
