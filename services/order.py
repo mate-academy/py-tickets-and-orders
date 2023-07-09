@@ -13,9 +13,11 @@ def validate_movie_session(movie_session_id: int) -> bool:
     return True
 
 
-def create_order(tickets: list[Ticket],
-                 username: str,
-                 date: str = None) -> None:
+def create_order(
+        tickets: list[Ticket],
+        username: str,
+        date: str = None
+) -> None:
 
     current_user = get_user_model().objects.get(username=username)
     order = Order(user=current_user)
