@@ -30,7 +30,7 @@ class Movie(models.Model):
     genres = models.ManyToManyField(to=Genre)
 
     class Meta:
-        indexes: [
+        indexes = [
             models.Index(fields=["title"])
         ]
 
