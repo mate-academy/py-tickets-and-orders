@@ -20,10 +20,7 @@ def create_user(
 
 
 def get_user(user_id: int) -> [User, str]:
-    try:
-        return get_user_model().objects.get(id=user_id)
-    except Exception as e:
-        return e
+    return get_user_model().objects.get(id=user_id)
 
 
 def update_user(
@@ -34,10 +31,7 @@ def update_user(
         first_name: str = "",
         last_name: str = "",
 ) -> [None, str]:
-    try:
-        user = get_user_model().objects.get(id=user_id)
-    except Exception as e:
-        return e
+    user = get_user_model().objects.get(id=user_id)
 
     if username:
         user.username = username
