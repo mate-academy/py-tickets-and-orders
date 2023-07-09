@@ -1,7 +1,7 @@
 from django.db import transaction
 from django.db.models import QuerySet
 
-from db.models import Order, MovieSession, Ticket
+from db.models import Order, Ticket
 from services.user import get_user_by_username
 
 
