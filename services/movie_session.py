@@ -46,6 +46,6 @@ def delete_movie_session_by_id(session_id: int) -> None:
 
 def get_taken_seats(movie_session_id: int) -> list[dict]:
     return list(MovieSession.objects.filter(id=movie_session_id).values(
-        row=F("ticket__row"),
-        seat=F("ticket__seat")
+        row=F("tickets__row"),
+        seat=F("tickets__seat")
     ))

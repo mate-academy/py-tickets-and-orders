@@ -21,17 +21,17 @@ def create_order(
         date: str = None
 ) -> None:
 
-    current_user = get_user_model().objects.get(username=username)
-    order = Order(user=current_user)
+    order = Order(
+        user=get_user_model().objects.get(username=username)
+    )
 
-    for ticket in tickets:
-        validate_movie_session(ticket["movie_session"])
-        movie = MovieSession.objects.get(id=ticket["movie_session"])
+    with transaction.atomic():
+        for ticket in tickets:
+            validate_movie_session(ticket["movie_session"])
+            movie = MovieSession.objects.get(id=ticket["movie_session"])
 
-        if date:
-            order.created_at = date
-
-        with transaction.atomic():
+            if date:
+                order.created_at = date
             order.save()
 
             Ticket.objects.create(
