@@ -6,16 +6,12 @@ from db.models import User
 def create_user(
         username: str,
         password: str,
-        email: str = "",
-        first_name: str = "",
-        last_name: str = "",
+        **kwargs,
 ) -> None:
     get_user_model().objects.create_user(
         username=username,
         password=password,
-        email=email,
-        first_name=first_name,
-        last_name=last_name
+        **kwargs
     )
 
 
@@ -25,27 +21,23 @@ def get_user(user_id: int) -> [User, str]:
 
 def update_user(
         user_id: int,
-        username: str = "",
-        password: str = "",
-        email: str = "",
-        first_name: str = "",
-        last_name: str = "",
+        **kwargs
 ) -> [None, str]:
-    user = get_user_model().objects.get(id=user_id)
+    user = get_user(user_id=user_id)
 
-    if username:
-        user.username = username
+    if "username" in kwargs:
+        user.username = kwargs["username"]
 
-    if password:
-        user.set_password(raw_password=password)
+    if "password" in kwargs:
+        user.set_password(raw_password=kwargs["password"])
 
-    if email:
-        user.email = email
+    if "email" in kwargs:
+        user.email = kwargs["email"]
 
-    if first_name:
-        user.first_name = first_name
+    if "first_name" in kwargs:
+        user.first_name = kwargs["first_name"]
 
-    if last_name:
-        user.last_name = last_name
+    if "last_name" in kwargs:
+        user.last_name = kwargs["last_name"]
 
     user.save()
