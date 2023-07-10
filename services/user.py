@@ -5,52 +5,36 @@ from db.models import User
 def create_user(
         username: str,
         password: str,
-        email: str = None,
-        first_name: str = None,
-        last_name: str = None
+        **kwargs
 ) -> User:
     user_data = {
         "username": username,
         "password": password,
     }
 
-    if email:
-        user_data["email"] = email
+    user = get_user_model().objects.create_user(**user_data)
 
-    if first_name:
-        user_data["first_name"] = first_name
+    for key, value in kwargs.items():
+        if value is not None and value != "":
+            setattr(user, key, value)
 
-    if last_name:
-        user_data["last_name"] = last_name
+    user.save()
 
-    return get_user_model().objects.create_user(**user_data)
+    return user
 
 
 def get_user(user_id: int) -> User:
     return get_user_model().objects.get(id=user_id)
 
 
-def update_user(user_id: int,
-                username: str = None,
-                password: str = None,
-                email: str = None,
-                first_name: str = None,
-                last_name: str = None) -> None:
+def update_user(user_id: int, **kwargs) -> None:
     user = get_user_model().objects.get(id=user_id)
 
-    if username:
-        user.username = username
+    for key, value in kwargs.items():
+        if value is not None and value != "":
+            setattr(user, key, value)
 
-    if password:
-        user.set_password(password)
-
-    if email:
-        user.email = email
-
-    if first_name:
-        user.first_name = first_name
-
-    if last_name:
-        user.last_name = last_name
+    if "password" in kwargs and kwargs["password"]:
+        user.set_password(kwargs["password"])
 
     user.save()

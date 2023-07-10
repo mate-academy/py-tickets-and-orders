@@ -7,13 +7,15 @@ from django.db.models import QuerySet
 def create_order(
         tickets: list[dict],
         username: str,
-        date: str = None) -> Order:
+        date: str = None
+) -> Order:
     with transaction.atomic():
         user = get_user_model().objects.get(username=username)
         order = Order.objects.create(user=user)
 
         if date:
             order.created_at = date
+            order.save()
 
         for ticket in tickets:
             Ticket.objects.create(
@@ -22,7 +24,6 @@ def create_order(
                 row=ticket["row"],
                 seat=ticket["seat"]
             )
-        order.save()
 
     return order
 
