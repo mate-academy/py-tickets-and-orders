@@ -4,56 +4,35 @@ from settings import AUTH_USER_MODEL
 
 
 def create_user(
-    username: str,
-    password: str,
-    email: str = None,
-    first_name: str = None,
-    last_name: str = None
+        username: str,
+        password: str,
+        **kwargs
 ) -> None:
     user = get_user_model().objects.create_user(
-        username=username, password=password
+        username=username,
+        password=password
     )
 
-    if email:
-        user.email = email
-
-    if first_name:
-        user.first_name = first_name
-
-    if last_name:
-        user.last_name = last_name
-
+    for attr, value in kwargs.items():
+        if attr in ["email", "first_name", "last_name"]:
+            setattr(user, attr, value)
     user.save()
 
 
 def get_user(user_id: int) -> AUTH_USER_MODEL:
-    user = get_user_model()
-    return user.objects.get(id=user_id)
+    return get_user_model().objects.get(id=user_id)
 
 
 def update_user(
         user_id: int,
-        username: str = None,
         password: str = None,
-        email: str = None,
-        first_name: str = None,
-        last_name: str = None
+        **kwargs
 ) -> None:
-    user = get_user_model().objects.get(pk=user_id)
-
-    if username:
-        user.username = username
-
+    user = get_user_model().objects.get(id=user_id)
     if password:
         user.set_password(password)
 
-    if email:
-        user.email = email
-
-    if first_name:
-        user.first_name = first_name
-
-    if last_name:
-        user.last_name = last_name
-
+    for attr, value in kwargs.items():
+        if attr in ["email", "first_name", "last_name", "username"]:
+            setattr(user, attr, value)
     user.save()

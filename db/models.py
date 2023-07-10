@@ -1,5 +1,8 @@
 from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
 from django.db import models
+
+import settings
 
 
 class Genre(models.Model):
@@ -18,10 +21,21 @@ class Actor(models.Model):
 
 
 class Movie(models.Model):
-    title = models.CharField(max_length=255, db_index=True)
+    title = models.CharField(max_length=255)
     description = models.TextField()
-    actors = models.ManyToManyField(to=Actor)
-    genres = models.ManyToManyField(to=Genre)
+    actors = models.ManyToManyField(
+        to=Actor,
+        related_name="movies"
+    )
+    genres = models.ManyToManyField(
+        to=Genre,
+        related_name="movies"
+    )
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["title"])
+        ]
 
     def __str__(self) -> str:
         return self.title
@@ -42,8 +56,16 @@ class CinemaHall(models.Model):
 
 class MovieSession(models.Model):
     show_time = models.DateTimeField()
-    cinema_hall = models.ForeignKey(to=CinemaHall, on_delete=models.CASCADE)
-    movie = models.ForeignKey(to=Movie, on_delete=models.CASCADE)
+    cinema_hall = models.ForeignKey(
+        to=CinemaHall,
+        on_delete=models.CASCADE,
+        related_name="movie_sessions"
+    )
+    movie = models.ForeignKey(
+        to=Movie,
+        on_delete=models.CASCADE,
+        related_name="movie_sessions"
+    )
 
     def __str__(self) -> str:
         return f"{self.movie.title} {str(self.show_time)}"
@@ -55,13 +77,17 @@ class User(AbstractUser):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
-
-    def __str__(self) -> str:
-        return f"{self.created_at}"
+    user = models.ForeignKey(
+        to=settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="orders"
+    )
 
     class Meta:
         ordering = ["-created_at"]
+
+    def __str__(self) -> str:
+        return f"{self.created_at}"
 
 
 class Ticket(models.Model):
@@ -94,9 +120,7 @@ class Ticket(models.Model):
         )
 
     def clean(self) -> None:
-        from django.core.exceptions import ValidationError
-
-        if not 1 <= self.row <= self.movie_session.cinema_hall.rows:
+        if not (1 <= self.row <= self.movie_session.cinema_hall.rows):
             raise ValidationError(
                 {
                     "row": [
@@ -105,7 +129,7 @@ class Ticket(models.Model):
                     ]
                 }
             )
-        if not 1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row:
+        if not (1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row):
             raise ValidationError(
                 {
                     "seat": [
