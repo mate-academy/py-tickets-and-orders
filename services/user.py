@@ -3,9 +3,11 @@ from django.contrib.auth import get_user_model
 from db.models import User
 
 
-def create_user(username: str, password: str,
-                **kwargs
-                ) -> None:
+def create_user(
+        username: str,
+        password: str,
+        **kwargs
+) -> None:
     get_user_model().objects.create_user(
         username=username,
         password=password,
