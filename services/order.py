@@ -13,11 +13,13 @@ def create_order(
         username: str,
         date: Optional[str] = None
 ) -> None:
-    user = get_user_model().objects.get(username=username)
-    order = Order.objects.create(user=user)
+    order = Order.objects.create(
+        user=get_user_model().objects.get(username=username)
+    )
 
-    if date is not None:
-        Order.objects.filter(id=order.id).update(created_at=date)
+    if date:
+        order.created_at = date
+    order.save()
 
     Ticket.objects.bulk_create(
         [
