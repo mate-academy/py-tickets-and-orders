@@ -4,13 +4,16 @@ from django.db.models import QuerySet
 
 def create_user(username: str,
                 password: str,
-                email: str = "",
-                first_name: str = "",
-                last_name: str = "") -> None:
-    get_user_model().objects.create_user(
-        username=username, password=password,
-        email=email, first_name=first_name, last_name=last_name
+                **kwargs) -> None:
+    data = ["email", "first_name", "last_name"]
+    user = get_user_model().objects.create_user(
+        username=username,
+        password=password
     )
+    for key, value in kwargs.items():
+        if key in data:
+            setattr(user, key, value)
+        user.save()
 
 
 def get_user(user_id: int) -> QuerySet:
@@ -18,11 +21,11 @@ def get_user(user_id: int) -> QuerySet:
 
 
 def update_user(user_id: int,
-                username: str = "",
-                password: str = "",
-                email: str = "",
-                first_name: str = "",
-                last_name: str = "") -> None:
+                username: str = None,
+                password: str = None,
+                email: str = None,
+                first_name: str = None,
+                last_name: str = None) -> None:
     user_updates = get_user(user_id)
     if username:
         user_updates.username = username
