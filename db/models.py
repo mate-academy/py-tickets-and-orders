@@ -77,6 +77,14 @@ class Ticket(models.Model):
     row = models.IntegerField()
     seat = models.IntegerField()
 
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                fields=["row", "seat", "movie_session"],
+                name="unique_ticket_row_seat_movie_session"
+            )
+        ]
+
     def __str__(self) -> str:
         return (f"{self.movie_session} "
                 f"(row: {self.row}, seat: {self.seat})")
@@ -106,14 +114,6 @@ class Ticket(models.Model):
         return super().save(
             force_insert, force_update, using, update_fields
         )
-
-    class Meta:
-        constraints = [
-            UniqueConstraint(
-                fields=["row", "seat", "movie_session"],
-                name="unique_ticket_row_seat_movie_session"
-            )
-        ]
 
 
 class User(AbstractUser):
