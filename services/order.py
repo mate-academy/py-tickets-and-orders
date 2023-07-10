@@ -8,7 +8,9 @@ def validate_movie_session(movie_session_id: int) -> bool:
     try:
         MovieSession.objects.get(id=movie_session_id)
     except MovieSession.DoesNotExist:
-        print(f"MovieSession with id: {movie_session_id}, does not exist")
+        raise MovieSession.DoesNotExist(
+            f"MovieSession with id: {movie_session_id}, does not exist"
+        )
 
     return True
 
@@ -25,13 +27,13 @@ def create_order(
     for ticket in tickets:
         validate_movie_session(ticket["movie_session"])
         movie = MovieSession.objects.get(id=ticket["movie_session"])
+
         if date:
             order.created_at = date
 
         with transaction.atomic():
             order.save()
 
-        with transaction.atomic():
             Ticket.objects.create(
                 row=ticket["row"],
                 seat=ticket["seat"],
