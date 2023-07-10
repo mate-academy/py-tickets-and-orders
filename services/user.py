@@ -13,9 +13,9 @@ def create_user(
         password=password
     )
 
-    for el in kwargs:
-        if el in ["username", "email", "first_name", "last_name"]:
-            setattr(user, el, kwargs[el])
+    for user_data in kwargs:
+        if user_data in ["username", "email", "first_name", "last_name"]:
+            setattr(user, user_data, kwargs[user_data])
 
     user.save()
     return user
@@ -31,10 +31,10 @@ def update_user(
 ) -> None:
     user_update = get_user(user_id)
 
-    for el in kwargs:
-        if el in ["username", "email", "first_name", "last_name"]:
-            setattr(user_update, el, kwargs[el])
-        if el == "password":
-            user_update.set_password(kwargs[el])
+    for user_data in kwargs:
+        if user_data in ["username", "email", "first_name", "last_name"]:
+            setattr(user_update, user_data, kwargs[user_data])
+        if user_data == "password":
+            user_update.set_password(kwargs[user_data])
 
     user_update.save()
