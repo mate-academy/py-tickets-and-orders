@@ -27,13 +27,13 @@ class Movie(models.Model):
     actors = models.ManyToManyField(to=Actor)
     genres = models.ManyToManyField(to=Genre)
 
-    def __str__(self) -> str:
-        return self.title
-
     class Meta:
         indexes = [
             models.Index(fields=["title"])
         ]
+
+    def __str__(self) -> str:
+        return self.title
 
 
 class CinemaHall(models.Model):
@@ -62,11 +62,11 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(to=AUTH_USER_MODEL, on_delete=models.CASCADE)
 
-    def __str__(self) -> str:
-        return str(self.created_at)
-
     class Meta:
         ordering = ["-created_at"]
+
+    def __str__(self) -> str:
+        return str(self.created_at)
 
 
 class Ticket(models.Model):
@@ -78,6 +78,14 @@ class Ticket(models.Model):
     order = models.ForeignKey(to=Order, on_delete=models.CASCADE)
     row = models.IntegerField()
     seat = models.IntegerField()
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                fields=["row", "seat", "movie_session"],
+                name="unique_ticket_row_seat_movie_session"
+            )
+        ]
 
     def __str__(self) -> str:
         return f"{self.movie_session} (row: {self.row}, seat: {self.seat})"
@@ -102,14 +110,6 @@ class Ticket(models.Model):
     ) -> "Ticket":
         self.full_clean()
         return super().save()
-
-    class Meta:
-        constraints = [
-            UniqueConstraint(
-                fields=["row", "seat", "movie_session"],
-                name="unique_ticket_row_seat_movie_session"
-            )
-        ]
 
 
 class User(AbstractUser):

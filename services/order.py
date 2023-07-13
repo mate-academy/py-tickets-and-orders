@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from django.contrib.auth import get_user_model
 from django.db.models import QuerySet
 
 from db.models import Order, User, Ticket, MovieSession
@@ -13,7 +14,7 @@ def create_order(
         date: datetime = None
 ) -> None:
     new_order = Order.objects.create(
-        user_id=User.objects.get(username=username).id
+        user_id=get_user_model().objects.get(username=username).id
     )
     if date:
         new_order.created_at = date
