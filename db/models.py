@@ -31,9 +31,7 @@ class Movie(models.Model):
         return self.title
 
     class Meta:
-        indexes = [
-            models.Index(fields=["title"])
-        ]
+        indexes = [models.Index(fields=["title"])]
 
 
 class CinemaHall(models.Model):
@@ -75,8 +73,7 @@ class Order(models.Model):
 
 class Ticket(models.Model):
     movie_session = models.ForeignKey(
-        to=MovieSession,
-        on_delete=models.CASCADE
+        to=MovieSession, on_delete=models.CASCADE
     )
     order = models.ForeignKey(to=Order, on_delete=models.CASCADE)
     row = models.IntegerField()
@@ -84,42 +81,45 @@ class Ticket(models.Model):
 
     class Meta:
         constraints = [
-            UniqueConstraint(fields=[
-                "movie_session", "seat", "row"
-            ], name="movie_session_seat_and_row")
+            UniqueConstraint(
+                fields=["movie_session", "seat", "row"],
+                name="movie_session_seat_and_row",
+            )
         ]
 
     def __str__(self) -> str:
-        return (f"{self.movie_session.movie.title} "
-                f"{self.movie_session.show_time} "
-                f"(row: {self.row}, seat: {self.seat})")
+        return (
+            f"{self.movie_session.movie.title} "
+            f"{self.movie_session.show_time} "
+            f"(row: {self.row}, seat: {self.seat})"
+        )
 
     def clean(self) -> None:
         if not (1 <= self.row <= self.movie_session.cinema_hall.rows):
             raise ValidationError(
                 {
                     "row": f"row number must be in available range: "
-                           f"(1, rows): "
-                           f"(1, {self.movie_session.cinema_hall.rows})"
+                    f"(1, rows): "
+                    f"(1, {self.movie_session.cinema_hall.rows})"
                 }
             )
         if not (1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row):
             raise ValidationError(
                 {
                     "seat": f"seat number must be in available range: "
-                            f"(1, seats_in_row): (1, "
-                            f"{self.movie_session.cinema_hall.seats_in_row})"
+                    f"(1, seats_in_row): (1, "
+                    f"{self.movie_session.cinema_hall.seats_in_row})"
                 }
             )
 
-    def save(self, force_insert: bool = False,
-             force_update: bool = False,
-             using: Optional[str] = None,
-             update_fields: Optional[list[str]] = None) -> None:
+    def save(
+        self,
+        force_insert: bool = False,
+        force_update: bool = False,
+        using: Optional[str] = None,
+        update_fields: Optional[list[str]] = None,
+    ) -> None:
         self.full_clean()
         return super(Ticket, self).save(
-            force_insert,
-            force_update,
-            using,
-            update_fields
+            force_insert, force_update, using, update_fields
         )
