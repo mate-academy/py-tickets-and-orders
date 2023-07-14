@@ -141,6 +141,7 @@ def test_order_str(orders_data):
 
 
 def test_order_ordering(orders_data):
+    print(Order.objects.all())
     assert list(
         Order.objects.all().values_list("id")
     ) == list(
@@ -149,6 +150,7 @@ def test_order_ordering(orders_data):
 
 
 def test_ticket_str(tickets_data):
+    print(Ticket.objects.all())
     assert str(
         Ticket.objects.first()
     ) == "Matrix 2019-08-19 20:30:00 (row: 7, seat: 10)"
