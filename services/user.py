@@ -1,5 +1,4 @@
 from django.contrib.auth import get_user_model
-from django.db.models import Q, QuerySet
 from django.db import transaction
 
 from db.models import User
