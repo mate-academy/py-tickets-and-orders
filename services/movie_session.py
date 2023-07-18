@@ -48,10 +48,7 @@ def delete_movie_session_by_id(session_id: int) -> None:
 
 
 def get_taken_seats(movie_session_id: int) -> list[dict]:
-    if not MovieSession.objects.filter(id=movie_session_id).exists():
-        raise ValueError("Movie session does not exist")
-    return list(
-        MovieSession.objects.get(id=movie_session_id)
-        .ticket_set.all()
-        .values("row", "seat")
-    )
+    session = MovieSession.objects.filter(id=movie_session_id).first()
+    if session:
+        return list(session.tickets.values("row", "seat"))
+    raise ValueError("Movie session does not exist")

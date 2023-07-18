@@ -1,9 +1,9 @@
 from datetime import datetime
 from django.db import transaction
 from django.db.models import Q, QuerySet
+from django.contrib.auth import get_user_model
 
 from db.models import Order, Ticket
-from services.user import find_users
 from services.movie_session import get_movie_session_by_id
 
 
@@ -11,13 +11,9 @@ def create_order(
     tickets: list[dict],
     username: str,
     date: datetime = None
-) -> None:
-    user = find_users(username=username).first()
-    if not user:
-        raise ValueError("User does not exist")
-    if len(tickets) < 1:
-        raise ValueError("Unable to create an order without any tickets")
+) -> None:    
     with transaction.atomic():
+        user = get_user_model().objects.filter(username=username).first()
         order = Order.objects.create(user=user)
         if date:
             order.created_at = datetime.strptime(date, "%Y-%m-%d %H:%M")

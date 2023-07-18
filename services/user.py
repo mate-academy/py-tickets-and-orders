@@ -35,24 +35,6 @@ def get_user(user_id: int) -> User | None:
         return None
 
 
-def find_users(
-    username: str = None,
-    email: str = None,
-    first_name: str = None,
-    last_name: str = None
-) -> QuerySet[User]:
-    search_creteria = Q()
-    if username:
-        search_creteria &= Q(username=username)
-    if email:
-        search_creteria &= Q(email=email)
-    if first_name:
-        search_creteria &= Q(first_name=first_name)
-    if last_name:
-        search_creteria &= Q(last_name=last_name)
-    return User.objects.filter(search_creteria)
-
-
 def update_user(
     user_id: int,
     username: str = None,
