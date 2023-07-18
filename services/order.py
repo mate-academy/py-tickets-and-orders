@@ -11,7 +11,7 @@ def create_order(
     tickets: list[dict],
     username: str,
     date: datetime = None
-) -> None:    
+) -> None:
     with transaction.atomic():
         user = get_user_model().objects.filter(username=username).first()
         order = Order.objects.create(user=user)
