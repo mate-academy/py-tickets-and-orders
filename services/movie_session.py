@@ -20,8 +20,11 @@ def get_movies_sessions(session_date: str = None) -> QuerySet:
     return queryset
 
 
-def get_movie_session_by_id(movie_session_id: int) -> MovieSession:
-    return MovieSession.objects.get(id=movie_session_id)
+def get_movie_session_by_id(movie_session_id: int) -> MovieSession | None:
+    try:
+        return MovieSession.objects.get(id=movie_session_id)
+    except MovieSession.DoesNotExist:
+        return None
 
 
 def update_movie_session(
@@ -42,3 +45,10 @@ def update_movie_session(
 
 def delete_movie_session_by_id(session_id: int) -> None:
     MovieSession.objects.get(id=session_id).delete()
+
+
+def get_taken_seats(movie_session_id: int) -> list[dict]:
+    session = MovieSession.objects.filter(id=movie_session_id).first()
+    if session:
+        return list(session.tickets.values("row", "seat"))
+    raise ValueError("Movie session does not exist")
