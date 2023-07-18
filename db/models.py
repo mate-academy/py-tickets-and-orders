@@ -58,11 +58,11 @@ class Order(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE)
 
-    def __str__(self) -> str:
-        return f"{self.created_at}"
-
     class Meta:
         ordering = ["-created_at"]
+
+    def __str__(self) -> str:
+        return f"{self.created_at}"
 
 
 class Ticket(models.Model):
@@ -72,10 +72,16 @@ class Ticket(models.Model):
     row = models.PositiveIntegerField()
     seat = models.PositiveIntegerField()
 
+    class Meta:
+        constraints = [
+            UniqueConstraint(fields=["row", "seat", "movie_session"],
+                             name="unique_ticket")
+        ]
+
     def __str__(self) -> str:
-        title = self.movie_session.movie.title
-        show_time = self.movie_session.show_time
-        return f"{title} {show_time} (row: {self.row}, seat: {self.seat})"
+        return (f"{self.movie_session.movie.title} "
+                f"{self.movie_session.show_time} "
+                f"(row: {self.row}, seat: {self.seat})")
 
     def clean(self) -> None:
         rows = self.movie_session.cinema_hall.rows
@@ -94,12 +100,6 @@ class Ticket(models.Model):
     def save(self, *args, **kwargs) -> None:
         self.full_clean()
         super().save(*args, **kwargs)
-
-    class Meta:
-        constraints = [
-            UniqueConstraint(fields=["row", "seat", "movie_session"],
-                             name="unique_ticket")
-        ]
 
 
 class User(AbstractUser):

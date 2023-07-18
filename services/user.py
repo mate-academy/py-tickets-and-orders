@@ -6,16 +6,19 @@ from db.models import User
 
 def create_user(username: str,
                 password: str,
-                email: str = "",
-                first_name: str = "",
-                last_name: str = "") -> None:
+                email: str = None,
+                first_name: str = None,
+                last_name: str = None) -> None:
 
-    with transaction.atomic():
-        get_user_model().objects.create_user(username=username,
-                                             password=password,
-                                             email=email,
-                                             first_name=first_name,
-                                             last_name=last_name)
+    user = get_user_model().objects.create_user(username=username,
+                                                password=password)
+    if email:
+        user.email = email
+    if first_name:
+        user.first_name = first_name
+    if last_name:
+        user.last_name = last_name
+    user.save()
 
 
 def get_user(user_id: int) -> User:
