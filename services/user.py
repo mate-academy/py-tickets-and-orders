@@ -34,7 +34,8 @@ def update_user(user_id: int, **kwargs) -> None:
         if value is not None and value != "":
             setattr(user, key, value)
 
-    if "password" in kwargs and kwargs["password"]:
-        user.set_password(kwargs["password"])
+    password = kwargs.get("password")
+    if password:
+        user.set_password(password)
 
     user.save()
