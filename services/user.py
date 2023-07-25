@@ -8,19 +8,36 @@ def create_user(
         first_name: str = None,
         last_name: str = None
 ) -> None:
-    pass
+    user = User.objects.create_user(username, email, password)
+    if first_name:
+        user.first_name = first_name
+    if last_name:
+        user.last_name = last_name
+    user.save()
 
 
 def get_user(user_id: int) -> User:
-    return User.objects.get(user_id=user_id)
+    return User.objects.get(id=user_id)
 
 
 def update_user(
         user_id: int,
-        usename: str = None,
+        username: str = None,
         password: str = None,
         email: str = None,
         first_name: str = None,
         last_name: str = None
 ) -> None:
-    pass
+    user = User.objects.get(id=user_id)
+    input_values = {
+        "username": username,
+        "email": email,
+        "first_name": first_name,
+        "last_name": last_name
+    }
+    for param, value in input_values.items():
+        if value:
+            user.__setattr__(param, value)
+    if password:
+        user.set_password(password)
+    user.save()
