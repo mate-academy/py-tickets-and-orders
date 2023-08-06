@@ -1,7 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import UniqueConstraint
 
 import settings
 
@@ -60,8 +59,15 @@ class MovieSession(models.Model):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
+<<<<<<< HEAD
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE)
+=======
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
+>>>>>>> 82d674761e06906a675b053a1febf5397331c069
 
     class Meta:
         ordering = ["-created_at"]
