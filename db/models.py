@@ -59,15 +59,11 @@ class MovieSession(models.Model):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-<<<<<<< HEAD
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             on_delete=models.CASCADE)
-=======
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+        to=settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
+        related_name="orders"
     )
->>>>>>> 82d674761e06906a675b053a1febf5397331c069
 
     class Meta:
         ordering = ["-created_at"]
@@ -79,13 +75,23 @@ class Order(models.Model):
 class Ticket(models.Model):
     row = models.IntegerField()
     seat = models.IntegerField()
-    movie_session = models.ForeignKey(MovieSession, on_delete=models.CASCADE)
-    order = models.ForeignKey("Order", on_delete=models.CASCADE)
+    movie_session = models.ForeignKey(
+        to=MovieSession,
+        on_delete=models.CASCADE,
+        related_name="tickets"
+    )
+    order = models.ForeignKey(
+        to=Order,
+        on_delete=models.CASCADE,
+        related_name="tickets"
+    )
 
     class Meta:
         constraints = [
-            UniqueConstraint(fields=["movie_session", "seat", "row"],
-                             name="unique_tickets")
+            models.UniqueConstraint(
+                fields=["movie_session", "seat", "row"],
+                name="unique_tickets"
+            )
         ]
 
     def __str__(self) -> str:
