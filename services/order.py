@@ -6,15 +6,23 @@ from django.contrib.auth import get_user_model
 from db.models import Order, Ticket, MovieSession
 
 
-def create_order(tickets: list[dict], username: str, date: datetime = None):
+def create_order(
+        tickets: list[dict],
+        username: str, date:
+        datetime = None
+) -> Order:
     with transaction.atomic():
-        order = Order.objects.create(user=get_user_model().objects.get(username=username))
+        order = Order.objects.create(
+            user=get_user_model().objects.get(username=username)
+        )
         if date is not None:
             Order.objects.filter(id=order.id).update(created_at=date)
 
         Ticket.objects.bulk_create(
             Ticket(
-                movie_session=MovieSession.objects.get(id=ticket_data["movie_session"]),
+                movie_session=MovieSession.objects.get(
+                    id=ticket_data["movie_session"]
+                ),
                 order=order,
                 row=ticket_data["row"],
                 seat=ticket_data["seat"]

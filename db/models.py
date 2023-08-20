@@ -93,32 +93,38 @@ class Ticket(models.Model):
     row = models.IntegerField()
     seat = models.IntegerField()
 
-    def clean(self):
+    def clean(self) -> None:
         cinema_hall = self.movie_session.cinema_hall
         if not (1 <= self.row <= cinema_hall.rows):
-            raise ValidationError(
-                {'row': [
-                    f"row number must be in available range: (1, rows): (1, {cinema_hall.rows})"]
-                }
-            )
+            raise ValidationError({"row": [
+                "row number must be in available range: (1, rows): "
+                f"(1, {cinema_hall.rows})"]
+            })
         if not (1 <= self.seat <= cinema_hall.seats_in_row):
-            raise ValidationError(
-                {"seat": [
-                    "seat number must be in available range: "
-                    f"(1, seats_in_row): (1, {cinema_hall.seats_in_row})"]
-                }
-            )
+            raise ValidationError({"seat": [
+                "seat number must be in available range: "
+                f"(1, seats_in_row): (1, {cinema_hall.seats_in_row})"]
+            })
 
-    def save(self, force_insert=False, force_update=False, using=None,
-             update_fields=None):
+    def save(self,
+             force_insert: bool = False,
+             force_update: bool = False,
+             using: str = None,
+             update_fields: list[str] = None) -> bool:
         self.full_clean()
-        return super(Ticket, self).save(force_insert, force_update, using, update_fields)
+        return super(Ticket, self).save(force_insert,
+                                        force_update,
+                                        using,
+                                        update_fields)
 
     def __str__(self) -> str:
-        return (f"{self.movie_session.movie.title} {self.movie_session.show_time} "
+        return (f"{self.movie_session.movie.title} "
+                f"{self.movie_session.show_time} "
                 f"(row: {self.row}, seat: {self.seat})")
 
     class Meta:
         constraints = [
-            UniqueConstraint(fields=["row", "seat", "movie_session"], name="unique_ticket")
+            UniqueConstraint(
+                fields=["row", "seat", "movie_session"], name="unique_ticket"
+            )
         ]
