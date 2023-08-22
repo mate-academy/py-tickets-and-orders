@@ -4,8 +4,6 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import UniqueConstraint
 
-from typing import Callable
-
 
 class Genre(models.Model):
     name = models.CharField(max_length=255, unique=True)
@@ -112,7 +110,7 @@ class Ticket(models.Model):
         force_update: bool = False,
         using: str = None,
         update_fields: list[str] = None
-    ) -> Callable:
+    ) -> None:
         self.full_clean()
         return super(Ticket, self).save(
             force_insert, force_update, using, update_fields)
