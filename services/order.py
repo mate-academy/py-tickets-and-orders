@@ -1,12 +1,12 @@
 from datetime import datetime
 from typing import Optional
 
-from django.db.models import QuerySet
 from django.db import transaction
+from django.db.models import QuerySet
 
-from services.user import get_or_create_user
+from db.models import Order, Ticket
 from services.movie_session import get_movie_session_by_id
-from db.models import Ticket, Order
+from services.user import get_or_create_user
 
 
 def create_order(

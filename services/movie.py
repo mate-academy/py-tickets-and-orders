@@ -1,9 +1,9 @@
 from typing import Optional
 
-from django.db.models import QuerySet
 from django.db import transaction
+from django.db.models import QuerySet
 
-from db.models import Movie, Genre
+from db.models import Genre, Movie
 
 
 def get_movies(
