@@ -5,9 +5,9 @@ from db.models import Order, Ticket, MovieSession
 
 
 def create_order(
-        tickets: list[dict],
-        username: datetime,
-        date: datetime | None = None
+    tickets: list[dict],
+    username: datetime,
+    date: datetime | None = None
 ) -> None:
 
     with transaction.atomic():
