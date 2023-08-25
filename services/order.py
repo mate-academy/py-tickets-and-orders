@@ -13,7 +13,7 @@ def create_order(
     tickets: list[dict], username: str, date: Optional[datetime] = None
 ) -> list[Ticket]:
     with transaction.atomic():
-        user = User.objects.create_user(username=username)
+        user = get_or_create_user(username)
         order = Order.objects.create(user=user)
         if date:
             order.created_at = date
