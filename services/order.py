@@ -5,7 +5,7 @@ from django.db import transaction
 from django.db.models import QuerySet
 
 from db.models import Order, Ticket
-from services.movie_session import get_movie_session_by_id
+
 from services.user import get_or_create_user
 
 
