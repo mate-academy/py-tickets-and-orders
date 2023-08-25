@@ -14,23 +14,22 @@ def create_order(
 ) -> list[Ticket]:
     with transaction.atomic():
         user = get_or_create_user(username)
+        order = Order.objects.create(user=user)
         if date:
-            order = Order.objects.create(user=user, created_at=date)
-        else:
-            order = Order.objects.create(user=user)
+            order.created_at = date
+            order.save()
 
         result = []
         for ticket_data in tickets:
+            movie_session_id = ticket_data.pop("movie_session")
             result.append(
                 Ticket(
                     order=order,
-                    movie_session=get_movie_session_by_id(
-                        ticket_data.pop("movie_session")
-                    ),
+                    movie_session=movie_session_id,
                     **ticket_data
                 )
             )
-        [ticket.save() for ticket in result]
+        Ticket.objects.bulk_create(result)
 
     return result
 
