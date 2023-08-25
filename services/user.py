@@ -51,11 +51,3 @@ def update_user(
         up_user.last_name = last_name
 
     up_user.save()
-
-
-def get_or_create_user(username: str) -> User:
-    try:
-        user = User.objects.get(username=username)
-    except User.DoesNotExist:
-        user = User.objects.create_user(username=username)
-    return user
