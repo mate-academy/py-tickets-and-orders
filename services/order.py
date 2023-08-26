@@ -31,7 +31,6 @@ def create_order(
         return order
 
 
-
 def get_orders(
         username: Optional[str] = None,
 ) -> QuerySet:

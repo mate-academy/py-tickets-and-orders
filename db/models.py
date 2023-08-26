@@ -123,4 +123,3 @@ class Ticket(models.Model):
             force_update,
             using,
             update_fields)
-
