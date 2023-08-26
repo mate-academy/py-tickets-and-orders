@@ -2,7 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import UniqueConstraint
-
+from typing import Optional
 import settings
 
 
@@ -111,8 +111,8 @@ class Ticket(models.Model):
     def save(self,
              force_insert: bool = False,
              force_update: bool = False,
-             using: str = None,
-             update_fields: list[str] = None
+             using: Optional[str] = None,
+             update_fields: Optional[list[str]] = None
              ) -> bool:
         self.full_clean()
 
