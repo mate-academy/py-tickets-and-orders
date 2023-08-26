@@ -52,3 +52,4 @@ def get_taken_seats(
         {"row": ticket.row, "seat": ticket.seat}
         for ticket in tickets
     ]
+
