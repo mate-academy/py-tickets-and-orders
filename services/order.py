@@ -1,5 +1,6 @@
 from db.models import Order, Ticket, MovieSession, User
 from django.db import transaction
+from django.db.models.query import QuerySet
 from typing import Optional
 
 
@@ -29,7 +30,7 @@ def create_order(
     return order
 
 
-def get_orders(username: Optional[str] = None) -> list[Order]:
+def get_orders(username: Optional[str] = None) -> QuerySet:
     orders = Order.objects.all()
     if username is not None:
         orders = orders.filter(user__username=username)
