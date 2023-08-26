@@ -71,19 +71,25 @@ class Order(models.Model):
         ordering = ["-created_at"]
 
     def __str__(self) -> str:
-        return f"Order: {self.created_at.strftime('%Y-%m-%d %H:%M:%S')}"
+        return str(self.created_at)
 
 
 class Ticket(models.Model):
     movie_session = models.ForeignKey(to=MovieSession,
-                                      on_delete=models.CASCADE)
-    order = models.ForeignKey(to=Order, on_delete=models.CASCADE)
+                                      on_delete=models.CASCADE,
+                                      related_name="tickets")
+    order = models.ForeignKey(to=Order,
+                              on_delete=models.CASCADE,
+                              related_name="tickets")
     row = models.IntegerField()
     seat = models.IntegerField()
 
     def __str__(self) -> str:
-        return (f"Ticket: {self.movie_session}"
-                f" (row: {self.row}, seat: {self.seat})")
+        return (
+            f"{self.movie_session.movie.title} "
+            f"{self.movie_session.show_time} (row: {self.row}, "
+            f"seat: {self.seat})"
+        )
 
     def clean(self) -> None:
         cinema_rows = self.movie_session.cinema_hall.rows
