@@ -1,3 +1,5 @@
+from typing import Optional
+
 from django.db import models
 from django.db.models import UniqueConstraint
 from django.contrib.auth.models import AbstractUser
@@ -115,8 +117,8 @@ class Ticket(models.Model):
             self,
             force_insert: bool = False,
             force_update: bool = False,
-            using: None = None,
-            update_fields: None = None
+            using: Optional = None,
+            update_fields: Optional = None
     ) -> None:
         self.full_clean()
         return super(Ticket, self).save(
