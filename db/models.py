@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Any
 
 from django.db import models
 from django.db.models import UniqueConstraint
@@ -117,8 +117,8 @@ class Ticket(models.Model):
             self,
             force_insert: bool = False,
             force_update: bool = False,
-            using: Optional = None,
-            update_fields: Optional = None
+            using: Optional[Any] = None,
+            update_fields: Optional[Any] = None
     ) -> None:
         self.full_clean()
         return super(Ticket, self).save(
