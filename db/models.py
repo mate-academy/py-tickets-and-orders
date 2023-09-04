@@ -1,5 +1,7 @@
 from django.db import models
+from typing import Any
 
+from django.core.exceptions import ValidationError
 from django.contrib.auth.models import AbstractUser
 
 import settings
@@ -57,9 +59,20 @@ class MovieSession(models.Model):
         return f"{self.movie.title} {str(self.show_time)}"
 
 
+class User(AbstractUser):
+    pass
+
+
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self) -> str:
+        return f"{self.created_at}"
 
 
 class Ticket(models.Model):
@@ -76,33 +89,36 @@ class Ticket(models.Model):
             )
         ]
 
-    def __str__(self):
-        return (f"<Ticket: {self.movie_session.movie} "
-                f"{self.movie_session.show_time} "
-                f"(row: {self.row}, seat: {self.seat})>")
+    def __str__(self) -> str:
+        return (f"{self.movie_session.movie} "
+                f"{str(self.movie_session.show_time)} "
+                f"(row: {self.row}, seat: {self.seat})")
 
     def save(self,
-             force_insert=False,
-             force_update=False,
-             using=None,
-             update_fields=None):
+             force_insert: bool = False,
+             force_update: bool = False,
+             using: bool = None,
+             update_fields: bool = None) -> Any:
         self.full_clean()
-        return super(Ticket, self).save(force_insert, force_update, using, update_fields)
+        return super(Ticket, self).save(force_insert,
+                                        force_update,
+                                        using,
+                                        update_fields)
 
-    def clean(self):
-        if not(1 <= self.row <= self.movie_session.cinema_hall.rows):
-            raise ValidationError({
-                "row": f"row must be in range "
-                       f"[1, {self.movie_session.cinema_hall.rows}], "
-                       f"not {self.row}"
-            })
-        if not(1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row):
-            raise ValidationError({
-                "seat": f"seat must be in range "
-                        f"[1, {self.movie_session.cinema_hall.seats_in_row}], "
-                        f"not {self.seat}"
-            })
-
-
-class User(AbstractUser):
-    pass
+    def clean(self) -> None:
+        if not (1 <= self.row <= self.movie_session.cinema_hall.rows):
+            raise ValidationError(
+                {
+                    "row":
+                        f"row number must be in available range: "
+                        f"(1, rows): "
+                        f"(1, {self.movie_session.cinema_hall.rows})"
+                })
+        if not (1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row):
+            raise ValidationError(
+                {
+                    "seat":
+                        f"seat number must be in available range: "
+                        f"(1, seats_in_row): "
+                        f"(1, {self.movie_session.cinema_hall.seats_in_row})"
+                })
