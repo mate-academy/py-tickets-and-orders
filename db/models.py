@@ -22,10 +22,15 @@ class Actor(models.Model):
 
 
 class Movie(models.Model):
-    title = models.CharField(max_length=255, db_index=True)
+    title = models.CharField(max_length=255)
     description = models.TextField()
     actors = models.ManyToManyField(to=Actor)
     genres = models.ManyToManyField(to=Genre)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["title"])
+        ]
 
     def __str__(self) -> str:
         return self.title
@@ -65,8 +70,7 @@ class Order(models.Model):
         ordering = ["-created_at"]
 
     def __str__(self) -> str:
-        creation_time = self.created_at.strftime("%Y-%m-%d %H:%M:%S")
-        return creation_time
+        return self.created_at.strftime("%Y-%m-%d %H:%M:%S")
 
 
 class Ticket(models.Model):

@@ -1,6 +1,6 @@
 from django.db.models import QuerySet
 import init_django_orm  # noqa : F401
-from db.models import MovieSession
+from db.models import MovieSession, Ticket
 
 
 def create_movie_session(
@@ -45,15 +45,11 @@ def delete_movie_session_by_id(session_id: int) -> None:
 
 
 def get_taken_seats(movie_session_id: int) -> list[dict]:
-    movie_session = MovieSession.objects.get(
-        id=movie_session_id
-    )
-    result = []
-    for ticket in movie_session.tickets.all():
-        result.append(
-            {
-                "row": ticket.row,
-                "seat": ticket.seat
-            }
+    return list(
+        Ticket.objects.filter(
+            movie_session__id=movie_session_id
+        ).values(
+            "row",
+            "seat"
         )
-    return result
+    )
