@@ -16,7 +16,7 @@ def create_order(
         user = get_user_model().objects.get(username=username)
         order = Order.objects.create(user=user)
 
-        if date:
+        if date is not None:
             order.created_at = date
             order.save()
 
@@ -35,6 +35,6 @@ def create_order(
 
 def get_orders(username: Optional[str] = None) -> QuerySet[Order]:
     queryset = Order.objects.all()
-    if username:
+    if username is not None:
         queryset = queryset.filter(user__username=username)
     return queryset
