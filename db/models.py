@@ -1,5 +1,5 @@
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
 
 
 class Genre(models.Model):
@@ -56,10 +56,11 @@ class MovieSession(models.Model):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(to=User, default=None, on_delete=models.CASCADE)
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
 
     class Meta:
         ordering = ["-created_at"]
+
     def __str__(self):
         return (f"<Order: {self.created_at}> or"
                 f"<Order: {self.created_at.strftime('%Y-%m-%d %H:%M:%S')}>")
