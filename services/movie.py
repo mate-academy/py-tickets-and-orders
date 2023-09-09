@@ -1,9 +1,6 @@
 from django.db.models import QuerySet
-
-from db.models import Movie
-
-
 from django.db import transaction
+from db.models import Movie
 
 
 def get_movies(

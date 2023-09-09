@@ -38,17 +38,17 @@ def update_user(
         first_name: str = None,
         last_name: str = None
 ) -> User:
-    user = get_user_model().objects.get(pk=user_id)
+    user_update = get_user_model().objects.get(pk=user_id)
     if username:
-        user.username = username
+        user_update.username = username
     if password:
-        user.set_password(password)
+        user_update.set_password(password)
     if email:
-        user.email = email
+        user_update.email = email
     if first_name:
-        user.first_name = first_name
+        user_update.first_name = first_name
     if last_name:
-        user.last_name = last_name
+        user_update.last_name = last_name
 
-    user.save()
-    return user
+    user_update.save()
+    return user_update
