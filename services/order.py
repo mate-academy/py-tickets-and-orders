@@ -10,7 +10,7 @@ from db.models import MovieSession, Order, Ticket
 def create_order(
         tickets: list[dict],
         username: str,
-        date: Optional[datetime.datetime]
+        date: Optional[datetime] = None,
 ) -> None:
     with transaction.atomic():
         user = get_user_model().objects.get(username=username)
