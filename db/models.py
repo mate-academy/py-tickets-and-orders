@@ -50,8 +50,12 @@ class CinemaHall(models.Model):
 
 class MovieSession(models.Model):
     show_time = models.DateTimeField()
-    cinema_hall = models.ForeignKey(to=CinemaHall, on_delete=models.CASCADE)
-    movie = models.ForeignKey(to=Movie, on_delete=models.CASCADE)
+    cinema_hall = models.ForeignKey(to=CinemaHall,
+                                    on_delete=models.CASCADE,
+                                    related_name="movie_sessions")
+    movie = models.ForeignKey(to=Movie,
+                              on_delete=models.CASCADE,
+                              related_name="movie_sessions")
 
     def __str__(self) -> str:
         return f"{self.movie.title} " \
@@ -62,7 +66,8 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE)
+        on_delete=models.CASCADE,
+        related_name="orders")
 
     def __str__(self) -> str:
         return self.created_at.strftime("%Y-%m-%d %H:%M:%S")
@@ -78,10 +83,12 @@ class User(AbstractUser):
 class Ticket(models.Model):
     movie_session = models.ForeignKey(
         to=MovieSession,
-        on_delete=models.CASCADE)
+        on_delete=models.CASCADE,
+        related_name="tickets")
     order = models.ForeignKey(
         to=Order,
-        on_delete=models.CASCADE)
+        on_delete=models.CASCADE,
+        related_name="tickets")
     row = models.IntegerField()
     seat = models.IntegerField()
 
