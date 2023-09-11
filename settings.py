@@ -1,4 +1,5 @@
 import os
+import logging
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -17,6 +18,8 @@ DATABASES = {
 
 LANGUAGE_CODE = "en-us"
 
+AUTH_USER_MODEL = "db.User"
+
 TIME_ZONE = "Europe/Kiev"
 
 USE_I18N = True
@@ -25,4 +28,31 @@ USE_TZ = False
 
 INSTALLED_APPS = [
     "db",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django_extensions",
 ]
+
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "sql": {
+            "()": "django_sqlformatter.SqlFormatter",
+        },
+    },
+    "handlers": {
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "sql",
+        },
+    },
+    "loggers": {
+        "django.db.backends": {
+            "handlers": ["console"],
+            "level": "DEBUG",
+        }
+    },
+}
