@@ -91,9 +91,11 @@ class Ticket(models.Model):
         ]
 
     def __str__(self) -> str:
-        return f"{self.movie_session.movie.title} " \
-               f"{self.movie_session.show_time} (row: {self.row}, " \
-               f"seat: {self.seat})"
+        return (
+            f"{self.movie_session.movie.title} "
+            f"{self.movie_session.show_time} (row: {self.row}, "
+            f"seat: {self.seat})"
+        )
 
     def clean(self) -> None:
         if not (1 <= self.row <= self.movie_session.cinema_hall.rows):
