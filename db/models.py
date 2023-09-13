@@ -22,15 +22,10 @@ class Actor(models.Model):
 
 
 class Movie(models.Model):
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=255, db_index=True)
     description = models.TextField()
     actors = models.ManyToManyField(to=Actor)
     genres = models.ManyToManyField(to=Genre)
-
-    class Meta:
-        indexes = [
-            models.Index(fields=["title"]),
-        ]
 
     def __str__(self) -> str:
         return self.title
@@ -126,7 +121,8 @@ class Ticket(models.Model):
         )
 
     def __str__(self) -> str:
-        return (f"Matrix {str(self.movie_session.show_time)} "
+        return (f"{self.movie_session.movie.title} "
+                f"{str(self.movie_session.show_time)} "
                 f"(row: {self.row}, seat: {self.seat})")
 
 
