@@ -1,4 +1,4 @@
-from typing import Callable, Any
+from typing import Any
 
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
@@ -116,7 +116,7 @@ class Ticket(models.Model):
             force_update: bool = False,
             using: Any = None,
             update_fields: Any = None
-    ) -> Callable:
+    ) -> Any:
         self.full_clean()
         return super(Ticket, self).save(
             force_insert, force_update, using, update_fields
@@ -130,6 +130,8 @@ class Ticket(models.Model):
         ]
 
     def __str__(self) -> str:
-        return (f"{self.movie_session.movie.title} "
-                f"{self.movie_session.show_time} "
-                f"(row: {str(self.row)}, seat: {str(self.seat)})")
+        return (
+            f"{self.movie_session.movie.title} "
+            f"{self.movie_session.show_time} "
+            f"(row: {str(self.row)}, seat: {str(self.seat)})"
+        )
