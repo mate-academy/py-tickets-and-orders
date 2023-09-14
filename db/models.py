@@ -1,4 +1,4 @@
-from typing import Callable, Any
+from typing import Any
 
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser, User
@@ -25,13 +25,8 @@ class Actor(models.Model):
 class Movie(models.Model):
     title = models.CharField(max_length=255, db_index=True)
     description = models.TextField()
-    actors = models.ManyToManyField(to=Actor)
-    genres = models.ManyToManyField(to=Genre)
-
-    class Meta:
-        indexes = [
-            models.Index(fields=["title"])
-        ]
+    actors = models.ManyToManyField(to=Actor, related_name="movies")
+    genres = models.ManyToManyField(to=Genre, related_name="movies")
 
     def __str__(self) -> str:
         return self.title
@@ -52,8 +47,12 @@ class CinemaHall(models.Model):
 
 class MovieSession(models.Model):
     show_time = models.DateTimeField()
-    cinema_hall = models.ForeignKey(to=CinemaHall, on_delete=models.CASCADE)
-    movie = models.ForeignKey(to=Movie, on_delete=models.CASCADE)
+    cinema_hall = models.ForeignKey(
+        to=CinemaHall, on_delete=models.CASCADE, related_name="movie_sessions"
+    )
+    movie = models.ForeignKey(
+        to=Movie, on_delete=models.CASCADE, related_name="movie_sessions"
+    )
 
     def __str__(self) -> str:
         return f"{self.movie.title} {str(self.show_time)}"
@@ -62,14 +61,16 @@ class MovieSession(models.Model):
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="orders",
     )
-
-    def __str__(self) -> str:
-        return str(self.created_at)
 
     class Meta:
         ordering = ["-created_at"]
+
+    def __str__(self) -> str:
+        return str(self.created_at)
 
 
 class Ticket(models.Model):
@@ -81,6 +82,14 @@ class Ticket(models.Model):
     )
     row = models.IntegerField()
     seat = models.IntegerField()
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                fields=["row", "seat", "movie_session"],
+                name="unique_ticket_constraint_name",
+            )
+        ]
 
     def __str__(self) -> str:
         return (
@@ -105,9 +114,7 @@ class Ticket(models.Model):
                 {
                     "seat": [
                         "seat number must be in available range: "
-                        "(1, seats_in_row): (1, {})".format(
-                            cinema_hall.seats_in_row
-                        )
+                        f"(1, seats_in_row): (1, {cinema_hall.seats_in_row})"
                     ]
                 },
                 code="seat_out_of_range",
@@ -119,19 +126,11 @@ class Ticket(models.Model):
         force_update: bool = False,
         using: Any = None,
         update_fields: Any = None,
-    ) -> Callable:
+    ) -> None:
         self.full_clean()
-        return super(Ticket, self).save(
+        super(Ticket, self).save(
             force_insert, force_update, using, update_fields
         )
-
-    class Meta:
-        constraints = [
-            UniqueConstraint(
-                fields=["row", "seat", "movie_session"],
-                name="unique_ticket_constraint_name",
-            )
-        ]
 
 
 class User(AbstractUser):  # noqa: F811
