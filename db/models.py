@@ -1,9 +1,8 @@
 from django.db import models
+from django.conf import settings
 
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
-
-import settings
 
 
 class Genre(models.Model):
@@ -24,8 +23,8 @@ class Actor(models.Model):
 class Movie(models.Model):
     title = models.CharField(max_length=255, db_index=True)
     description = models.TextField()
-    actors = models.ManyToManyField(to=Actor)
-    genres = models.ManyToManyField(to=Genre)
+    actors = models.ManyToManyField(to=Actor, related_name="movies")
+    genres = models.ManyToManyField(to=Genre, related_name="movies")
 
     def __str__(self) -> str:
         return self.title
