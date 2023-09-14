@@ -117,19 +117,11 @@ class Ticket(models.Model):
 
     def save(
         self,
-        force_insert: bool = False,
-        force_update: bool = False,
-        using: Optional[str] = None,
-        update_fields: Optional[str] = None,
+        *args, **kwargs
     ) -> None:
         self.full_clean()
 
-        return super().save(
-            force_insert=False,
-            force_update=False,
-            using=None,
-            update_fields=None,
-        )
+        return super().save(*args, **kwargs)
 
     def __str__(self) -> str:
         return (
