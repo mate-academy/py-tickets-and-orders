@@ -1,4 +1,4 @@
-from typing import Any, Callable
+from typing import Any
 
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
