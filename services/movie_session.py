@@ -1,3 +1,5 @@
+from typing import List
+
 from django.db.models import QuerySet
 
 from db.models import MovieSession
@@ -42,3 +44,12 @@ def update_movie_session(
 
 def delete_movie_session_by_id(session_id: int) -> None:
     MovieSession.objects.get(id=session_id).delete()
+
+
+def get_taken_seats(movie_session_id: int) -> List[dict]:
+    movie_session = get_movie_session_by_id(movie_session_id)
+    list_of_tickets = [
+        {"row": session_data["row"], "seat": session_data["seat"]}
+        for session_data in movie_session.tickets.values("row", "seat")
+    ]
+    return list_of_tickets
