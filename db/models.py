@@ -28,6 +28,11 @@ class Movie(models.Model):
     actors = models.ManyToManyField(to=Actor)
     genres = models.ManyToManyField(to=Genre)
 
+    class Meta:
+        indexes = [
+            models.Index(fields=["title"])
+        ]
+
     def __str__(self) -> str:
         return self.title
 
@@ -61,7 +66,7 @@ class Order(models.Model):
     )
 
     def __str__(self) -> str:
-        return f"{self.created_at}"
+        return str(self.created_at)
 
     class Meta:
         ordering = ["-created_at"]
