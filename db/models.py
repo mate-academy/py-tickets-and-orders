@@ -1,3 +1,5 @@
+from typing import Any
+
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -95,27 +97,21 @@ class Ticket(models.Model):
         )
 
     def clean(self) -> None:
-        if (
-                self.row < 1 or
-                self.row > self.movie_session.cinema_hall.rows
-        ):
+        max_rows = self.movie_session.cinema_hall.rows
+        if self.row < 1 or self.row > max_rows:
             raise ValidationError({
                 "row": [
                     f"row number must be in available range: "
-                    f"(1, rows): (1, "
-                    f"{self.movie_session.cinema_hall.rows})"
+                    f"(1, rows): (1, {max_rows})"
                 ]
             })
 
-        if (
-                self.seat < 1 or
-                self.seat > self.movie_session.cinema_hall.seats_in_row
-        ):
+        max_seats = self.movie_session.cinema_hall.seats_in_row
+        if self.seat < 1 or self.seat > max_seats:
             raise ValidationError({
                 "seat": [
                     f"seat number must be in available range: "
-                    f"(1, seats_in_row): (1, "
-                    f"{self.movie_session.cinema_hall.seats_in_row})"
+                    f"(1, seats_in_row): (1, {max_seats})"
                 ]
             })
 
@@ -128,11 +124,11 @@ class Ticket(models.Model):
 
     def save(
             self,
-            force_insert=False,
-            force_update=False,
-            using=None,
-            update_fields=None
-    ):
+            force_insert: bool = False,
+            force_update: bool = False,
+            using: Any = None,
+            update_fields: Any = None
+    ) -> None:
         self.full_clean()
         return super(Ticket, self).save(
             force_insert=False,
