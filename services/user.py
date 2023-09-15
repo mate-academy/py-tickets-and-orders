@@ -9,7 +9,7 @@ def create_user(
     email: str = None,
     first_name: str = None,
     last_name: str = None,
-) -> None:
+) -> User:
     input_info = {
         "username": username,
         "password": password,
@@ -22,7 +22,7 @@ def create_user(
     if last_name:
         input_info["last_name"] = last_name
 
-    get_user_model().objects.create_user(**input_info)
+    return get_user_model().objects.create_user(**input_info)
 
 
 def get_user(user_id: int) -> User:
