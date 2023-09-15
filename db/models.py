@@ -23,8 +23,8 @@ class Actor(models.Model):
 class Movie(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
-    actors = models.ManyToManyField(to=Actor)
-    genres = models.ManyToManyField(to=Genre)
+    actors = models.ManyToManyField(to=Actor, related_name="movies")
+    genres = models.ManyToManyField(to=Genre, related_name="movies")
 
     class Meta:
         indexes = [models.Index(fields=["title"], name="indexed_title")]
@@ -59,7 +59,8 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name="orders"
     )
 
     class Meta:
@@ -98,26 +99,25 @@ class Ticket(models.Model):
 
     def clean(self) -> None:
         if not (self.row <= self.movie_session.cinema_hall.rows):
-            raise ValidationError({"row": [
-                f"row number must be in available range: (1, rows): "
-                f"(1, {self.movie_session.cinema_hall.rows})"]})
+            raise ValidationError(
+                {
+                    "row": [
+                        f"row number must be in available range: (1, rows): "
+                        f"(1, {self.movie_session.cinema_hall.rows})"
+                    ]
+                }
+            )
         if not (self.seat <= self.movie_session.cinema_hall.seats_in_row):
-            raise ValidationError({"seat": [
-                f"seat number must be in available range: (1, seats_in_row): "
-                f"(1, {self.movie_session.cinema_hall.seats_in_row})"
-            ]})
+            raise ValidationError(
+                {
+                    "seat": [
+                        f"seat number must be in available range: "
+                        f"(1, seats_in_row): "
+                        f"(1, {self.movie_session.cinema_hall.seats_in_row})"
+                    ]
+                }
+            )
 
-    def save(
-            self,
-            force_insert: bool = False,
-            force_update: bool = False,
-            using: str = None,
-            update_fields: list = None
-    ) -> None:
+    def save(self, *args, **kwargs) -> None:
         self.full_clean()
-        return super(Ticket, self).save(
-            force_insert=False,
-            force_update=False,
-            using=None,
-            update_fields=None
-        )
+        super().save(*args, **kwargs)
