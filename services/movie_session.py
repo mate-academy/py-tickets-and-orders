@@ -1,6 +1,6 @@
 from django.db.models import QuerySet
 
-from db.models import MovieSession
+from db.models import MovieSession, Ticket
 
 
 def create_movie_session(
@@ -42,3 +42,18 @@ def update_movie_session(
 
 def delete_movie_session_by_id(session_id: int) -> None:
     MovieSession.objects.get(id=session_id).delete()
+
+
+def get_taken_seats(movie_session_id):
+    """
+    Get the list of taken seats for a given movie session.
+
+    Parameters:
+    - movie_session_id (int): The ID of the movie session.
+    - tickets (list of dicts): List of dictionaries containing rows and seats information for tickets.
+
+    Returns:
+    - list of tuples: List of tuples representing taken seats (row, seat).
+    """
+
+    return list(Ticket.objects.filter(movie_session_id=movie_session_id).values("row", "seat"))
