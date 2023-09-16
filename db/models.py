@@ -23,8 +23,8 @@ class Actor(models.Model):
 class Movie(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
-    actors = models.ManyToManyField(to=Actor)
-    genres = models.ManyToManyField(to=Genre)
+    actors = models.ManyToManyField(to=Actor, related_name="movies")
+    genres = models.ManyToManyField(to=Genre, related_name="movies")
 
     class Meta:
         indexes = [
@@ -58,7 +58,12 @@ class MovieSession(models.Model):
     movie = models.ForeignKey(
         to=Movie,
         on_delete=models.CASCADE,
-        related_name="movie_sessions"
+        related_name="movie_sessions",
+        to=CinemaHall, on_delete=models.CASCADE, related_name="movie_sessions"
+    )
+    movie = models.ForeignKey(
+        to=Movie, on_delete=models.CASCADE, related_name="movie_sessions"
+
     )
 
     def __str__(self) -> str:
