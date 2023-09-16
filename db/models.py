@@ -73,7 +73,8 @@ class Ticket(models.Model):
     seat = models.IntegerField()
 
     def __str__(self) -> str:
-        return f"{self.movie_session.__str__()} ({self.row}, {self.seat})"
+        return (f"{str(self.movie_session)} "
+                f"(row: {self.row}, seat: {self.seat})")
 
     def clean(self) -> None:
         if not 1 <= self.row <= self.movie_session.cinema_hall.rows:

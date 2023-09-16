@@ -18,6 +18,7 @@ def create_user(username: str,
         user.first_name = first_name
     if last_name:
         user.last_name = last_name
+    user.save()
 
 
 def get_user(user_id: int) -> User:
