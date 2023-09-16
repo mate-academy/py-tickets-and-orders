@@ -103,7 +103,7 @@ class Ticket(models.Model):
                 {
                     "row": [
                         "row number must be in available range: "
-                        "(1, rows): (1, {})".format(cinema_hall.rows)
+                        f"(1, rows): (1, {cinema_hall.rows})"
                     ]
                 },
                 code="seat_out_of_range",
