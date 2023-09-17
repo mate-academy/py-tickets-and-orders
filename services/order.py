@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 
 from django.contrib.auth import get_user_model
 from django.db import transaction
@@ -9,7 +10,7 @@ from db.models import Order, Ticket
 
 @transaction.atomic
 def create_order(
-    tickets: list[dict], username: str, date: datetime = None
+    tickets: list[dict], username: str, date: Optional[datetime]
 ) -> None:
 
     order_user = get_user_model().objects.get(username=username)
@@ -28,7 +29,7 @@ def create_order(
         )
 
 
-def get_orders(username: str = None) -> QuerySet:
+def get_orders(username: Optional[str]) -> QuerySet:
     if username:
         return Order.objects.filter(user__username=username)
 
