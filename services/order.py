@@ -3,7 +3,6 @@ from django.db import transaction
 from django.db.models import QuerySet
 
 from db.models import Ticket, Order, User
-from services.movie_session import get_movie_session_by_id
 
 
 def create_order(tickets: list[dict], username: str, date: str = None) -> None:
