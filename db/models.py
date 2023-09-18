@@ -1,15 +1,14 @@
-from typing import Optional
 
-from django.contrib.auth.models import User, AbstractUser
+from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import UniqueConstraint
 
+import settings
+
 
 class Genre(models.Model):
     name = models.CharField(max_length=255, unique=True)
-
-
 
     def __str__(self) -> str:
         return self.name
@@ -55,9 +54,8 @@ class MovieSession(models.Model):
         to=Movie, on_delete=models.CASCADE, related_name="movie_sessions"
     )
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(args, kwargs)
-        self.tickets = None
 
     def __str__(self) -> str:
         return f"{self.movie.title} {str(self.show_time)}"
@@ -69,10 +67,14 @@ class User(AbstractUser):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="orders"
+    )
 
-    def __str__(self):
-        return f'{self.created_at}'
+    def __str__(self) -> str:
+        return f"{self.created_at}"
 
     class Meta:
         ordering = ["-created_at"]
@@ -80,52 +82,58 @@ class Order(models.Model):
 
 class Ticket(models.Model):
     movie_session = models.ForeignKey(
-        to=MovieSession,
+        "MovieSession",
         on_delete=models.CASCADE,
         related_name="tickets"
     )
-
     order = models.ForeignKey(
-        to=Order,
+        "Order",
         on_delete=models.CASCADE,
         related_name="tickets"
     )
     row = models.IntegerField()
     seat = models.IntegerField()
 
-    class Meta:
-        constraints = [UniqueConstraint(
-            fields=["row", "seat", "movie_session"],
-            name="unique_ticket"
-        )]
-
     def __str__(self) -> str:
-        return f"{self.movie_session} (row: {self.row}, seat: {self.seat})"
+        session = self.movie_session
+        return (f"{session.movie.title} "
+                f"{session.show_time.strftime('%Y-%m-%d %H:%M:%S')}"
+                f" (row: {self.row}, seat: {self.seat})")
 
     def clean(self) -> None:
-        cinema_hall = self.movie_session.cinema_hall
-
-        if self.row > cinema_hall.rows:
+        max_row = self.movie_session.cinema_hall.rows
+        max_seat = self.movie_session.cinema_hall.seats_in_row
+        if not 1 <= self.row <= max_row:
             raise ValidationError({
-                "row": f"row number must be in available range: "
-                       f"(1, rows): (1, {cinema_hall.rows})"
+                "row": ("row number must be in available range: "
+                        f"(1, rows): (1, {max_row})")
             })
-
-        if self.seat > cinema_hall.seats_in_row:
+        if not 1 <= self.seat <= max_seat:
             raise ValidationError({
-                "seat": f"seat number must be in available range: "
-                        f"(1, seats_in_row): (1, {cinema_hall.seats_in_row})"
+                "seat": ("seat number must be in available range: "
+                         f"(1, seats_in_row): (1, {max_seat})")
             })
 
     def save(
         self,
+        raw: bool = False,
         force_insert: bool = False,
         force_update: bool = False,
-        using: Optional[str] = None,
-        update_fields: Optional[str] = None
+        using: object = None,
+        update_fields: object = None
     ) -> None:
-
         self.full_clean()
-        return super(Ticket, self).save(
-            force_insert, force_update, using, update_fields
+        super(Ticket, self).save(
+            force_insert,
+            force_update,
+            using,
+            update_fields
         )
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                fields=["row", "seat", "movie_session"],
+                name="unique_ticket_row_seat_movie_session"
+            )
+        ]

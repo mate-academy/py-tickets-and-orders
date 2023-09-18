@@ -1,28 +1,34 @@
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
 from django.core.exceptions import ObjectDoesNotExist
+from django.shortcuts import get_object_or_404
+from db.models import User
 
 
-def create_user(username, password, email=None, first_name=None, last_name=None):
-
-    try:
-        user = User.objects.get(username=username)
-        return None
-    except ObjectDoesNotExist:
-        pass
-
-    user = User(
+def create_user(
+        username: str,
+        password: str,
+        email: str = None,
+        first_name: str = "",
+        last_name: str = ""
+) -> None:
+    get_user_model().objects.create_user(
         username=username,
-        password=make_password(password),
+        password=password,
         email=email,
         first_name=first_name,
-        last_name=last_name,
+        last_name=last_name
     )
-    user.save()
-    return user
 
 
-def update_user(user_id, username=None, password=None, email=None, first_name=None, last_name=None):
+def update_user(
+        user_id: int,
+        username: str = None,
+        password: str = None,
+        email: str = None,
+        first_name: str = None,
+        last_name: str = None
+) -> None:
     try:
         user = User.objects.get(pk=user_id)
         if username is not None:
@@ -41,8 +47,6 @@ def update_user(user_id, username=None, password=None, email=None, first_name=No
         return None
 
 
-def get_user(user_id):
-    try:
-        return User.objects.get(pk=user_id)
-    except ObjectDoesNotExist:
-        return None
+def get_user(user_id: int) -> User:
+    user = get_object_or_404(User, pk=user_id)
+    return user
