@@ -2,7 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
 
-import settings
+from settings import AUTH_USER_MODEL
 
 
 class Genre(models.Model):
@@ -58,7 +58,7 @@ class MovieSession(models.Model):
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+        AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="orders",
     )
@@ -114,7 +114,7 @@ class Ticket(models.Model):
         force_update: bool = False,
         using: bool = None,
         update_fields: bool = None,
-    ) -> "Ticket":
+    ) -> None:
         self.full_clean()
         return super(Ticket, self).save(
             force_insert=False,

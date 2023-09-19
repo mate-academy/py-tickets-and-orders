@@ -149,7 +149,6 @@ def test_order_ordering(orders_data):
 
 
 def test_ticket_str(tickets_data):
-    tickets = Ticket.objects.all()
     assert str(
         Ticket.objects.first()
     ) == "Matrix 2019-08-19 20:30:00 (row: 7, seat: 10)"
