@@ -2,7 +2,7 @@ from typing import List
 
 from django.db.models import QuerySet
 
-from db.models import MovieSession
+from db.models import MovieSession, Ticket
 
 
 def create_movie_session(
@@ -47,9 +47,8 @@ def delete_movie_session_by_id(session_id: int) -> None:
 
 
 def get_taken_seats(movie_session_id: int) -> List[dict]:
-    movie_session = get_movie_session_by_id(movie_session_id)
-    list_of_tickets = [
-        {"row": session_data["row"], "seat": session_data["seat"]}
-        for session_data in movie_session.tickets.values("row", "seat")
-    ]
-    return list_of_tickets
+    return list(
+        Ticket.objects.filter(movie_session_id=movie_session_id).values(
+            "row", "seat"
+        )
+    )

@@ -54,9 +54,6 @@ class MovieSession(models.Model):
         to=Movie, on_delete=models.CASCADE, related_name="movie_sessions"
     )
 
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(args, kwargs)
-
     def __str__(self) -> str:
         return f"{self.movie.title} {str(self.show_time)}"
 
