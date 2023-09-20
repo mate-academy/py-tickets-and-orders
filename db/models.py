@@ -116,7 +116,7 @@ class Ticket(models.Model):
             using: Any = None,
             update_fields: Any = None) -> None:
         self.full_clean()
-        return super(Ticket, self).save(
+        return super().save(
             force_insert, force_update, using, update_fields
         )
 
