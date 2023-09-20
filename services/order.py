@@ -9,7 +9,7 @@ def create_order(
         tickets: list,
         username: str,
         date: str = None
-) -> Order:
+) -> None:
     with transaction.atomic():
         new_order = Order.objects.create(
             user=get_user_model().objects.get(username=username)
@@ -26,8 +26,6 @@ def create_order(
                 movie_session_id=ticket["movie_session"],
                 order=new_order
             )
-
-        return new_order
 
 
 def get_orders(username: str = None) -> QuerySet[Order]:
