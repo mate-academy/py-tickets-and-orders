@@ -1,14 +1,14 @@
+from typing import Optional
+
 from django.conf import settings
 
 from django.contrib.auth.models import AbstractUser
 
-from django.db import models
-
 from django.core.exceptions import ValidationError
 
-from django.db.models import UniqueConstraint
+from django.db import models
 
-from typing import Optional
+from django.db.models import UniqueConstraint
 
 
 class Genre(models.Model):
@@ -121,7 +121,7 @@ class Ticket(models.Model):
             update_fields: Optional[list] = None
     ) -> None:
         self.full_clean()
-        super(Ticket, self).save(
+        super().save(
             force_insert,
             force_update,
             using,

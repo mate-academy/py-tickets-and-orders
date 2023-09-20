@@ -1,10 +1,10 @@
-from django.db.models import QuerySet
-
 from django.db import transaction
 
-from db.models import Order, Ticket
+from django.db.models import QuerySet
 
 from django.contrib.auth import get_user_model
+
+from db.models import Order, Ticket
 
 
 def create_order(tickets: list[dict], username: str, date: str = None) -> None:
@@ -28,5 +28,5 @@ def create_order(tickets: list[dict], username: str, date: str = None) -> None:
 def get_orders(username: str = None) -> QuerySet:
     if username:
         return Order.objects.filter(user__username=username)
-    else:
-        return Order.objects.all()
+
+    return Order.objects.all()
