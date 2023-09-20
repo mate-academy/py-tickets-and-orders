@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import AbstractBaseUser
+
+from db.models import User as UserType
 
 User = get_user_model()
 
@@ -10,7 +11,7 @@ def create_user(
     email: str | None = None,
     first_name: str | None = None,
     last_name: str | None = None,
-) -> AbstractBaseUser:
+) -> UserType:
     user = User.objects.create_user(  # type: ignore
         username=username, password=password
     )
@@ -28,8 +29,8 @@ def create_user(
     return user
 
 
-def get_user(user_id: int) -> AbstractBaseUser:
-    return User.objects.get(id=user_id)
+def get_user(user_id: int) -> UserType:
+    return User.objects.get(id=user_id)  # type: ignore
 
 
 def update_user(
@@ -39,7 +40,7 @@ def update_user(
     email: str | None = None,
     first_name: str | None = None,
     last_name: str | None = None,
-) -> AbstractBaseUser:
+) -> UserType:
     user = get_user(user_id)
 
     if username:
