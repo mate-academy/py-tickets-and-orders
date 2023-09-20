@@ -1,12 +1,10 @@
 from __future__ import annotations
-
 from typing import Any
 
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
-
-import settings
 
 
 class Genre(models.Model):
@@ -119,9 +117,9 @@ class Ticket(models.Model):
         force_update: bool = False,
         using: Any = None,
         update_fields: Any = None
-    ) -> Ticket:
+    ) -> None:
         self.full_clean()
-        return super(Ticket, self).save(
+        super().save(
             force_insert, force_update, using, update_fields
         )
 

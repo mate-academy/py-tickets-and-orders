@@ -3,6 +3,7 @@ from __future__ import annotations
 from django.db.models import QuerySet
 from django.contrib.auth import get_user_model
 from django.db import transaction
+
 from db.models import Order, Ticket
 from services.movie_session import get_movie_session_by_id
 
