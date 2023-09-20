@@ -4,7 +4,7 @@ from django.db import models
 from django.db.models import UniqueConstraint
 from typing import Any
 
-from settings import AUTH_USER_MODEL
+from django.conf import settings
 
 
 class Genre(models.Model):
@@ -70,7 +70,7 @@ class MovieSession(models.Model):
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(
-        AUTH_USER_MODEL,
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="users"
     )
