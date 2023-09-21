@@ -1,10 +1,8 @@
+from django.contrib.auth import get_user_model
+from django.db import transaction
 from django.db.models import QuerySet
 
 from db.models import Order, Ticket
-
-from django.contrib.auth import get_user_model
-
-from django.db import transaction
 
 
 def create_order(tickets: list, username: str, date: str = None) -> Order:
@@ -21,7 +19,7 @@ def create_order(tickets: list, username: str, date: str = None) -> Order:
                 movie_session_id=ticket["movie_session"],
                 order=order,
                 row=ticket["row"],
-                seat=ticket["seat"]
+                seat=ticket["seat"],
             )
 
         return order

@@ -1,5 +1,4 @@
 from django.db import transaction
-
 from django.db.models import QuerySet
 
 from db.models import Movie
@@ -19,7 +18,7 @@ def get_movies(
         queryset = queryset.filter(actors__id__in=actors_ids)
 
     if title:
-        queryset = queryset.filter(title__contains=title)
+        queryset = queryset.filter(title__icontains=title)
 
     return queryset
 
