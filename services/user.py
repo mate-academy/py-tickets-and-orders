@@ -1,5 +1,8 @@
-from db.models import User
+from django.contrib.auth import get_user_model
+
 from django.core.exceptions import ObjectDoesNotExist
+
+from db.models import User
 
 
 def create_user(
@@ -9,7 +12,7 @@ def create_user(
         first_name: str = None,
         last_name: str = None
 ) -> None:
-    user = User.objects.create_user(
+    user = get_user_model().objects.create_user(
         username=username,
         password=password
     )
@@ -28,7 +31,7 @@ def create_user(
 
 def get_user(user_id: int) -> User | None:
     try:
-        user = User.objects.get(pk=user_id)
+        user = get_user_model().objects.get(pk=user_id)
         return user
     except ObjectDoesNotExist:
         return None

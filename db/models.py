@@ -23,8 +23,8 @@ class Actor(models.Model):
 class Movie(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
-    actors = models.ManyToManyField(to=Actor)
-    genres = models.ManyToManyField(to=Genre)
+    actors = models.ManyToManyField(to=Actor, related_name="movies")
+    genres = models.ManyToManyField(to=Genre, related_name="movies")
 
     class Meta:
         indexes = [
@@ -107,7 +107,7 @@ class Ticket(models.Model):
         ]
 
     def clean(self) -> None:
-        cinema_hall = CinemaHall.objects.first()
+        cinema_hall = self.movie_session.cinema_hall
         if not (1 <= self.row <= cinema_hall.rows):
             raise ValidationError(
                 {
