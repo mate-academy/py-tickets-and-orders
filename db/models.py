@@ -125,12 +125,7 @@ class Ticket(models.Model):
         update_fields: list = None
     ) -> None:
         self.full_clean()
-        return super(Ticket, self).save(
-            force_insert,
-            force_update,
-            using,
-            update_fields
-        )
+        return super().save()
 
     def __str__(self) -> str:
         return (f"{self.movie_session.movie.title} "
