@@ -22,7 +22,7 @@ def create_order(
             seat = ticket_data.get("seat")
             movie_session_id = ticket_data.get("movie_session")
 
-            Ticket.objects.create(
+            Ticket.objects.bulk_create(
                 movie_session_id=movie_session_id,
                 order=order,
                 row=row,
