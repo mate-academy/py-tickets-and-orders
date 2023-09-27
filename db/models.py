@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from django.db import models
 
 
@@ -46,7 +47,7 @@ class CinemaHall(models.Model):
 
 
 class MovieSession(models.Model):
-    show_time = models.DateTimeField()
+    show_time = models.DateTimeField(auto_now=False, auto_now_add=False)
     cinema_hall = models.ForeignKey(to=CinemaHall, on_delete=models.CASCADE)
     movie = models.ForeignKey(to=Movie, on_delete=models.CASCADE)
 
@@ -62,7 +63,7 @@ class Order(models.Model):
         ordering = ["-created_at"]
 
     def __str__(self):
-        return (f"Order: {self.created_at.strftime('%Y-%m-%d %H:%M:%S')}")
+        return f"Order: {self.created_at.strftime('%Y-%m-%d %H:%M:%S')}"
 
 
 class Ticket(models.Model):
@@ -71,5 +72,28 @@ class Ticket(models.Model):
     row = models.IntegerField()
     seat = models.IntegerField()
 
+    class Meta:
+        pass
+
+    def clean(self):
+        rows_range = self.movie_session.cinema_hall.rows
+        seats_range = self.movie_session.cinema_hall.seats_in_row
+        valid = True
+        if not rows_range >= self.row >= 1:
+            valid = False
+        if not seats_range >= self.seat >= 1:
+            valid = False
+        if not valid:
+            raise ValidationError(f"seat and row must be in range "
+                                  f"[1 - {rows_range}] or [1 - {seats_range}]")
+
+
+
     def __str__(self):
-        return f"Ticket: {self.movie_session.movie.title}"
+        return (f"{self.movie_session.movie.title}"
+                f" {self.movie_session.show_time} (row: {self.row},"
+                f" seat: {self.seat})")
+
+
+class TempoDelete(models.Model):
+    field_1 = models.IntegerField()
