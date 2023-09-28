@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import UniqueConstraint
 
 
 class Genre(models.Model):
@@ -73,19 +74,31 @@ class Ticket(models.Model):
     seat = models.IntegerField()
 
     class Meta:
-        pass
+        constraints = [
+            UniqueConstraint(
+                fields=["row", "seat", "movie_session"],
+                name="unique row, seat and movie_session combination"
+            ),
+        ]
 
     def clean(self):
         rows_range = self.movie_session.cinema_hall.rows
         seats_range = self.movie_session.cinema_hall.seats_in_row
         valid = True
+        log = [None, None]
+
         if not rows_range >= self.row >= 1:
             valid = False
+            log = ["Row", rows_range]
         if not seats_range >= self.seat >= 1:
             valid = False
+            log = ["Seat", seats_range]
+
         if not valid:
-            raise ValidationError(f"seat and row must be in range "
-                                  f"[1 - {rows_range}] or [1 - {seats_range}]")
+            raise ValidationError(
+                {f"{log[0]}": f"{log[0]} must be in range"
+                              f"[1 - {log[1]}]"}
+            )
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
