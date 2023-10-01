@@ -1,7 +1,10 @@
+from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import UniqueConstraint
+
+import settings
 
 
 class Genre(models.Model):
@@ -58,13 +61,16 @@ class MovieSession(models.Model):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        to=settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
 
     class Meta:
         ordering = ["-created_at"]
 
     def __str__(self):
-        return f"Order: {self.created_at.strftime('%Y-%m-%d %H:%M:%S')}"
+        return f"{self.created_at.strftime('%Y-%m-%d %H:%M:%S')}"
 
 
 class Ticket(models.Model):
@@ -84,21 +90,17 @@ class Ticket(models.Model):
     def clean(self):
         rows_range = self.movie_session.cinema_hall.rows
         seats_range = self.movie_session.cinema_hall.seats_in_row
-        valid = True
-        log = [None, None]
+        errors = {}
 
         if not rows_range >= self.row >= 1:
-            valid = False
-            log = ["Row", rows_range]
+            errors["row"] = (f"row number must be in available range:"
+                             f" (1, rows): (1, {rows_range})")
         if not seats_range >= self.seat >= 1:
-            valid = False
-            log = ["Seat", seats_range]
+            errors["seat"] = (f"seat number must be in available range:"
+                              f" (1, seats_in_row): (1, {seats_range})")
 
-        if not valid:
-            raise ValidationError(
-                {f"{log[0]}": f"{log[0]} must be in range"
-                              f"[1 - {log[1]}]"}
-            )
+        if len(errors):
+            raise ValidationError(errors)
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
@@ -113,5 +115,9 @@ class Ticket(models.Model):
                 f" seat: {self.seat})")
 
 
-class TempoDelete(models.Model):
-    field_1 = models.IntegerField()
+class User(AbstractUser):
+    username = models.CharField(max_length=50, blank=False, unique=True)
+    password = models.CharField(max_length=255, blank=False)
+    email = models.EmailField(max_length=50, blank=True)
+    first_name = models.CharField(max_length=50, blank=True)
+    last_name = models.CharField(max_length=50, blank=True)
