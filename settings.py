@@ -18,7 +18,7 @@ DATABASES = {
 
 INSTALLED_APPS = [
     "db",
-
+    "django_extensions",
     "django.contrib.auth",
     "django.contrib.contenttypes",
 ]
