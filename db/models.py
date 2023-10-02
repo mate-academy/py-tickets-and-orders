@@ -68,12 +68,15 @@ class Order(models.Model):
     class Meta:
         ordering = ["-created_at"]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.created_at.strftime('%Y-%m-%d %H:%M:%S')}"
 
 
 class Ticket(models.Model):
-    movie_session = models.ForeignKey(to=MovieSession, on_delete=models.CASCADE)
+    movie_session = models.ForeignKey(
+        to=MovieSession,
+        on_delete=models.CASCADE
+    )
     order = models.ForeignKey(to=Order, on_delete=models.CASCADE)
     row = models.IntegerField()
     seat = models.IntegerField()
@@ -86,7 +89,7 @@ class Ticket(models.Model):
             ),
         ]
 
-    def clean(self):
+    def clean(self) -> None:
         rows_range = self.movie_session.cinema_hall.rows
         seats_range = self.movie_session.cinema_hall.seats_in_row
         errors = {}
@@ -112,7 +115,7 @@ class Ticket(models.Model):
             force_insert, force_update, using, update_fields
         )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return (f"{self.movie_session.movie.title}"
                 f" {self.movie_session.show_time} (row: {self.row},"
                 f" seat: {self.seat})")
