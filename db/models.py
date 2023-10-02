@@ -1,5 +1,4 @@
 from django.contrib.auth.models import AbstractUser
-from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import UniqueConstraint
@@ -102,8 +101,12 @@ class Ticket(models.Model):
         if len(errors):
             raise ValidationError(errors)
 
-    def save(self, force_insert=False, force_update=False, using=None,
-             update_fields=None):
+    def save(
+            self, force_insert: bool = False,
+            force_update: bool = False,
+            using: bool = None,
+            update_fields: bool = None
+    ) -> None:
         self.full_clean()
         return super(Ticket, self).save(
             force_insert, force_update, using, update_fields
