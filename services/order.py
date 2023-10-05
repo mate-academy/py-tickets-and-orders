@@ -14,13 +14,10 @@ def create_order(
 ) -> None:
     with transaction.atomic():
         new_order = Order.objects.create(
-            user=User.objects.get(username__exact=username
-                                  )
+            user=User.objects.get(username__exact=username)
         )
         if date:
-            new_order.created_at = datetime.strptime(
-                date, "%Y-%m-%d %H:%M"
-            )
+            new_order.created_at = date.strptime("%Y-%m-%d %H:%M")
             new_order.save()
         for ticket in tickets:
             Ticket.objects.create(
