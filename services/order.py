@@ -1,16 +1,16 @@
 from datetime import datetime
 from typing import Dict
-
-from django.db import transaction
-from django.db.models import QuerySet
+from typing import Optional
 
 from db.models import Ticket, Order, User
+from django.db import transaction
+from django.db.models import QuerySet
 
 
 def create_order(
         tickets: list[Dict],
         username: str,
-        date: datetime = None
+        date: Optional[datetime] = None
 ) -> None:
     with transaction.atomic():
         new_order = Order.objects.create(
@@ -29,7 +29,7 @@ def create_order(
 
 
 def get_orders(
-        username: str = None
+        username: Optional[str] = None
 ) -> QuerySet:
     if username:
         return Order.objects.filter(user__username=username)
