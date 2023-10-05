@@ -17,7 +17,7 @@ def create_order(
             user=User.objects.get(username__exact=username)
         )
         if date:
-            new_order.created_at = date.strptime("%Y-%m-%d %H:%M")
+            new_order.created_at = date
             new_order.save()
         for ticket in tickets:
             Ticket.objects.create(
