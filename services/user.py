@@ -14,13 +14,13 @@ def create_user(
         username=username,
     )
     new_user.set_password(password)
-    if first_name:
-        new_user.first_name = first_name
-    if last_name:
-        new_user.last_name = last_name
-    if email:
-        new_user.email = email
     new_user.save()
+    update_user(
+        user_id=new_user.id,
+        first_name=first_name,
+        last_name=last_name,
+        email=email,
+    )
 
     return new_user
 
