@@ -4,6 +4,7 @@ from django.db.models import QuerySet
 from django.db import transaction
 from db.models import Order, Ticket
 
+
 @transaction.atomic
 def create_order(tickets: list[dict],
                  username: str,
