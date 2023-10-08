@@ -6,7 +6,35 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 # SECURITY WARNING: Modify this secret key if using in production!
 SECRET_KEY = "6few3nci_q_o@l1dlbk81%wcxe!*6r29yu629&d97!hiqat9fa"
 
+AUTH_USER_MODEL = "db.User"
+
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
+
+INSTALLED_APPS = [
+    "db",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+]
+
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        "NAME":
+            "django.contrib.auth.password_validation."
+            "UserAttributeSimilarityValidator"
+    },
+    {
+        "NAME":
+            "django.contrib.auth.password_validation.MinimumLengthValidator"
+    },
+    {
+        "NAME":
+            "django.contrib.auth.password_validation.CommonPasswordValidator"
+    },
+    {
+        "NAME":
+            "django.contrib.auth.password_validation.NumericPasswordValidator"
+    }
+]
 
 DATABASES = {
     "default": {
@@ -22,7 +50,3 @@ TIME_ZONE = "Europe/Kiev"
 USE_I18N = True
 
 USE_TZ = False
-
-INSTALLED_APPS = [
-    "db",
-]
