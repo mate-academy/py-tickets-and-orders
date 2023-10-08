@@ -17,10 +17,13 @@ def create_order(
 
     if date:
         order.created_at = date
+
     order.save()
 
     for ticket_data in tickets:
-        movie_session = MovieSession.objects.get(id=ticket_data["movie_session"])
+        movie_session = MovieSession.objects.get(
+            id=ticket_data["movie_session"]
+        )
         Ticket.objects.create(
             order=order,
             movie_session=movie_session,
