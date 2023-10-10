@@ -17,13 +17,14 @@ def create_user(
     )
     if email:
         new_user.email = email
-        new_user.save()
+        # new_user.save()
     if first_name:
         new_user.first_name = first_name
-        new_user.save()
+        # new_user.save()
     if last_name:
         new_user.last_name = last_name
-        new_user.save()
+
+    new_user.save()
 
     return new_user
 
