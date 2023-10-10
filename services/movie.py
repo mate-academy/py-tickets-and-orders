@@ -1,4 +1,5 @@
-from typing import Optional
+from typing import Optional, List
+from django.db import transaction
 
 from django.db.models import QuerySet
 
@@ -6,8 +7,8 @@ from db.models import Movie
 
 
 def get_movies(
-    genres_ids: list[int] = None,
-    actors_ids: list[int] = None,
+    genres_ids: List[int] = None,
+    actors_ids: List[int] = None,
     title: Optional[str] = None
 ) -> QuerySet:
     queryset = Movie.objects.all()
@@ -18,8 +19,8 @@ def get_movies(
     if actors_ids:
         queryset = queryset.filter(actors__id__in=actors_ids)
 
-    if title is not None:
-        queryset = queryset.filter(title=title)
+    if title:
+        queryset = queryset.filter(title__icontains=title)
 
     return queryset
 
@@ -34,13 +35,14 @@ def create_movie(
     genres_ids: list = None,
     actors_ids: list = None,
 ) -> Movie:
-    movie = Movie.objects.create(
-        title=movie_title,
-        description=movie_description,
-    )
-    if genres_ids:
-        movie.genres.set(genres_ids)
-    if actors_ids:
-        movie.actors.set(actors_ids)
+    with transaction.atomic():
+        movie = Movie.objects.create(
+            title=movie_title,
+            description=movie_description,
+        )
+        if genres_ids:
+            movie.genres.set(genres_ids)
+        if actors_ids:
+            movie.actors.set(actors_ids)
 
     return movie
