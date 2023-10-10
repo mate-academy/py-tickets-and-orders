@@ -40,7 +40,6 @@ def get_orders(
     queryset = Order.objects.order_by("-created_at")
 
     if username:
-        user = get_user_model().objects.get(username=username)
-        queryset = queryset.filter(user=user.id)
+        queryset = queryset.filter(user__username=username)
 
     return queryset
