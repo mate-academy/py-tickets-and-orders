@@ -5,6 +5,7 @@ from db.models import User
 
 @transaction.atomic
 def create_user(
+        username: str,
         password: str | None = None,
         email: str | None = None,
         first_name: str | None = None,
@@ -31,7 +32,7 @@ def get_user(user_id: int) -> User:
 @transaction.atomic
 def update_user(
         user_id: int,
-        username: str | None= None,
+        username: str | None = None,
         password: str | None = None,
         email: str | None = None,
         first_name: str | None = None,
