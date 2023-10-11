@@ -9,7 +9,7 @@ from db.models import Order, Ticket
 def create_order(
     tickets: list[dict],
     username: str,
-    date: str = None
+    date: str | None = None
 ) -> None:
     user = get_user_model().objects.get(username=username)
     order = Order.objects.create(user=user)
@@ -26,7 +26,7 @@ def create_order(
 
 
 @transaction.atomic
-def get_orders(username: str = None) -> QuerySet:
+def get_orders(username: str | None = None) -> QuerySet:
     orders = Order.objects.all()
     if username is not None:
         orders = orders.filter(user__username=username)
