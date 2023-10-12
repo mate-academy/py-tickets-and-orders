@@ -28,7 +28,7 @@ class Movie(models.Model):
 
     class Meta:
         indexes = [
-            models.Index(fields=["title"])
+            models.Index(fields=["title"], name="movie_title_idx")
         ]
 
     def __str__(self) -> str:
@@ -64,7 +64,8 @@ class MovieSession(models.Model):
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(to=settings.AUTH_USER_MODEL,
-                             on_delete=models.CASCADE)
+                             on_delete=models.CASCADE,
+                             related_name="orders")
 
     class Meta:
         ordering = ["-created_at"]
@@ -75,8 +76,11 @@ class Order(models.Model):
 
 class Ticket(models.Model):
     movie_session = models.ForeignKey(to=MovieSession,
-                                      on_delete=models.CASCADE)
-    order = models.ForeignKey(to=Order, on_delete=models.CASCADE)
+                                      on_delete=models.CASCADE,
+                                      related_name="tickets")
+    order = models.ForeignKey(to=Order,
+                              on_delete=models.CASCADE,
+                              related_name="tickets")
     row = models.IntegerField()
     seat = models.IntegerField()
 
@@ -92,19 +96,31 @@ class Ticket(models.Model):
         return (f"{self.movie_session} "
                 f"(row: {self.row}, seat: {self.seat})")
 
+    @staticmethod
+    def validation_param(min_value: int,
+                         value: int,
+                         max_value: int,
+                         param_name: str,
+                         field_name: str) -> None:
+        if not min_value < value <= max_value:
+            raise ValidationError(
+                {param_name: [f"{param_name} number must "
+                              f"be in available range: "
+                              f"({min_value}, {field_name}): ({min_value}, "
+                              f"{max_value})"]}
+            )
+
     def clean(self) -> None:
-        if not 1 < self.row <= self.movie_session.cinema_hall.rows:
-            raise ValidationError(
-                {"row": [f"row number must be in available range: "
-                         f"(1, rows): (1, "
-                         f"{self.movie_session.cinema_hall.rows})"]}
-            )
-        if not 1 < self.seat <= self.movie_session.cinema_hall.seats_in_row:
-            raise ValidationError(
-                {"seat": [f"seat number must be in available range: "
-                          f"(1, seats_in_row): (1, "
-                          f"{self.movie_session.cinema_hall.seats_in_row})"]}
-            )
+        self.validation_param(1,
+                              self.row,
+                              self.movie_session.cinema_hall.rows,
+                              "row",
+                              "rows")
+        self.validation_param(1,
+                              self.seat,
+                              self.movie_session.cinema_hall.seats_in_row,
+                              "seat",
+                              "seats_in_row")
 
     def save(self,
              force_insert: bool = False,
