@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List
+from typing import List, Union
 from django.db import transaction
 from typing import Optional
 
@@ -11,11 +11,11 @@ def create_order(
         tickets: List[dict],
         username: str,
         date: Optional[str] = None
-) -> Order:
-    work_user = User.objects.filter(username=username)
+) -> Union[Order, None]:
+    work_user = User.objects.filter(username=username).first()
     if work_user:
         new_order = Order.objects.create(
-            user=work_user[0]
+            user=work_user
         )
         if date:
             date_time = datetime.strptime(date, "%Y-%m-%d %H:%M")
