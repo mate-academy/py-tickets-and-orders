@@ -122,7 +122,7 @@ class Ticket(models.Model):
             force_insert: bool = False,
             force_update: bool = False,
             using: Optional[Any] = None,
-            update_fields: Any = None
+            update_fields: Optional[Any] = None
     ) -> None:
         self.full_clean()
         return super(Ticket, self).save(
