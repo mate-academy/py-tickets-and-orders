@@ -6,33 +6,33 @@ from typing import Optional
 from db.models import Order, MovieSession, User, Ticket
 
 
+@transaction.atomic
 def create_order(
         tickets: List[dict],
         username: str,
         date: Optional[str] = None
 ) -> Order:
-    with transaction.atomic():
-        if User.objects.filter(username=username):
+    work_user = User.objects.filter(username=username)
+    if work_user:
+        new_order = Order.objects.create(
+            user=work_user[0]
+        )
+        if date:
+            date_time = datetime.strptime(date, "%Y-%m-%d %H:%M")
+            new_order.created_at = date_time
+            new_order.save()
 
-            new_order = Order.objects.create(
-                user=User.objects.get(username=username)
-            )
-            if date:
-                date_time = datetime.strptime(date, "%Y-%m-%d %H:%M")
-                new_order.created_at = date_time
-                new_order.save()
-
-            for ticket in tickets:
-                Ticket.objects.create(
-                    order=new_order,
-                    seat=ticket["seat"],
-                    row=ticket["row"],
-                    movie_session=MovieSession.objects.get(
-                        id=ticket["movie_session"]
-                    )
+        for ticket in tickets:
+            Ticket.objects.create(
+                order=new_order,
+                seat=ticket["seat"],
+                row=ticket["row"],
+                movie_session=MovieSession.objects.get(
+                    id=ticket["movie_session"]
                 )
+            )
 
-            return new_order
+        return new_order
 
 
 def get_orders(username: Optional[str] = None) -> Order:
