@@ -29,7 +29,7 @@ def create_order(
             )
 
 
-def get_orders(username: Optional[str] = None) -> Optional[QuerySet, Order]:
+def get_orders(username: Optional[str] = None) -> Optional[QuerySet]:
     if username:
         return Order.objects.filter(order__user__username=username)
     return Order.objects.all()
