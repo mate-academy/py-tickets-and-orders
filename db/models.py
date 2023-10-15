@@ -1,3 +1,4 @@
+from typing import Any
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
@@ -63,7 +64,9 @@ class MovieSession(models.Model):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE
+    )
 
     def __str__(self) -> str:
         return f"Order: {self.created_at}"
@@ -78,27 +81,38 @@ class Ticket(models.Model):
     row = models.IntegerField()
     seat = models.IntegerField()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"Ticket: {self.movie_session.movie.title} " \
                f"{self.movie_session.show_time} " \
                f"(row: {self.row}, seat: {self.seat})"
 
-    def clean(self):
+    def clean(self) -> Any:
         if not (
-                0 < self.row <= self.movie_session.cinema_hall.rows
-                and 0 < self.seat <= self.movie_session.cinema_hall.seats_in_row
+                0 < self.row <=
+                self.movie_session.cinema_hall.rows
+                and
+                0 < self.seat <=
+                self.movie_session.cinema_hall.seats_in_row
         ):
             raise ValidationError
 
     def save(
-            self, force_insert=False, force_update=False, using=None, update_fields=None
-    ):
+            self,
+            force_insert: Any = False,
+            force_update: Any = False,
+            using: Any = None,
+            update_fields: Any = None
+    ) -> Any:
         self.full_clean()
-        return super(Ticket, self).save(force_insert, force_update, using, update_fields)
+        return super(Ticket, self).save(
+            force_insert, force_update, using, update_fields
+        )
 
     class Meta:
         constraints = [
-            UniqueConstraint(fields=["row", "seat", "movie_session"], name="unique_seat")
+            UniqueConstraint(
+                fields=["row", "seat", "movie_session"], name="unique_seat"
+            )
         ]
 
 
