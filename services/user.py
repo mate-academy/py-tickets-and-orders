@@ -3,27 +3,27 @@ from django.db import transaction
 from db.models import User
 
 
+@transaction.atomic
 def create_user(
     username: str,
     password: str,
-    email: str = None,
-    first_name: str = None,
-    last_name: str = None,
+    email: str | None = None,
+    first_name: str | None = None,
+    last_name: str | None = None,
 ) -> User:
-    with transaction.atomic():
-        user = User.objects.create_user(
-            username,
-            email,
-            password,
-        )
+    user = User.objects.create_user(
+        username,
+        email,
+        password,
+    )
 
-        if first_name:
-            user.first_name = first_name
+    if first_name:
+        user.first_name = first_name
 
-        if last_name:
-            user.last_name = last_name
+    if last_name:
+        user.last_name = last_name
 
-        user.save()
+    user.save()
 
     return user
 
