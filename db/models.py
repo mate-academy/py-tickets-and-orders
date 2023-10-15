@@ -88,11 +88,9 @@ class Ticket(models.Model):
 
     def clean(self) -> Any:
         if not (
-                0 < self.row <=
-                self.movie_session.cinema_hall.rows
+                0 < self.row <= self.movie_session.cinema_hall.rows
                 and
-                0 < self.seat <=
-                self.movie_session.cinema_hall.seats_in_row
+                0 < self.seat <= self.movie_session.cinema_hall.seats_in_row
         ):
             raise ValidationError
 
