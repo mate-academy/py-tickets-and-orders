@@ -1,4 +1,5 @@
 from typing import Any
+from datetime import datetime
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
@@ -68,8 +69,8 @@ class Order(models.Model):
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE
     )
 
-    def __str__(self) -> str:
-        return f"Order: {self.created_at}"
+    def __str__(self) -> datetime:
+        return self.created_at
 
     class Meta:
         ordering = ["-created_at"]
@@ -82,7 +83,7 @@ class Ticket(models.Model):
     seat = models.IntegerField()
 
     def __str__(self) -> str:
-        return f"Ticket: {self.movie_session.movie.title} " \
+        return f"{self.movie_session.movie.title} " \
                f"{self.movie_session.show_time} " \
                f"(row: {self.row}, seat: {self.seat})"
 
@@ -92,7 +93,11 @@ class Ticket(models.Model):
                 and 0 < self.seat <= self.movie_session
                         .cinema_hall.seats_in_row
         ):
-            raise ValidationError
+            raise ValidationError(
+                f"seat and row: must be within range row:"
+                f" 1-{self.movie_session.cinema_hall.rows};"
+                f" seat: 1-{self.movie_session.cinema_hall.seats_in_row}"
+            )
 
     def save(
             self,
@@ -115,4 +120,6 @@ class Ticket(models.Model):
 
 
 class User(AbstractUser):
-    pass
+    email = models.CharField(max_length=63, null=True)
+    first_name = models.CharField(max_length=63, null=True)
+    last_name = models.CharField(max_length=63, null=True)
