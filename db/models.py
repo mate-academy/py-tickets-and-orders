@@ -1,5 +1,4 @@
 from typing import Any
-from datetime import datetime
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
@@ -69,8 +68,8 @@ class Order(models.Model):
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE
     )
 
-    def __str__(self) -> datetime:
-        return self.created_at
+    def __str__(self) -> str:
+        return f"{self.created_at}"
 
     class Meta:
         ordering = ["-created_at"]
@@ -90,13 +89,17 @@ class Ticket(models.Model):
     def clean(self) -> Any:
         if not (
                 0 < self.row <= self.movie_session.cinema_hall.rows
-                and 0 < self.seat <= self.movie_session
-                        .cinema_hall.seats_in_row
         ):
             raise ValidationError(
-                f"seat and row: must be within range row:"
-                f" 1-{self.movie_session.cinema_hall.rows};"
-                f" seat: 1-{self.movie_session.cinema_hall.seats_in_row}"
+                f"row: row number must be in available range: ("
+                f"1, {self.movie_session.cinema_hall.rows})"
+            )
+        if not (
+                0 < self.seat <= self.movie_session.cinema_hall.seats_in_row
+        ):
+            raise ValidationError(
+                f"seat: seat number must be in available range: ("
+                f"1, {self.movie_session.cinema_hall.seats_in_row})"
             )
 
     def save(
@@ -120,6 +123,6 @@ class Ticket(models.Model):
 
 
 class User(AbstractUser):
-    email = models.CharField(max_length=63, null=True)
-    first_name = models.CharField(max_length=63, null=True)
-    last_name = models.CharField(max_length=63, null=True)
+    email = models.CharField(max_length=63, blank=True)
+    first_name = models.CharField(max_length=63, blank=True)
+    last_name = models.CharField(max_length=63, blank=True)

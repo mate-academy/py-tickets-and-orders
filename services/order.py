@@ -14,8 +14,8 @@ def create_order(
         date: Optional[datetime] = None
 ) -> None:
     with transaction.atomic():
-        user_to_create = get_user_model().objects.get(username=username)
-        order_queryset = Order.objects.create(user=user_to_create)
+        user = get_user_model().objects.get(username=username)
+        order_queryset = Order.objects.create(user=user)
 
         if date:
             order_queryset.created_at = date
@@ -23,9 +23,10 @@ def create_order(
         order_queryset.save()
 
         for ticket in tickets:
+            movie_session_id_of_ticket = ticket.movie_session.id
             Ticket.objects.create(
                 order_id=order_queryset.id,
-                movie_session_id=ticket.movie_session.id,
+                movie_session_id=movie_session_id_of_ticket,
                 row=ticket.row,
                 seat=ticket.seat
             )
