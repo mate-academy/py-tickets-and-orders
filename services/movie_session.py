@@ -47,5 +47,5 @@ def delete_movie_session_by_id(session_id: int) -> None:
 
 
 def get_taken_seats(movie_session_id: int) -> List[dict]:
-    return MovieSession.objects.filter(id=movie_session_id).\
+    return MovieSession.objects.annotate(id=movie_session_id).\
         values("ticket__row", "ticket__seat")

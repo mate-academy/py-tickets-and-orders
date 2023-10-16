@@ -23,7 +23,7 @@ def create_order(
         order_queryset.save()
 
         for ticket in tickets:
-            movie_session_id_of_ticket = ticket.movie_session.id
+            movie_session_id_of_ticket = ticket["movie_session"]
             Ticket.objects.create(
                 order_id=order_queryset.id,
                 movie_session_id=movie_session_id_of_ticket,
