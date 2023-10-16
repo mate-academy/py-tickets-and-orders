@@ -3,7 +3,7 @@ from typing import List, Union
 from django.db import transaction
 from typing import Optional
 
-from db.models import Order, MovieSession, User, Ticket
+from db.models import Order, User, Ticket
 
 
 @transaction.atomic
@@ -27,9 +27,7 @@ def create_order(
                 order=new_order,
                 seat=ticket["seat"],
                 row=ticket["row"],
-                movie_session=MovieSession.objects.get(
-                    id=ticket["movie_session"]
-                )
+                movie_session_id=ticket["movie_session"]
             )
 
         return new_order

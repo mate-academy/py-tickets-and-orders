@@ -41,15 +41,17 @@ def update_user(
         first_name: Optional[str] = None,
         last_name: Optional[str] = None
 ) -> None:
-    user_upd = User.objects.filter(id=user_id)
+
+    user_upd = User.objects.get(id=user_id)
     if username:
-        user_upd.update(username=username)
+        user_upd.username = username
     if email:
-        user_upd.update(email=email)
+        user_upd.email = email
     if first_name:
-        user_upd.update(first_name=first_name)
+        user_upd.first_name = first_name
     if last_name:
-        user_upd.update(last_name=last_name)
+        user_upd.last_name = last_name
+    user_upd.save()
 
     if password:
         user_psswd = User.objects.get(id=user_id)
