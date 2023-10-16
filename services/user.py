@@ -30,11 +30,11 @@ def get_user(user_id: int) -> User:
 
 
 def update_user(user_id: int,
-                username: str = None,
-                password: str = None,
-                email: str = None,
-                first_name: str = None,
-                last_name: str = None) -> User:
+                username: str | None = None,
+                password: str | None = None,
+                email: str | None = None,
+                first_name: str | None = None,
+                last_name: str | None = None) -> User:
     user = get_user(user_id=user_id)
 
     if username:
