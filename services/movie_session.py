@@ -1,6 +1,6 @@
 from typing import List
 
-from django.db.models import QuerySet
+from django.db.models import QuerySet, F
 
 from db.models import MovieSession
 
@@ -48,5 +48,5 @@ def delete_movie_session_by_id(session_id: int) -> None:
 
 def get_taken_seats(movie_session_id: int) -> List[dict]:
     taken_seats = MovieSession.objects.filter(id=movie_session_id).\
-        values(row="ticket__row", seat="ticket__seat")
+        values(row=F("ticket__row"), seat=F("ticket__seat"))
     return list(taken_seats)
