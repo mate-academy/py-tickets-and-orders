@@ -25,14 +25,10 @@ def get_movie_session_by_id(movie_session_id: int) -> MovieSession:
 
 
 def get_taken_seats(movie_session_id: int) -> list[dict]:
-    session = MovieSession.objects.get(id=movie_session_id)
-    tickets = Ticket.objects.filter(movie_session=session)
+    tickets = Ticket.objects.filter(movie_session_id=movie_session_id)
 
-    taken_seats = [
-        {"row": ticket.row, "seat": ticket.seat} for ticket in tickets
-    ]
-
-    return taken_seats
+    taken_seats = tickets.values("row", "seat")
+    return list(taken_seats)
 
 
 def update_movie_session(
