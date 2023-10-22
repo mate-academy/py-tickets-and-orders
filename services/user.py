@@ -7,16 +7,22 @@ from support.validators import table_item_exist
 
 def create_user(username: str,
                 password: str,
-                email: str = "",
-                first_name: str = "",
-                last_name: str = "") -> User:
+                email: str | None = None,
+                first_name: str | None = None,
+                last_name: str | None = None
+                ) -> User:
     user = get_user_model().objects.create_user(
         username=username,
-        password=password,
-        email=email,
-        first_name=first_name,
-        last_name=last_name,
-    )
+        password=password)
+    other_fields = {
+        "email": email,
+        "first_name": first_name,
+        "last_name": last_name
+    }
+    for field, info in other_fields.items():
+        if info and isinstance(info, str):
+            setattr(user, field, info)
+    user.save()
     return user
 
 
@@ -42,7 +48,7 @@ def update_user(user_id: int,
             "first_name": first_name,
             "last_name": last_name}
         for field, new_info in fields.items():
-            user_attr = user.__getattribute__(field)
+            user_attr = getattr(user, field)
             if new_info and new_info != user_attr:
-                user.__setattr__(field, new_info)
+                setattr(user, field, new_info)
         user.save()

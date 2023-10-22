@@ -7,22 +7,22 @@ from django.db.models import QuerySet
 from db.models import Order, Ticket, MovieSession
 
 
+@transaction.atomic
 def create_order(tickets: dict[str: int],
                  username: str,
                  date: str | datetime | None = None) -> None:
-    with transaction.atomic():
-        user = get_user_model().objects.get(username=username)
-        order = Order.objects.create(user=user)
-        if date:
-            order.created_at = date
-            order.save()
-        for ticket in tickets:
-            Ticket.objects.create(
-                movie_session=MovieSession.objects.get(
-                    id=ticket["movie_session"]),
-                row=ticket["row"],
-                seat=ticket["seat"],
-                order=order)
+    user = get_user_model().objects.get(username=username)
+    order = Order.objects.create(user=user)
+    if date:
+        order.created_at = date
+        order.save()
+    for ticket in tickets:
+        Ticket.objects.create(
+            movie_session=MovieSession.objects.get(
+                id=ticket["movie_session"]),
+            row=ticket["row"],
+            seat=ticket["seat"],
+            order=order)
 
 
 def get_orders(username: str | None = None) -> QuerySet[Order]:
