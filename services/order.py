@@ -22,8 +22,7 @@ def create_order(tickets: dict[str: int],
                     id=ticket["movie_session"]),
                 row=ticket["row"],
                 seat=ticket["seat"],
-                order=order,
-                )
+                order=order)
 
 
 def get_orders(username: str | None = None) -> QuerySet[Order]:

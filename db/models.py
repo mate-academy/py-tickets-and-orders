@@ -3,6 +3,8 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import UniqueConstraint
 
+from typing import Optional
+
 import settings
 from support import validators
 
@@ -105,10 +107,8 @@ class Ticket(models.Model):
                 "seat": f"seat number must be in available range: "
                         f"(1, seats_in_row): (1, {seats})"})
 
-    def save(
-            self, force_insert=False, force_update=False,
-            using=None, update_fields=None
-    ) -> None:
+    def save(self, force_insert: bool = False, force_update: bool = False,
+            using: Optional = None, update_fields: Optional = None) -> None:
         self.full_clean()
         return super(Ticket, self).save(force_insert, force_update,
                                         using, update_fields)
