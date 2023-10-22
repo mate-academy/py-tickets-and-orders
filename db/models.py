@@ -87,7 +87,8 @@ class Ticket(models.Model):
 
     def __str__(self) -> str:
         return (f"{self.movie_session.movie.title} "
-                f"{self.order} (row: {self.row}, seat: {self.seat})")
+                f"{self.movie_session.show_time} "
+                f"(row: {self.row}, seat: {self.seat})")
 
     class Meta:
         constraints = [
