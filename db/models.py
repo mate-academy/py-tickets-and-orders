@@ -107,11 +107,11 @@ class Ticket(models.Model):
     def clean(self) -> None:
         rows = self.movie_session.cinema_hall.rows
         seats = self.movie_session.cinema_hall.seats_in_row
-        if not validators.value_int_and_in_range(self.row, rows):
+        if not validators.value_positive_int_and_in_range(self.row, rows):
             raise ValidationError({
                 "row": f"row number must be in available range: "
                        f"(1, rows): (1, {rows})"})
-        if not validators.value_int_and_in_range(self.seat, seats):
+        if not validators.value_positive_int_and_in_range(self.seat, seats):
             raise ValidationError({
                 "seat": f"seat number must be in available range: "
                         f"(1, seats_in_row): (1, {seats})"})
