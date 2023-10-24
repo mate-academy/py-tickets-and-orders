@@ -2,14 +2,17 @@ from django.contrib.auth import get_user_model
 from db.models import User
 
 
-def create_user(username: str,
-                password: str,
-                email: str = None,
-                first_name: str = None,
-                last_name: str = None) -> User:
+def create_user(
+    username: str,
+    password: str,
+    email: str = None,
+    first_name: str = None,
+    last_name: str = None,
+) -> User:
     user = get_user_model().objects.create_user(
         username=username,
-        password=password)
+        password=password
+    )
 
     if email:
         user.email = email
@@ -29,29 +32,27 @@ def get_user(user_id: int) -> User | None:
         return None
 
 
-def update_user(user_id: int,
-                username: str = None,
-                password: str = None,
-                email: str = None,
-                first_name: str = None,
-                last_name: str = None) -> User | None:
+def update_user(
+    user_id: int,
+    username: str = None,
+    password: str = None,
+    email: str = None,
+    first_name: str = None,
+    last_name: str = None,
+) -> User | None:
 
-    try:
-        user = get_user(user_id=user_id)
+    user = get_user(user_id=user_id)
 
-        if username:
-            user.username = username
-        if password:
-            user.set_password(password)
-        if email:
-            user.email = email
-        if first_name:
-            user.first_name = first_name
-        if last_name:
-            user.last_name = last_name
+    if username:
+        user.username = username
+    if password:
+        user.set_password(password)
+    if email:
+        user.email = email
+    if first_name:
+        user.first_name = first_name
+    if last_name:
+        user.last_name = last_name
 
-        user.save()
-        return user
-
-    except User.DoesNotExist:
-        return None
+    user.save()
+    return user

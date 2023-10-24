@@ -6,9 +6,9 @@ from db.models import User, Order, Ticket
 
 def create_order(
         tickets: list[dict],
-        username: User,
-        date: str = None) -> Order:
-
+        username: str,
+        date: str = None
+) -> Order:
     with transaction.atomic():
         user = get_user_model().objects.get(username=username)
         order = Order.objects.create(user=user)
