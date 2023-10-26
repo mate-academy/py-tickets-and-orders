@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.db import transaction
 
 from db.models import User, Ticket, Order, MovieSession
@@ -35,7 +36,7 @@ def create_order(
 def get_orders(username: str = None) -> Order:
 
     if username:
-        get_user = User.objects.get(username=username).id
+        get_user = get_user_model().objects.get(username=username)
         return Order.objects.filter(user=get_user)
 
     return Order.objects.all()
