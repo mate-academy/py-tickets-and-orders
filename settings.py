@@ -1,5 +1,6 @@
 import os
 
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -23,15 +24,15 @@ USE_I18N = True
 
 USE_TZ = False
 
-
 INSTALLED_APPS = [
+    "django_extensions",
     "db",
     "django.contrib.auth",
     "django.contrib.contenttypes",
-    "django_extensions"
 ]
 
 AUTH_USER_MODEL = "db.User"
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -56,3 +57,7 @@ AUTH_PASSWORD_VALIDATORS = [
             "password_validation.NumericPasswordValidator",
     },
 ]
+
+
+def configure() -> None:
+    return None
