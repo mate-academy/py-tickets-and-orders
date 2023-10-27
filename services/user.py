@@ -56,5 +56,4 @@ def update_user(
     if last_name:
         user_to_update.last_name = last_name
 
-
     user_to_update.save()
