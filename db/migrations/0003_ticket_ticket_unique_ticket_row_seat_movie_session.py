@@ -5,24 +5,45 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('db', '0002_user_order_alter_movie_actors_alter_movie_genres_and_more'),
+        ("db", "0002_user_order_alter_movie_actors_alter_movie_genres_and_more"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Ticket',
+            name="Ticket",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('row', models.IntegerField()),
-                ('seat', models.IntegerField()),
-                ('movie_session', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='db.moviesession')),
-                ('order', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='db.order')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("row", models.IntegerField()),
+                ("seat", models.IntegerField()),
+                (
+                    "movie_session",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="db.moviesession",
+                    ),
+                ),
+                (
+                    "order",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="db.order"
+                    ),
+                ),
             ],
         ),
         migrations.AddConstraint(
-            model_name='ticket',
-            constraint=models.UniqueConstraint(fields=('row', 'seat', 'movie_session'), name='unique_ticket_row_seat_movie_session'),
+            model_name="ticket",
+            constraint=models.UniqueConstraint(
+                fields=("row", "seat", "movie_session"),
+                name="unique_ticket_row_seat_movie_session",
+            ),
         ),
     ]
