@@ -1,3 +1,5 @@
+from typing import Optional
+
 from django.db import transaction
 
 from db.models import User, Ticket, Order, MovieSession
@@ -7,7 +9,7 @@ from db.models import User, Ticket, Order, MovieSession
 def create_order(
         tickets: list[Ticket],
         username: str,
-        date: str = None
+        date: Optional[str] = None
 ) -> Order:
 
     user = User.objects.get(username=username)
@@ -31,7 +33,7 @@ def create_order(
     return order
 
 
-def get_orders(username: str = None) -> Order:
+def get_orders(username: Optional[str] = None) -> Order:
 
     if username:
         get_user = User.objects.get(username=username).id
