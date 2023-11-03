@@ -76,21 +76,27 @@ class Ticket(models.Model):
                 f"{str(self.movie_session.show_time)} "
                 f"(row: {self.row}, seat: {self.seat})")
 
-    def clean(self):
+    def clean(self) -> None:
         if self.row < 1 or self.row > self.movie_session.cinema_hall.rows:
-            raise ValidationError({"row": ["row number must be in available range: (1, rows): (1, {})".format(
-                self.movie_session.cinema_hall.rows)]})
+            raise ValidationError(
+                {"row": ["row number must be in available range: "
+                         "(1, rows): (1, {})".format
+                         (self.movie_session.cinema_hall.rows)]})
         if self.seat < 1 or self.seat > self.movie_session.cinema_hall.seats_in_row:
-            raise ValidationError({"seat": ["seat number must be in available range: (1, seats_in_row): (1, {})".format(
-                self.movie_session.cinema_hall.seats_in_row)]})
+            raise ValidationError(
+                {"seat": ["seat number must be in available range: "
+                          "(1, seats_in_row): (1, {})".format
+                          (self.movie_session.cinema_hall.seats_in_row)]})
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         self.full_clean()
         super().save(*args, **kwargs)
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=["movie_session", "row", "seat"], name="unique_ticket")
+            models.UniqueConstraint(
+                fields=["movie_session", "row", "seat"],
+                name="unique_ticket")
         ]
 
 

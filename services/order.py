@@ -3,7 +3,6 @@ from typing import List
 from django.db import transaction
 from db.models import Order, Ticket, MovieSession
 from db.models import User
-from datetime import datetime
 
 
 @transaction.atomic
