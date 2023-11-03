@@ -44,5 +44,3 @@ def create_movie(
         movie.actors.set(actors_ids)
 
     return movie
-0002_user_alter_movie_actors_alter_movie_genres_and_more
-D:/python/mate/py-tickets-and-orders/db/migrations
