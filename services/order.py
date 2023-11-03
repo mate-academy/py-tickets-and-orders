@@ -6,7 +6,10 @@ from db.models import User
 
 
 @transaction.atomic
-def create_order(tickets: List[Ticket], username: str, date: str = None) -> None:
+def create_order(
+        tickets: List[Ticket],
+        username: str,
+        date: str = None) -> None:
     user = User.objects.get(username=username)
 
     order = Order.objects.create(user=user)
