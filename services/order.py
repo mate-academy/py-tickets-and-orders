@@ -7,7 +7,11 @@ from db.models import Ticket, Order, User, MovieSession
 
 
 @transaction.atomic
-def create_order(tickets: list[dict], username: str, date: datetime = None) -> Order:
+def create_order(
+        tickets: list[dict],
+        username: str,
+        date: datetime = None
+) -> Order:
     user = User.objects.get(username=username)
     if date:
         order = Order.objects.create(user=user)
@@ -23,7 +27,12 @@ def create_order(tickets: list[dict], username: str, date: datetime = None) -> O
 
         if row is not None and seat is not None:
             movie_session = MovieSession.objects.get(pk=movie_session_id)
-            ticket = Ticket(order=order, movie_session=movie_session, row=row, seat=seat)
+            ticket = Ticket(
+                order=order,
+                movie_session=movie_session,
+                row=row,
+                seat=seat
+            )
             ticket.full_clean()
             ticket.save()
 
