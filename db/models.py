@@ -74,7 +74,7 @@ class Order(models.Model):
     )
 
     def __str__(self) -> str:
-        return f"{str(self.created_at)}"
+        return str(self.created_at)
 
     class Meta:
         ordering = ["-id"]
