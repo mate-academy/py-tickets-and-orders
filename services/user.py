@@ -3,12 +3,13 @@ from django.db.models import QuerySet
 from db.models import User
 
 
-def create_user(username: str,
-                password: str,
-                email: str = None,
-                first_name: str = "",
-                last_name: str = ""
-                ) -> None:
+def create_user(
+        username: str,
+        password: str,
+        email: str = None,
+        first_name: str = "",
+        last_name: str = ""
+) -> None:
     User.objects.create_user(username=username,
                              password=password,
                              email=email,
@@ -21,13 +22,14 @@ def get_user(user_id: int) -> QuerySet[User]:
     return User.objects.get(id=user_id)
 
 
-def update_user(user_id: int,
-                username: str = None,
-                password: str = None,
-                first_name: str = None,
-                last_name: str = None,
-                email: str = None
-                ) -> None:
+def update_user(
+        user_id: int,
+        username: str = None,
+        password: str = None,
+        first_name: str = None,
+        last_name: str = None,
+        email: str = None
+) -> None:
     user = User.objects.get(id=user_id)
     if username:
         user.username = username
