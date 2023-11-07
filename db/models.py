@@ -24,7 +24,7 @@ class Movie(models.Model):
     actors = models.ManyToManyField(to=Actor, related_name="movies")
     genres = models.ManyToManyField(to=Genre, related_name="movies")
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.title
 
     class Meta:
@@ -63,9 +63,11 @@ class User(AbstractUser):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User, related_name="orders", on_delete=models.CASCADE)
+    user = models.ForeignKey(User,
+                             related_name="orders",
+                             on_delete=models.CASCADE)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.created_at)
 
     class Meta:
@@ -82,13 +84,17 @@ class Ticket(models.Model):
     row = models.IntegerField()
     seat = models.IntegerField()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return (f"{self.movie_session.movie.title} "
                 f"{self.movie_session.show_time} "
                 f"(row: {self.row}, seat: {self.seat})")
 
-    def clean(self):
-        if self.row not in range(1, self.movie_session.cinema_hall.rows + 1):
+    def clean(self) -> None:
+
+        if self.row not in range(
+                1, self.movie_session.cinema_hall.rows + 1
+        ):
+
             raise ValidationError(
                 {"row": [
                     "row number must be in available range:"
@@ -98,7 +104,10 @@ class Ticket(models.Model):
                 }
             )
 
-        if self.seat not in range(1, self.movie_session.cinema_hall.seats_in_row + 1):
+        if self.seat not in range(
+                1, self.movie_session.cinema_hall.seats_in_row + 1
+        ):
+
             raise ValidationError(
                 {"seat": [
                     "seat number must be in available range: "
@@ -108,7 +117,7 @@ class Ticket(models.Model):
                 }
             )
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         self.full_clean()
         super().save(*args, **kwargs)
 

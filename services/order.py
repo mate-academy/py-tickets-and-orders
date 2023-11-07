@@ -1,4 +1,5 @@
 from django.db import transaction
+from django.db.models import QuerySet
 
 from db.models import User, Order, MovieSession, Ticket
 
@@ -8,16 +9,14 @@ def create_order(tickets: list[dict],
                  date: str = None) -> None:
 
     with transaction.atomic():
-        try:
-            user = User.objects.get(username=username)
-        except User.DoesNotExist:
-            print("User does not exist")
-            return
 
+        user = User.objects.get(username=username)
         order = Order.objects.create(user=user)
 
         for ticket in tickets:
-            movie_session = MovieSession.objects.get(id=ticket["movie_session"])
+            movie_session = MovieSession.objects.get(
+                id=ticket["movie_session"]
+            )
             Ticket.objects.create(row=ticket["row"],
                                   seat=ticket["seat"],
                                   movie_session=movie_session,
@@ -27,12 +26,9 @@ def create_order(tickets: list[dict],
             order.save()
 
 
-def get_orders(username: str = None):
+def get_orders(username: str = None) -> QuerySet:
+
     if username:
-        try:
-            user = User.objects.get(username=username)
-        except User.DoesNotExist:
-            print("User does not exist")
-            return
+        user = User.objects.get(username=username)
         return user.orders.all()
     return Order.objects.all()
