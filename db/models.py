@@ -84,15 +84,6 @@ class Ticket(models.Model):
         )
 
     def clean(self, *args, **kwargs) -> None:
-        super().clean(*args, **kwargs)
-        duplicates = Ticket.objects.filter(
-            movie_session=self.movie_session,
-            order=self.order,
-            row=self.row,
-            seat=self.seat,
-        )
-        if duplicates.exists():
-            raise ValidationError("Unique constraint failed")
         if self.row > self.movie_session.cinema_hall.rows:
             raise ValidationError({"row": [
                 f"row number must be in available range:"
@@ -105,7 +96,7 @@ class Ticket(models.Model):
             ]})
 
     def save(self, *args, **kwargs) -> None:
-        self.clean()
+        self.full_clean()
         super(Ticket, self).save(*args, **kwargs)
 
     class Meta:
