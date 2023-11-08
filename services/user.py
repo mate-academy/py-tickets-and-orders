@@ -31,7 +31,7 @@ def update_user(user_id: int,
                 email: str = None,
                 first_name: str = None,
                 last_name: str = None
-                ) -> User:
+                ) -> None:
 
     user = get_user(user_id)
 
@@ -47,5 +47,3 @@ def update_user(user_id: int,
         user.last_name = last_name
 
     user.save()
-
-    return user
