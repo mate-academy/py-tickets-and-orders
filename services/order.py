@@ -15,6 +15,7 @@ def create_order(tickets: dict,
 
         if date:
             order.created_at = date
+            order.save()
 
         for ticket in tickets:
             movie_session = MovieSession.objects.get(
@@ -25,8 +26,6 @@ def create_order(tickets: dict,
                                   seat=ticket["seat"],
                                   movie_session=movie_session,
                                   order=order)
-
-        order.save()
 
 
 def get_orders(username: str = None) -> List[Order]:
