@@ -25,13 +25,13 @@ class Movie(models.Model):
     actors = models.ManyToManyField(to=Actor, related_name="movies")
     genres = models.ManyToManyField(to=Genre, related_name="movies")
 
-    def __str__(self) -> str:
-        return self.title
-
     class Meta:
         indexes = [
             models.Index(fields=["title"])
         ]
+
+    def __str__(self) -> str:
+        return self.title
 
 
 class CinemaHall(models.Model):
@@ -64,11 +64,11 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey("User", on_delete=models.PROTECT)
 
-    def __str__(self) -> str:
-        return str(self.created_at)
-
     class Meta:
         ordering = ["-created_at"]
+
+    def __str__(self) -> str:
+        return str(self.created_at)
 
 
 class Ticket(models.Model):
@@ -76,6 +76,14 @@ class Ticket(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     row = models.IntegerField()
     seat = models.IntegerField()
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                fields=["row", "seat", "movie_session"],
+                name="unique_seat_in_movie_session"
+            )
+        ]
 
     def __str__(self) -> str:
         return (
@@ -113,14 +121,6 @@ class Ticket(models.Model):
         return super(Ticket, self).save(
             force_insert, force_update, using, update_fields
         )
-
-    class Meta:
-        constraints = [
-            UniqueConstraint(
-                fields=["row", "seat", "movie_session"],
-                name="unique_seat_in_movie_session"
-            )
-        ]
 
 
 class User(AbstractUser):
