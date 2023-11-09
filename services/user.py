@@ -5,10 +5,9 @@ from db.models import User
 
 def create_user(username: str,
                 password: str,
-                email: str = None,
-                first_name: str = None,
-                last_name: str = None) -> None:
-
+                email: str | None = None,
+                first_name: str | None = None,
+                last_name: str | None = None) -> None:
     user = get_user_model().objects.create_user(
         username=username,
         password=password,
@@ -29,12 +28,12 @@ def get_user(user_id: int) -> User:
 
 
 def update_user(user_id: int,
-                username: str = None,
-                password: str = None,
-                email: str = None,
-                first_name: str = None,
-                last_name: str = None) -> None:
-    user = get_user_model().objects.get(id=user_id)
+                username: str | None = None,
+                password: str | None = None,
+                email: str | None = None,
+                first_name: str | None = None,
+                last_name: str | None = None) -> None:
+    user = get_user(user_id)
 
     if username:
         user.username = username

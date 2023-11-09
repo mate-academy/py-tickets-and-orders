@@ -8,7 +8,7 @@ from db.models import Order, Ticket
 @transaction.atomic
 def create_order(tickets: list[dict],
                  username: str,
-                 date: str = None) -> None:
+                 date: str | None = None) -> None:
     user = get_user_model().objects.get(username=username)
 
     order = Order(user=user)
@@ -25,7 +25,7 @@ def create_order(tickets: list[dict],
                               seat=ticket["seat"])
 
 
-def get_orders(username: str = None) -> QuerySet[Order]:
+def get_orders(username: str | None = None) -> QuerySet[Order]:
     orders_queryset = Order.objects.all()
 
     if username:

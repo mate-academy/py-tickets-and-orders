@@ -4,7 +4,7 @@ from db.models import MovieSession, Ticket
 
 
 def create_movie_session(
-    movie_show_time: str, movie_id: int, cinema_hall_id: int
+        movie_show_time: str, movie_id: int, cinema_hall_id: int
 ) -> MovieSession:
     return MovieSession.objects.create(
         show_time=movie_show_time,
@@ -13,7 +13,7 @@ def create_movie_session(
     )
 
 
-def get_movies_sessions(session_date: str = None) -> QuerySet:
+def get_movies_sessions(session_date: str | None = None) -> QuerySet:
     queryset = MovieSession.objects.all()
     if session_date:
         queryset = queryset.filter(show_time__date=session_date)
@@ -25,10 +25,10 @@ def get_movie_session_by_id(movie_session_id: int) -> MovieSession:
 
 
 def update_movie_session(
-    session_id: int,
-    show_time: str = None,
-    movie_id: int = None,
-    cinema_hall_id: int = None,
+        session_id: int,
+        show_time: str | None = None,
+        movie_id: str | None = None,
+        cinema_hall_id: str | None = None,
 ) -> None:
     movie_session = MovieSession.objects.get(id=session_id)
     if show_time:
@@ -42,8 +42,8 @@ def update_movie_session(
 
 def get_taken_seats(movie_session_id: int) -> list[dict]:
     tickets_queryset = Ticket.objects.filter(movie_session_id=movie_session_id)
-    return list({"row": ticket.row, "seat": ticket.seat}
-                for ticket in tickets_queryset)
+    return [{"row": ticket.row, "seat": ticket.seat}
+            for ticket in tickets_queryset]
 
 
 def delete_movie_session_by_id(session_id: int) -> None:
