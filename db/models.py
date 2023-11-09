@@ -61,11 +61,11 @@ class Order(models.Model):
                              on_delete=models.CASCADE,
                              related_name="orders")
 
-    def __str__(self) -> str:
-        return str(self.created_at)
-
     class Meta:
         ordering = ["-created_at"]
+
+    def __str__(self) -> str:
+        return str(self.created_at)
 
 
 class Ticket(models.Model):
@@ -77,6 +77,12 @@ class Ticket(models.Model):
                               related_name="tickets")
     row = models.IntegerField()
     seat = models.IntegerField()
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["movie_session", "row", "seat"],
+                                    name="unique_row_seats")
+        ]
 
     def __str__(self) -> str:
         return (f"{self.movie_session.movie.title} "
@@ -110,12 +116,6 @@ class Ticket(models.Model):
                             force_update,
                             using,
                             update_fields)
-
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(fields=["movie_session", "row", "seat"],
-                                    name="unique_row_seats")
-        ]
 
 
 class User(AbstractUser):
