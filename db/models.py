@@ -2,6 +2,8 @@ from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
 
+import settings
+
 
 class Genre(models.Model):
     name = models.CharField(max_length=255, unique=True)
@@ -24,13 +26,13 @@ class Movie(models.Model):
     actors = models.ManyToManyField(to=Actor, related_name="movies")
     genres = models.ManyToManyField(to=Genre, related_name="movies")
 
-    def __str__(self) -> str:
-        return self.title
-
     class Meta:
         indexes = [
             models.Index(fields=["title"]),
         ]
+
+    def __str__(self) -> str:
+        return self.title
 
 
 class CinemaHall(models.Model):
@@ -61,13 +63,14 @@ class MovieSession(models.Model):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(on_delete=models.CASCADE, to="User")
-
-    def __str__(self) -> str:
-        return f"{self.created_at}"
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE,)
 
     class Meta:
         ordering = ["-created_at"]
+
+    def __str__(self) -> str:
+        return f"{self.created_at}"
 
 
 class Ticket(models.Model):
@@ -75,6 +78,12 @@ class Ticket(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     seat = models.IntegerField()
     row = models.IntegerField()
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["movie_session", "row", "seat"],
+                                    name="unique_ticket")
+        ]
 
     def __str__(self) -> str:
         return (f"{self.movie_session.movie.title} "
@@ -98,12 +107,6 @@ class Ticket(models.Model):
     def save(self, *args, **kwargs) -> super:
         self.full_clean()
         return super().save(*args, **kwargs)
-
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(fields=["movie_session", "row", "seat"],
-                                    name="unique_ticket")
-        ]
 
 
 class User(AbstractUser):
