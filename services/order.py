@@ -5,9 +5,11 @@ from django.db import transaction
 from typing import List
 
 
-def create_order(tickets: dict,
-                 username: str,
-                 date: str = None) -> None:
+def create_order(
+        tickets: dict,
+        username: str,
+        date: str = None
+) -> None:
 
     with transaction.atomic():
         user = get_user_model().objects.get(username=username)
