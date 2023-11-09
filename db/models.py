@@ -5,6 +5,8 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import UniqueConstraint
 
+from settings import AUTH_USER_MODEL
+
 
 class Genre(models.Model):
     name = models.CharField(max_length=255, unique=True)
@@ -59,13 +61,13 @@ class MovieSession(models.Model):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey("User", on_delete=models.CASCADE)
-
-    def __str__(self) -> str:
-        return str(self.created_at)
+    user = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     class Meta:
         ordering = ["-created_at"]
+
+    def __str__(self) -> str:
+        return str(self.created_at)
 
 
 class Ticket(models.Model):
@@ -73,6 +75,15 @@ class Ticket(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     row = models.IntegerField()
     seat = models.IntegerField()
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                name="unique_seat_row_session",
+                fields=["seat", "row", "movie_session"]
+            )
+        ]
+
 
     def __str__(self) -> str:
         return (f"{self.movie_session.movie.title} "
@@ -106,14 +117,6 @@ class Ticket(models.Model):
     ) -> None:
         self.full_clean()
         super().save(force_insert, force_update, using, update_fields)
-
-    class Meta:
-        constraints = [
-            UniqueConstraint(
-                name="unique_seat_row_session",
-                fields=["seat", "row", "movie_session"]
-            )
-        ]
 
 
 class User(AbstractUser):
