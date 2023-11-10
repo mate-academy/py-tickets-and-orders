@@ -20,10 +20,7 @@ def create_user(
 
 
 def get_user(user_id: int) -> User | None:
-    try:
-        return User.objects.get(id=user_id)
-    except User.DoesNotExist:
-        return None
+    return User.objects.filter(id=user_id).first()
 
 
 def update_user(
