@@ -25,7 +25,7 @@ def create_user(
     new_user.save()
 
 
-def get_user(user_id: int) -> User:
+def get_user(user_id: int) -> get_user_model:
     return get_user_model().objects.get(id=user_id)
 
 
