@@ -1,6 +1,7 @@
 from typing import Optional
 
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth import get_user_model
 
 from db.models import User
 
@@ -13,7 +14,7 @@ def create_user(
         last_name: Optional[str] = None
 ) -> None:
     hashed_password = make_password(password)
-    user = User.objects.create_user(
+    user = get_user_model().objects.create_user(
         username=username, password=hashed_password
     )
 
