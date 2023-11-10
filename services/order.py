@@ -3,6 +3,7 @@ from typing import List
 from django.db import transaction
 from db.models import Order, Ticket, MovieSession
 from db.models import User
+from django.db.models.query import QuerySet
 
 
 @transaction.atomic
@@ -32,8 +33,5 @@ def create_order(
         )
 
 
-def get_orders(username: str = None) -> List[Order]:
-    if username:
-        return Order.objects.filter(user__username=username)
-    else:
-        return Order.objects.all()
+def get_orders(username: str = None) -> QuerySet[Order]:
+    return Order.objects.filter(user__username=username)

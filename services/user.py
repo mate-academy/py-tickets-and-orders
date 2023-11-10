@@ -20,7 +20,7 @@ def create_user(
 
 
 def get_user(user_id: int) -> User | None:
-    return User.objects.filter(id=user_id).first()
+    return User.objects.get(id=user_id)
 
 
 def update_user(
