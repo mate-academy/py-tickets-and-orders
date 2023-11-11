@@ -5,7 +5,7 @@ from db.models import User
 
 def create_user(
         username: str,
-        password:str,
+        password: str,
         email: str = None,
         first_name: str = None,
         last_name: str = None
