@@ -8,7 +8,7 @@ from django.db.models.query import QuerySet
 
 @transaction.atomic
 def create_order(
-        tickets: List[Ticket],
+        tickets: List[dict],
         username: str,
         date: str = None) -> None:
     user = User.objects.get(username=username)

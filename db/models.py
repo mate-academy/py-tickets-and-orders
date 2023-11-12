@@ -46,7 +46,7 @@ class Order(models.Model):
     user = models.ForeignKey("User", on_delete=models.CASCADE)
 
     def __str__(self) -> str:
-        return f"{self.created_at}"
+        return str(self.created_at)
 
     class Meta:
         ordering = ["-created_at"]
