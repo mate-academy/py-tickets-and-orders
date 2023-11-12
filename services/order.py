@@ -36,6 +36,6 @@ def get_orders(username: str = None) -> QuerySet[Order]:
 
 
     if username:
-        query_set = query_set.filter(user__username=username)
+        orders = orders.filter(user__username=username)
 
-    return query_set
+    return orders
