@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import transaction
+from django.db.models import QuerySet
 from db.models import Order, Ticket
 
 
@@ -27,7 +28,7 @@ def create_order(
 
 def get_orders(
         username: str = None
-) -> Order:
+) -> QuerySet[Order]:
     order_set = Order.objects.all()
     if username:
         order_set = order_set.filter(user__username=username)
