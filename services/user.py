@@ -1,10 +1,23 @@
 from django.contrib.auth.hashers import make_password
-from django.contrib.auth.models import User
+from db.models import User
 
 
-def create_user( username, password, user_id=None, email=None, first_name=None, last_name=None):
+def create_user(
+        username: str,
+        password: str,
+        user_id: int = None,
+        email: str = None,
+        first_name: str = None,
+        last_name: str = None
+) -> None:
     try:
-        user, created = User.objects.update_or_create(id=user_id, defaults={'username': username, 'password': make_password(password)})
+        user, created = User.objects.update_or_create(
+            id=user_id,
+            defaults=(
+                {"username": username,
+                 "password": make_password(password)}
+            )
+        )
         if email is not None:
             user.email = email
         if first_name is not None:
@@ -17,10 +30,18 @@ def create_user( username, password, user_id=None, email=None, first_name=None, 
         return None
 
 
-def get_user(user_id):
+def get_user(user_id: int) -> int:
     return User.objects.get(id=user_id)
 
-def update_user(user_id, username=None, password=None, email=None, first_name=None, last_name=None):
+
+def update_user(
+        user_id: int,
+        username: str = None,
+        password: str = None,
+        email: str = None,
+        first_name: str = None,
+        last_name: str = None
+) -> None:
     try:
         user = User.objects.get(id=user_id)
     except User.DoesNotExist:
@@ -39,4 +60,3 @@ def update_user(user_id, username=None, password=None, email=None, first_name=No
 
     user.save()
     return user
-
