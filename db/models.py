@@ -52,7 +52,12 @@ class MovieSession(models.Model):
     )
 
     def __str__(self) -> str:
-        return f"{self.movie.title} {self.show_time} {self.cinema_hall.rows} {self.cinema_hall.seats_in_row}"
+        return (
+            f"{self.movie.title} "
+            f"{self.show_time} "
+            f"{self.cinema_hall.rows} "
+            f"{self.cinema_hall.seats_in_row}"
+        )
 
 
 class Order(models.Model):
