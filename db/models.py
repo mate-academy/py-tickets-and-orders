@@ -116,7 +116,7 @@ class Ticket(models.Model):
 
     def __str__(self) -> str :
         return (
-            f"Matrix 2019-08-19 20:30:00 " # noqa
+            f"{Movie.objects.first()} {self.movie_session.show_time} " # noqa
             f"(row: {self.row}, "
             f"seat: {self.seat})"
         )
