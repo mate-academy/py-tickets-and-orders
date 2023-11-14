@@ -10,24 +10,21 @@ def create_user(
         first_name: str = None,
         last_name: str = None
 ) -> None:
-    try:
-        user, created = User.objects.update_or_create(
-            id=user_id,
-            defaults=(
-                {"username": username,
-                 "password": make_password(password)}
-            )
+    user, created = User.objects.update_or_create(
+        id=user_id,
+        defaults=(
+            {"username": username,
+             "password": make_password(password)}
         )
-        if email is not None:
-            user.email = email
-        if first_name is not None:
-            user.first_name = first_name
-        if last_name is not None:
-            user.last_name = last_name
-        user.save()
-        return user
-    except User.DoesNotExist:
-        return None
+    )
+    if email is not None:
+        user.email = email
+    if first_name is not None:
+        user.first_name = first_name
+    if last_name is not None:
+        user.last_name = last_name
+    user.save()
+    return user
 
 
 def get_user(user_id: int) -> int:

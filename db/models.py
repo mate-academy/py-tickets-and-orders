@@ -123,6 +123,4 @@ class Ticket(models.Model):
 
 
 class User(AbstractUser):
-    USERNAME_FIELD = "username"
     REQUIRED_FIELDS = []
-    pass
