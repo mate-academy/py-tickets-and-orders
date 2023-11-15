@@ -1,7 +1,8 @@
 import datetime
 from django.db import transaction, models
+from django.contrib.auth import get_user_model
 
-from db.models import Ticket, Order, User
+from db.models import Ticket, Order
 from .movie_session import get_movie_session_by_id
 
 
@@ -9,7 +10,7 @@ from .movie_session import get_movie_session_by_id
 def create_order(
     tickets: list[dict], username: str, date: datetime = None
 ) -> Order:
-    user = User.objects.get(username=username)
+    user = get_user_model().objects.get(username=username)
     order = Order.objects.create(
         user=user,
     )
