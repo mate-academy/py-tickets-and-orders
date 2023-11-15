@@ -30,7 +30,7 @@ class Movie(models.Model):
 
     class Meta:
         indexes = [
-            models.Index(fields=["title"], name="name_age_indexes")
+            models.Index(fields=["title"], name="title_index")
         ]
 
 
@@ -72,7 +72,7 @@ class Order(models.Model):
 
 
 class Ticket(models.Model):
-    movie_session = models.ForeignKey(MovieSession, on_delete=models.CASCADE)
+    movie_session = models.ForeignKey(MovieSession, on_delete=models.CASCADE, related_name="tickets")
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     row = models.IntegerField()
     seat = models.IntegerField()
@@ -102,4 +102,4 @@ class Ticket(models.Model):
 
 
 class User(AbstractUser):
-    pass
+    email = models.EmailField(max_length=254, unique=True, blank=False, null=True)
