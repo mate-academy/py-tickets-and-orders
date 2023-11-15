@@ -4,16 +4,17 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('db', '0003_alter_order_options_remove_movie_name_age_indexes_and_more'),
+        ("db", "0003_alter_order_options_remove_movie_name_age_indexes_and_more"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='user',
-            name='email',
-            field=models.EmailField(blank=True, default=0, max_length=254, verbose_name='email address'),
+            model_name="user",
+            name="email",
+            field=models.EmailField(
+                blank=True, default=0, max_length=254, verbose_name="email address"
+            ),
             preserve_default=False,
         ),
     ]

@@ -6,14 +6,20 @@ def create_user(
     password: str,
     email: str = None,
     first_name: str = None,
-    last_name: str = None
+    last_name: str = None,
 ) -> None:
+    if first_name is None:
+        first_name = ""
+
+    if last_name is None:
+        last_name = ""
+
     User.objects.create_user(
         username=username,
         password=password,
         email=email,
         first_name=first_name,
-        last_name=last_name
+        last_name=last_name,
     )
 
 
@@ -27,7 +33,7 @@ def update_user(
     password: str = None,
     email: str = None,
     first_name: str = None,
-    last_name: str = None
+    last_name: str = None,
 ) -> None:
     user = User.objects.get(id=user_id)
     if username:
@@ -37,7 +43,7 @@ def update_user(
     if email:
         user.email = email
     if first_name:
-        user.first_name = first_name if first_name else "No name"
+        user.first_name = first_name
     if last_name:
         user.last_name = last_name
     user.save()

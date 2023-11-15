@@ -5,32 +5,35 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('db', '0002_user_order_ticket_alter_movie_actors_and_more'),
+        ("db", "0002_user_order_ticket_alter_movie_actors_and_more"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='order',
-            options={'ordering': ['-created_at']},
+            name="order",
+            options={"ordering": ["-created_at"]},
         ),
         migrations.RemoveIndex(
-            model_name='movie',
-            name='name_age_indexes',
+            model_name="movie",
+            name="name_age_indexes",
         ),
         migrations.AlterField(
-            model_name='ticket',
-            name='movie_session',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='tickets', to='db.moviesession'),
+            model_name="ticket",
+            name="movie_session",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="tickets",
+                to="db.moviesession",
+            ),
         ),
         migrations.AlterField(
-            model_name='user',
-            name='email',
+            model_name="user",
+            name="email",
             field=models.EmailField(max_length=254, null=True, unique=True),
         ),
         migrations.AddIndex(
-            model_name='movie',
-            index=models.Index(fields=['title'], name='title_index'),
+            model_name="movie",
+            index=models.Index(fields=["title"], name="title_index"),
         ),
     ]
