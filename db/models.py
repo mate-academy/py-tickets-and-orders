@@ -65,10 +65,10 @@ class Order(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def __str__(self) -> str:
-        return f"Order: {self.created_at}"
+        return str(self.created_at)
 
     class Meta:
-        ordering = ["created_at"]
+        ordering = ["-created_at"]
 
 
 class Ticket(models.Model):
@@ -86,15 +86,17 @@ class Ticket(models.Model):
 
     def __str__(self) -> str:
         return (
-            f"Ticket: {self.movie_session.movie.title}"
+            f"{self.movie_session.movie.title}"
             f" {self.movie_session.show_time}"
             f" (row: {self.row}, seat: {self.seat})"
                 )
 
     def clean(self):
-        if not (self.row <= self.movie_session.cinema_hall.rows
-                or self.seat <= self.movie_session.cinema_hall.seats_in_row):
-            raise ValidationError
+        if not (1 <= self.row <= self.movie_session.cinema_hall.rows):
+            raise ValidationError({'row': [f'row number must be in available range: (1, rows): (1, {self.movie_session.cinema_hall.rows})']})
+
+        if not (1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row):
+            raise ValidationError({'seat': [f'seat number must be in available range: (1, seats_in_row): (1, {self.movie_session.cinema_hall.seats_in_row})']})
 
     def save(self, *args, **kwargs):
         self.full_clean()
@@ -102,4 +104,4 @@ class Ticket(models.Model):
 
 
 class User(AbstractUser):
-    email = models.EmailField(max_length=254, unique=True, blank=False, null=True)
+    pass
