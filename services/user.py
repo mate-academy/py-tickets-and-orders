@@ -37,7 +37,7 @@ def update_user(
     if email:
         user.email = email
     if first_name:
-        user.first_name = first_name
+        user.first_name = first_name if first_name else "No name"
     if last_name:
         user.last_name = last_name
     user.save()
