@@ -1,5 +1,6 @@
 from django.contrib.auth.hashers import make_password
 from db.models import User
+from django.shortcuts import get_object_or_404
 
 
 def create_user(
@@ -39,11 +40,7 @@ def update_user(
         first_name: str = None,
         last_name: str = None
 ) -> None:
-    try:
-        user = User.objects.get(id=user_id)
-    except User.DoesNotExist:
-        return None
-
+    user = get_object_or_404(User, id=user_id)
     if username is not None:
         user.username = username
     if password is not None:
