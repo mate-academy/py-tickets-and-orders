@@ -116,7 +116,8 @@ class Ticket(models.Model):
 
     def __str__(self) -> str :
         return (
-            f"{Movie.objects.first()} {self.movie_session.show_time} " # noqa
+            #f"{Movie.objects.first()} {self.movie_session.show_time} "
+            f"{self.movie_session.movie.title} {self.movie_session.show_time} "
             f"(row: {self.row}, "
             f"seat: {self.seat})"
         )
