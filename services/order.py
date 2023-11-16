@@ -1,8 +1,9 @@
 from datetime import datetime
 
+from django.contrib.auth import get_user_model
 from django.db import transaction
 
-from db.models import Order, Ticket, User
+from db.models import Order, Ticket
 
 
 def create_order(
@@ -11,7 +12,9 @@ def create_order(
         date: datetime = None
 ) -> None:
     with transaction.atomic():
-        user = User.objects.get(username=username)
+        user = get_user_model().objects.get(
+            username=username
+        )
         order = Order.objects.create(user=user)
         if date:
             order.created_at = date
