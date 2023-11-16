@@ -1,5 +1,7 @@
 from typing import Optional
 from datetime import datetime
+
+from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.db.models.query import QuerySet
 from db.models import Ticket, Order, User, MovieSession
@@ -11,7 +13,7 @@ def create_order(
         username: str,
         date: Optional[datetime] = None
 ) -> None:
-    user = User.objects.get(username=username)
+    user = get_user_model().objects.get(username=username)
     order = Order.objects.create(user=user)
     if date:
         order.created_at = date
