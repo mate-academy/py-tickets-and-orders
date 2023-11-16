@@ -1,4 +1,4 @@
-from db.models import Ticket, Order, User, MovieSession
+from db.models import Ticket, Order, User
 from datetime import datetime
 
 from django.db import transaction
@@ -17,11 +17,8 @@ def create_order(
             order.created_at = date
             order.save()
         for ticket in tickets:
-            movie_session = MovieSession.objects.get(
-                id=ticket["movie_session"]
-            )
             Ticket.objects.create(
-                movie_session=movie_session,
+                movie_session_id=ticket["movie_session"],
                 row=ticket["row"],
                 seat=ticket["seat"],
                 order=order,
@@ -29,6 +26,7 @@ def create_order(
 
 
 def get_orders(username: str = None) -> QuerySet:
+    order = Order.objects.all()
     if username:
-        return Order.objects.filter(user__username__icontains=username)
-    return Order.objects.all()
+        return order.filter(user__username__icontains=username)
+    return order
