@@ -28,5 +28,5 @@ def create_order(
 def get_orders(username: str = None) -> QuerySet:
     order = Order.objects.all()
     if username:
-        return order.filter(user__username__icontains=username)
+        return order.filter(user__username=username)
     return order
