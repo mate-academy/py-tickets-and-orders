@@ -5,7 +5,7 @@ from django.db.models import QuerySet
 from db.models import Order
 from django.db import transaction
 from typing import List
-from db.models import MovieSession, Ticket
+from db.models import Ticket
 from db.models import User
 
 
