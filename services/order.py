@@ -1,3 +1,4 @@
+from typing import Optional
 from db.models import User, MovieSession, Order, Ticket
 from django.db import transaction
 
@@ -5,7 +6,7 @@ from django.db import transaction
 def create_order(
         tickets: list[dict],
         username: str,
-        date: str = None,
+        date: Optional[str] = None,
 ) -> Order:
     with transaction.atomic():
         user = User.objects.get(username=username)
@@ -25,7 +26,7 @@ def create_order(
         return order
 
 
-def get_orders(username: str = None) -> list[Order]:
+def get_orders(username: Optional[str] = None) -> list[Order]:
     queryset = Order.objects.all()
 
     if username:
