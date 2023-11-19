@@ -69,11 +69,11 @@ class Order(models.Model):
         related_name="orders"
     )
 
-    def __str__(self) -> str:
-        return str(self.created_at)
-
     class Meta:
         ordering = ["-created_at"]
+
+    def __str__(self) -> str:
+        return str(self.created_at)
 
 
 class Ticket(models.Model):
@@ -85,6 +85,14 @@ class Ticket(models.Model):
     )
     row = models.IntegerField()
     seat = models.IntegerField()
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                fields=["row", "seat", "movie_session"],
+                name="unique_seat"
+            )
+        ]
 
     def __str__(self) -> str:
         return (f"{self.movie_session.movie.title} "
@@ -114,19 +122,11 @@ class Ticket(models.Model):
              force_insert: bool = False,
              force_update: bool = False,
              using: str = None,
-             update_fields: list = None) -> None:
+             update_fields: list = None) -> bool:
         self.full_clean()
         return super().save(
             force_insert, force_update, using, update_fields
         )
-
-    class Meta:
-        constraints = [
-            UniqueConstraint(
-                fields=["row", "seat", "movie_session"],
-                name="unique_seat"
-            )
-        ]
 
 
 class User(AbstractUser):
