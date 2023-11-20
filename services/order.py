@@ -1,7 +1,8 @@
+from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.db.models import QuerySet
 
-from db.models import User, Order, MovieSession, Ticket
+from db.models import Order, MovieSession, Ticket
 
 
 def create_order(tickets: list[dict],
@@ -10,7 +11,9 @@ def create_order(tickets: list[dict],
 
     with transaction.atomic():
 
-        user = User.objects.get(username=username)
+        my_user = get_user_model()
+
+        user = my_user.objects.get(username=username)
         order = Order.objects.create(user=user)
 
         for ticket in tickets:
@@ -27,8 +30,9 @@ def create_order(tickets: list[dict],
 
 
 def get_orders(username: str = None) -> QuerySet:
+    my_user = get_user_model()
 
     if username:
-        user = User.objects.get(username=username)
+        user = my_user.objects.get(username=username)
         return user.orders.all()
     return Order.objects.all()
