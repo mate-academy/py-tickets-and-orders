@@ -70,7 +70,7 @@ class Order(models.Model):
     user = models.ForeignKey(
         to=User,
         on_delete=models.CASCADE,
-        related_name="user"
+        related_name="orders"
     )
 
     def __str__(self) -> str:
@@ -89,7 +89,7 @@ class Ticket(models.Model):
     order = models.ForeignKey(
         Order,
         on_delete=models.CASCADE,
-        related_name="order"
+        related_name="tickets"
     )
     row = models.IntegerField()
     seat = models.IntegerField()
