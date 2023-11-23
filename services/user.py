@@ -19,7 +19,6 @@ def create_user(
     if last_name:
         user.last_name = last_name
 
-    # Set the password using the set_password method to ensure proper hashing
     user.set_password(password)
 
     user.save()
