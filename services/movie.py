@@ -1,3 +1,5 @@
+from typing import Optional
+
 from django.db import transaction
 from django.db.models import QuerySet
 
@@ -5,9 +7,9 @@ from db.models import Movie
 
 
 def get_movies(
-    genres_ids: list[int] = None,
-        actors_ids: list[int] = None,
-        title: str = None
+    genres_ids:Optional[list[int]] = None,
+        actors_ids: Optional[list[int]] = None,
+        title: Optional[str] = None
 ) -> QuerySet:
     queryset = Movie.objects.all()
 

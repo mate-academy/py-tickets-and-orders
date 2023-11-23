@@ -1,3 +1,5 @@
+from typing import Optional
+
 from django.contrib.auth import get_user_model
 from django.db import transaction
 from db.models import Order, Ticket, MovieSession
@@ -25,7 +27,7 @@ def create_order(
     return user_order
 
 
-def get_orders(username: str = None) -> list[Order]:
+def get_orders(username: Optional[str] = None) -> list[Order]:
     if username:
         orders = Order.objects.filter(user__username=username)
     else:
