@@ -1,8 +1,8 @@
 from typing import Optional
-
 from django.contrib.auth import get_user_model
 from django.db import transaction
 from db.models import Order, Ticket, MovieSession
+from django.db.models.query import QuerySet
 
 
 def create_order(
@@ -27,7 +27,7 @@ def create_order(
     return user_order
 
 
-def get_orders(username: Optional[str] = None) -> list[Order]:
+def get_orders(username: Optional[str] = None) -> QuerySet[Order]:
     if username:
         orders = Order.objects.filter(user__username=username)
     else:
