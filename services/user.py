@@ -1,10 +1,10 @@
-from typing import Any, Optional
+from typing import Optional
 from django.contrib.auth import get_user_model
 
 
 def create_user(
     username: str,
-    password: Any,
+    password: str,
     email: Optional[str] = None,
     first_name: str = "",
     last_name: str = "",
