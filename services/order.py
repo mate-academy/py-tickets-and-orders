@@ -23,5 +23,7 @@ def create_order(
 
 def get_orders(username: str = None) -> Order:
     if username:
-        return Order.objects.filter(user__username=username).order_by("-created_at")
+        return Order.objects.filter(
+            user__username=username
+        ).order_by("-created_at")
     return Order.objects.all().order_by("-created_at")
