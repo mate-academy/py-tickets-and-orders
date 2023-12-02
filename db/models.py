@@ -1,3 +1,4 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 import settings
@@ -80,8 +81,8 @@ class Ticket(models.Model):
             raise ValidationError("seat")
 
     class Meta:
-        constrains = [
-            models.UniqueConstraint(fields=["row", "seat", "movie_session"])
+        constraints = [
+            models.UniqueConstraint(fields=["row", "seat", "movie_session"], name="unique_ticket_for_session")
         ]
 
     def save(self, force_insert=False, force_update=False, using=None,
