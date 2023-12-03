@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.core.exceptions import ValidationError
 
 import settings
 
@@ -57,7 +58,11 @@ class MovieSession(models.Model):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ["-created_at"]
 
     def __str__(self) -> str:
         return f"<Order: {self.created_at}>"
@@ -75,18 +80,26 @@ class Ticket(models.Model):
                 f"seat: {self.seat})>")
 
     def clean(self) -> None:
-        if self.row > ticket.movie_session.cinema_hall.rows:
+        if self.row > self.ticket.movie_session.cinema_hall.rows:
             raise ValidationError("row")
-        if self.seat > ticket.movie_session.cinema_hall.seats_in_row:
+        if self.seat > self.ticket.movie_session.cinema_hall.seats_in_row:
             raise ValidationError("seat")
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=["row", "seat", "movie_session"], name="unique_ticket_for_session")
+            models.UniqueConstraint(fields=["row", "seat", "movie_session"],
+                                    name="unique_ticket_for_session")
         ]
 
-    def save(self, force_insert=False, force_update=False, using=None,
-             update_fields=None) -> None:
+    def save(
+            self,
+            force_insert: bool = False,
+            force_update: bool = False,
+            using: str = None,
+            update_fields: list = None,
+            *args,
+            **kwargs
+    ) -> None:
         self.full_clean()
         return super().save(*args, **kwargs)
 
