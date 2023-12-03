@@ -1,3 +1,6 @@
+from db.models import User
+
+
 def create_user(
         username: str,
         password: str,
@@ -5,7 +8,14 @@ def create_user(
         first_name: str = None,
         last_name: str = None
 ) -> User:
-    return User.objects.create_user(username, email, password, first_name, last_name)
+    user = User.objects.create_user(
+        username=username,
+        password=password,
+        email=email,
+        first_name=first_name,
+        last_name=last_name
+    )
+    return user
 
 
 def get_user(user_id: int) -> User:
