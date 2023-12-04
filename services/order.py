@@ -16,7 +16,7 @@ from datetime import datetime
 def create_order(
     tickets: list[dict],
     username: str,
-    date: str = None
+    date: str | None = None
 ) -> QuerySet:
     with transaction.atomic():
         user = User.objects.get(username=username)
