@@ -16,14 +16,14 @@ from datetime import datetime
 def create_order(
     tickets: list[dict],
     username: str,
-    date: datetime = None
+    date: str = None
 ) -> QuerySet:
     with transaction.atomic():
         user = User.objects.get(username=username)
+        order = Order.objects.create(user=user)
         if date:
-            order = Order.objects.create(user=user, created_at=date)
-        else:
-            order = Order.objects.create(user=user)
+            order.created_at = datetime.strptime(date, "%Y-%m-%d %H:%M")
+            order.save()
 
         for value in tickets:
             movie = MovieSession.objects.get(id=value["movie_session"])
