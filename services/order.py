@@ -10,9 +10,14 @@ def create_order(
         username: str,
         date: str = None
 ) -> None:
-    user = User.objects.filter(username=username)
-    order = Order.objects.create(user=user, created_at=date)
+    user = User.objects.get(username=username)
+    order = Order.objects.create(user=user)
+    if date:
+        order.created_at = date
+    order.save()
     for ticket in tickets:
+        moviesession_id = ticket.pop("movie_session")
+        ticket["movie_session_id"] = moviesession_id
         Ticket.objects.create(order=order, **ticket)
 
 
