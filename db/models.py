@@ -65,7 +65,7 @@ class Order(models.Model):
         ordering = ["-created_at"]
 
     def __str__(self) -> str:
-        return f"<Order: {self.created_at}>"
+        return f"{self.created_at}"
 
 
 class Ticket(models.Model):
@@ -75,15 +75,21 @@ class Ticket(models.Model):
     seat = models.IntegerField()
 
     def __str__(self) -> str:
-        return (f"<Ticket: {self.movie_session.movie.title} "
-                f"{self.order.created_at} (row: {self.row}, "
-                f"seat: {self.seat})>")
+        return (f"{self.movie_session.movie.title} "
+                f"{self.movie_session.show_time} (row: {self.row}, "
+                f"seat: {self.seat})")
 
     def clean(self) -> None:
-        if self.row > self.ticket.movie_session.cinema_hall.rows:
-            raise ValidationError("row")
-        if self.seat > self.ticket.movie_session.cinema_hall.seats_in_row:
-            raise ValidationError("seat")
+        if self.row > self.movie_session.cinema_hall.rows:
+            raise ValidationError(
+                {"row": [f"row number must be in available range: "
+                         f"(1, rows): (1, "
+                         f"{self.movie_session.cinema_hall.rows})"]})
+        if self.seat > self.movie_session.cinema_hall.seats_in_row:
+            raise ValidationError(
+                {"seat": [f"seat number must be in available range: "
+                          f"(1, seats_in_row): (1, "
+                          f"{self.movie_session.cinema_hall.seats_in_row})"]})
 
     class Meta:
         constraints = [
