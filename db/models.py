@@ -21,7 +21,7 @@ class Actor(models.Model):
 
 
 class Movie(models.Model):
-    title = models.CharField(max_length=255, db_index=True)
+    title = models.CharField(max_length=255)
     description = models.TextField()
     actors = models.ManyToManyField(to=Actor, related_name="movies")
     genres = models.ManyToManyField(to=Genre, related_name="movies")
@@ -60,7 +60,7 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE,
-                             related_name="user")
+                             related_name="orders")
 
     class Meta:
         ordering = ["-created_at"]
@@ -72,10 +72,10 @@ class Order(models.Model):
 class Ticket(models.Model):
     movie_session = models.ForeignKey(MovieSession,
                                       on_delete=models.CASCADE,
-                                      related_name="moviesession")
+                                      related_name="tickets")
     order = models.ForeignKey(Order,
                               on_delete=models.CASCADE,
-                              related_name="order")
+                              related_name="tickets")
     row = models.IntegerField()
     seat = models.IntegerField()
 
