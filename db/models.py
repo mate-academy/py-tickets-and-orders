@@ -40,7 +40,7 @@ class Order(models.Model):
         ordering = ["-created_at"]
 
     def __str__(self) -> str:
-        return f"{self.created_at}"
+        return str(self.created_at)
 
 
 class Movie(models.Model):
