@@ -118,8 +118,13 @@ class Ticket(models.Model):
         if errors:
             raise ValidationError(errors)
 
-    def save(self, force_insert: bool = False, force_update: bool = False, using: str = None,
-             update_fields: str = None) -> None:
+    def save(
+            self,
+            force_insert: bool = False,
+            force_update: bool = False,
+            using: str = None,
+            update_fields: str = None
+    ) -> None:
         self.full_clean()
         return super(Ticket, self).save(
             force_insert,
