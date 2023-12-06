@@ -39,7 +39,7 @@ class Order(models.Model):
     class Meta:
         ordering = ["-created_at"]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.created_at}"
 
 
@@ -101,25 +101,25 @@ class Ticket(models.Model):
                 name="row_seat_movie_session_unique")
         ]
 
-    def clean(self):
+    def clean(self) -> None:
         errors = {}
         if self.row < 1 or self.row > self.movie_session.cinema_hall.rows:
-            errors['row'] = [
-                'row number must be in available range: (1, rows): (1, {})'
+            errors["row"] = [
+                "row number must be in available range: (1, rows): (1, {})"
                 .format(self.movie_session.cinema_hall.rows)]
         if (self.seat < 1
                 or self.seat > self.movie_session.cinema_hall.seats_in_row):
-            errors['seat'] = [
-                'seat number must be in available range: '
-                '(1, seats_in_row): (1, {})'
+            errors["seat"] = [
+                "seat number must be in available range: "
+                "(1, seats_in_row): (1, {})"
                 .format(self.movie_session.cinema_hall.seats_in_row)
             ]
 
         if errors:
             raise ValidationError(errors)
 
-    def save(self, force_insert=False, force_update=False, using=None,
-             update_fields=None):
+    def save(self, force_insert: bool = False, force_update: bool = False, using: str = None,
+             update_fields: str = None) -> None:
         self.full_clean()
         return super(Ticket, self).save(
             force_insert,
@@ -128,5 +128,5 @@ class Ticket(models.Model):
             update_fields
         )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.movie_session} (row: {self.row}, seat: {self.seat})"
