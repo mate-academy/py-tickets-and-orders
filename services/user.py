@@ -1,5 +1,6 @@
 from typing import Union
 from django.contrib.auth import get_user_model
+from django.http import Http404
 from django.shortcuts import get_object_or_404
 
 from db.models import User
@@ -38,22 +39,22 @@ def update_user(
     first_name: str = None,
     last_name: str = None
 ) -> Union[User, None]:
+    try:
+        user = get_user(user_id)
 
-    user = get_user(user_id)
-
-    if username:
-        user.username = username
-    if password:
-        user.set_password(password)
-    if email:
-        user.email = email
-    if first_name:
-        user.first_name = first_name
-    if last_name:
-        user.last_name = last_name
+        if username:
+            user.username = username
+        if password:
+            user.set_password(password)
+        if email:
+            user.email = email
+        if first_name:
+            user.first_name = first_name
+        if last_name:
+            user.last_name = last_name
 
         user.save()
 
         return user
-
-    return None
+    except Http404:
+        return None
