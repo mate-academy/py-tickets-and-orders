@@ -26,7 +26,7 @@ def create_order(
 
 
 def get_orders(username: str = None) -> Order:
+    orders = Order.objects.select_related("user")
     if username:
-        return (Order.objects.select_related("user").
-                filter(user__username=username))
-    return Order.objects.all()
+        orders = orders.filter(user__username=username)
+    return orders
