@@ -95,10 +95,10 @@ class Ticket(models.Model):
             )
         ]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.movie_session} (row: {self.row}, seat: {self.seat})"
 
-    def clean(self):
+    def clean(self) -> None:
         rows_limit = self.movie_session.cinema_hall.rows
         seats_limit = self.movie_session.cinema_hall.seats_in_row
         if not 0 < self.row <= rows_limit:
@@ -114,11 +114,11 @@ class Ticket(models.Model):
 
     def save(
             self,
-            force_insert=False,
-            force_update=False,
-            using=None,
-            update_fields=None
-    ):
+            force_insert: bool = False,
+            force_update: bool = False,
+            using: bool = None,
+            update_fields: bool = None
+    ) -> None:
         self.full_clean()
         super(Ticket, self).save(force_insert=False,
                                  force_update=False,
