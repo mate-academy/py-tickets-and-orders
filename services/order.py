@@ -1,5 +1,6 @@
 from django.db import transaction
 from db.models import Order, Ticket, User
+from django.db.models.query import QuerySet
 
 
 @transaction.atomic()
@@ -25,7 +26,7 @@ def create_order(
         )
 
 
-def get_orders(username: str = None) -> Order:
+def get_orders(username: str = None) -> QuerySet:
     orders = Order.objects.select_related("user")
     if username:
         orders = orders.filter(user__username=username)
