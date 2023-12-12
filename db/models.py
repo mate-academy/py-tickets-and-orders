@@ -86,7 +86,8 @@ class Ticket(models.Model):
     order = models.ForeignKey(
         "Order",
         on_delete=models.CASCADE,
-        related_name="tickets")
+        related_name="tickets"
+    )
     row = models.IntegerField()
     seat = models.IntegerField()
 
@@ -112,10 +113,11 @@ class Ticket(models.Model):
                              f"(1, {self.movie_session.cinema_hall.rows})")
 
         if not (1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row):
-            errors["seat"] = (f"seat number must be "
-                              f"in available range: (1, seats_in_row): (1, "
-                              f"{self.movie_session.cinema_hall.seats_in_row})"
-                              )
+            errors["seat"] = (
+                f"seat number must be "
+                f"in available range: (1, seats_in_row): (1, "
+                f"{self.movie_session.cinema_hall.seats_in_row})"
+                )
 
         if errors:
             raise ValidationError(errors)
