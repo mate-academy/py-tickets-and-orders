@@ -1,8 +1,9 @@
+from typing import Any
+
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
 
-from typing import Any
 import settings
 
 
