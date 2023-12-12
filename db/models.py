@@ -117,7 +117,7 @@ class Ticket(models.Model):
                 f"seat number must be "
                 f"in available range: (1, seats_in_row): (1, "
                 f"{self.movie_session.cinema_hall.seats_in_row})"
-                )
+            )
 
         if errors:
             raise ValidationError(errors)
