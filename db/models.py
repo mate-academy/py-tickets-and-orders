@@ -112,8 +112,7 @@ class Ticket(models.Model):
                 }
             )
 
-    def save(self,
-             force_insert: bool = False,
+    def save(self, force_insert: bool = False,
              force_update: bool = False,
              using: object = None,
              update_fields: object = None) -> None:
