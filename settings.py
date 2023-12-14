@@ -1,3 +1,4 @@
+# settings.py
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -25,4 +26,8 @@ USE_TZ = False
 
 INSTALLED_APPS = [
     "db",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
 ]
+
+AUTH_USER_MODEL = "db.User"
