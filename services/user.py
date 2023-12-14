@@ -34,7 +34,7 @@ def update_user(
     email: Optional[str] = None,
     first_name: Optional[str] = None,
     last_name: Optional[str] = None,
-) -> QuerySet:
+) -> QuerySet[User]:
     user = get_user(user_id)
     if username is not None:
         user.username = username
