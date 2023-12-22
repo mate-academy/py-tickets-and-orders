@@ -1,5 +1,6 @@
-from django.contrib.auth.models import User
 from django.db.models import QuerySet
+
+from db.models import User
 
 
 def create_user(

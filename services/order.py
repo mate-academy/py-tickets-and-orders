@@ -1,10 +1,9 @@
 import datetime
 from typing import List
 
-from django.contrib.auth.models import User
 from django.db import transaction
 
-from db.models import Order, Ticket
+from db.models import Order, Ticket, User
 
 
 def create_order(tickets: dict, username: str, date: str = None) -> None:
