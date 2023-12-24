@@ -31,7 +31,7 @@ def create_order(
     return order
 
 
-def get_orders(username: str = None) -> QuerySet:
+def get_orders(username: str = None) -> QuerySet[Order]:
     if username:
         return Order.objects.filter(user__username=username)
     return Order.objects.order_by("-user")
