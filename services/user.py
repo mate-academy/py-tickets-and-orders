@@ -8,8 +8,10 @@ def create_user(
         first_name: str | None = None,
         last_name: str | None = None
 ) -> None:
-    user = (get_user_model()
-            .objects.create_user(username=username, password=password))
+    user = (get_user_model().objects.create_user(
+        username=username,
+        password=password
+    ))
 
     if email:
         user.email = email
@@ -28,13 +30,14 @@ def get_user_by_username(username: str) -> get_user_model:
     return get_user_model().objects.get(username=username)
 
 
-def update_user(user_id: int,
-                username: str | None = None,
-                password: str | None = None,
-                email: str | None = None,
-                first_name: str | None = None,
-                last_name: str | None = None
-                ) -> None:
+def update_user(
+        user_id: int,
+        username: str | None = None,
+        password: str | None = None,
+        email: str | None = None,
+        first_name: str | None = None,
+        last_name: str | None = None
+) -> None:
     user = get_user(user_id)
     if username:
         user.username = username

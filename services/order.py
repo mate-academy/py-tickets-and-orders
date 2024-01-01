@@ -7,22 +7,21 @@ from db.models import Order, Ticket
 from services.user import get_user_by_username
 
 
+@transaction.atomic
 def create_order(
         tickets: list[dict],
         username: str,
         date: str | None = None
 ) -> None:
     user = get_user_by_username(username)
-
-    with transaction.atomic():
-        order = Order.objects.create(user=user)
-        if date:
-            _date = datetime.strptime(date, "%Y-%m-%d %H:%M")
-            Order.objects.filter(pk=order.id).update(created_at=_date)
-        for ticket_dict in tickets:
-            ticket_dict["movie_session_id"] = ticket_dict["movie_session"]
-            del ticket_dict["movie_session"]
-            Ticket.objects.create(order=order, **ticket_dict)
+    order = Order.objects.create(user=user)
+    if date:
+        _date = datetime.strptime(date, "%Y-%m-%d %H:%M")
+        Order.objects.filter(pk=order.id).update(created_at=_date)
+    for ticket_dict in tickets:
+        ticket_dict["movie_session_id"] = ticket_dict["movie_session"]
+        del ticket_dict["movie_session"]
+        Ticket.objects.create(order=order, **ticket_dict)
 
 
 def get_orders(username: str | None = None) -> QuerySet:
