@@ -19,7 +19,7 @@ def get_movies(
     if title is None:
         return queryset
     else:
-        return queryset.filter (title__contains=title)
+        return queryset.filter(title__contains=title)
 
 
 def get_movie_by_id(movie_id: int) -> Movie:
