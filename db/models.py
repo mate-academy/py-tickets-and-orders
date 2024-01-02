@@ -63,7 +63,8 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE)
+        on_delete=models.CASCADE
+    )
 
     def __str__(self) -> str:
         return f'{self.created_at.strftime("%Y-%m-%d %H:%M:%S")}'
@@ -109,7 +110,7 @@ class Ticket(models.Model):
             )
 
     def save(
-        self,
+            self,
             force_insert: bool = False,
             force_update: bool = False,
             using: Any = None,
