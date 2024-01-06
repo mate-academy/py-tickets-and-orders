@@ -1,6 +1,3 @@
-from django.db.models import QuerySet
-
-
 from db.models import User
 
 
@@ -10,7 +7,7 @@ def create_user(
         email: str | None = "",
         first_name: str | None = "",
         last_name: str | None = ""
-):
+) -> User:
     user = User.objects.create_user(
         username=username,
         password=password,
@@ -32,7 +29,7 @@ def update_user(
         email: str = None,
         first_name: str = None,
         last_name: str = None
-):
+) -> None:
     user = get_user(user_id)
     if username:
         user.username = username
