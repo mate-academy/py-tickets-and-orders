@@ -23,7 +23,9 @@ def create_order(
             Ticket.objects.create(
                 row=tickets_data["row"],
                 seat=tickets_data["seat"],
-                movie_session=MovieSession.objects.get(id=tickets_data["movie_session"]),
+                movie_session=MovieSession.objects.get(
+                    id=tickets_data["movie_session"]
+                ),
                 order=order
             )
 
