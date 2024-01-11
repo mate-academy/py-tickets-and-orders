@@ -11,7 +11,7 @@ def create_user(username: str,
                 last_name: Optional[str] = None) -> User:
 
     user = get_user_model().objects.create_user(username=username,
-                                                password=password)
+                                                password=password) #
 
     if email:
         user.email = email
