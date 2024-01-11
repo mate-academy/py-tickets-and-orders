@@ -15,7 +15,7 @@ def create_order(
 
     if date:
         order.created_at = date
-    order.save()
+        order.save()
 
     for ticket_data in tickets:
         row = ticket_data["row"]
