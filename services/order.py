@@ -3,26 +3,26 @@ from db.models import Order, Ticket, User
 from typing import Optional, List
 
 
+@transaction.atomic
 def create_order(tickets: List[dict],
                  username: str,
                  date: Optional[str] = None) -> None:
-    with transaction.atomic():
-        order = Order.objects.create(user=User.objects.get(username=username))
-        if date is not None:
-            order.created_at = date
-            order.save()
+    order = Order.objects.create(user=User.objects.get(username=username))
+    if date is not None:
+        order.created_at = date
+        order.save()
 
-        for ticket_data in tickets:
-            row = ticket_data.get("row")
-            seat = ticket_data.get("seat")
-            movie_session = ticket_data.get("movie_session")
+    for ticket_data in tickets:
+        row = ticket_data.get("row")
+        seat = ticket_data.get("seat")
+        movie_session = ticket_data.get("movie_session")
 
-            Ticket.objects.create(
-                row=row,
-                seat=seat,
-                movie_session_id=movie_session,
-                order=order
-            )
+        Ticket.objects.create(
+            row=row,
+            seat=seat,
+            movie_session_id=movie_session,
+            order=order
+        )
 
 
 def get_orders(username: Optional[str] = None) -> List[Order]:
