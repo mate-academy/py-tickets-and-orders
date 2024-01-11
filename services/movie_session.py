@@ -2,6 +2,8 @@ from django.db.models import QuerySet
 
 from db.models import MovieSession
 
+from db.models import Ticket
+
 
 def create_movie_session(
     movie_show_time: str, movie_id: int, cinema_hall_id: int
@@ -41,4 +43,12 @@ def update_movie_session(
 
 
 def delete_movie_session_by_id(session_id: int) -> None:
+
     MovieSession.objects.get(id=session_id).delete()
+
+
+def get_taken_seats(movie_session_id: int) -> list:
+
+    list_seats = Ticket.objects.filter(movie_session__id=movie_session_id)
+
+    return [{"row": place.row, "seat": place.seat} for place in list_seats]
