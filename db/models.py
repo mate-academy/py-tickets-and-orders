@@ -30,7 +30,6 @@ class Movie(models.Model):
         indexes = [
             models.Index(fields=["title"])
         ]
-        pass
 
     def __str__(self) -> str:
         return self.title
@@ -71,10 +70,9 @@ class Order(models.Model):
 
     class Meta:
         ordering = ["-created_at"]
-        pass
 
     def __str__(self) -> str:
-        return f"{self.created_at}"
+        return str(self.created_at)
 
 
 class User(AbstractUser):
@@ -99,7 +97,6 @@ class Ticket(models.Model):
                 fields=["row", "seat", "movie_session"],
                 name="unique_ticket")
         ]
-        pass
 
     def __str__(self) -> None:
         return (f"{self.movie_session.movie.title} "

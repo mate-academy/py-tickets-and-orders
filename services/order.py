@@ -31,9 +31,9 @@ def create_order(
 
 
 def get_orders(username: str = None) -> Order:
+
+    orders = Order.objects.all()
     if username:
-        orders = Order.objects.filter(user__username=username)
-    else:
-        orders = Order.objects.all()
+        orders = orders.filter(user__username=username)
 
     return orders
