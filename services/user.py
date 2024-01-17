@@ -47,6 +47,7 @@ def update_user(
     )
 
     for field, value in values:
-        setattr(user, field, value)
+        if value:
+            setattr(user, field, value)
 
     user.save()
