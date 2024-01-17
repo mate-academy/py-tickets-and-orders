@@ -39,7 +39,14 @@ def update_user(
     if password:
         user.set_password(password)
 
-    for field, value in locals().items():
+    values = (
+        ("username", username),
+        ("email", email),
+        ("first_name", first_name),
+        ("last_name", last_name)
+    )
+
+    for field, value in values:
         setattr(user, field, value)
 
     user.save()
