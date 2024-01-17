@@ -1,6 +1,6 @@
 from django.db.models import QuerySet
 
-from db.models import MovieSession
+from db.models import MovieSession, Ticket
 
 
 def create_movie_session(
@@ -42,8 +42,8 @@ def update_movie_session(
 
 def get_taken_seats(movie_session_id: int) -> list[dict]:
     return list(
-        MovieSession.objects.filter(
-            id=movie_session_id
+        Ticket.objects.filter(
+            movie_session_id=movie_session_id
         ).values("row", "seat")
     )
 

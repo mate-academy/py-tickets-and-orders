@@ -93,6 +93,8 @@ class Ticket(models.Model):
     def clean(self) -> None:
         if not (1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row):
             raise ValidationError("Seat must be in range")
+        if not (1 <= self.row <= self.movie_session.cinema_hall.rows):
+            raise ValidationError("Row must be in range")
 
     def save(self, *args, **kwargs) -> QuerySet:
         self.full_clean()
