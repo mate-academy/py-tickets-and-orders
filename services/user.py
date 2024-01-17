@@ -1,20 +1,18 @@
 from django.contrib.auth import get_user_model
-from django.db.models import QuerySet
-
 from db.models import User
 
 
 def create_user(
         username: str,
         password: str,
-        email: str = None,
-        first_name: str = None,
-        last_name: str = None
-) -> User:
+        email: str | None = None,
+        first_name: str | None = None,
+        last_name: str | None = None
+) -> None:
     user = get_user_model().objects.create_user(
         username=username,
+        password=password
     )
-    user.set_password(password)
     if email:
         user.email = email
     if first_name:
@@ -24,31 +22,24 @@ def create_user(
 
     user.save()
 
-    return user
 
-
-def get_user(user_id: int) -> QuerySet:
+def get_user(user_id: int) -> User:
     return get_user_model().objects.get(id=user_id)
 
 
 def update_user(
         user_id: int,
-        username: str = None,
-        password: str = None,
-        email: str = None,
-        first_name: str = None,
-        last_name: str = None
+        username: str | None = None,
+        password: str | None = None,
+        email: str | None = None,
+        first_name: str | None = None,
+        last_name: str | None = None
 ) -> None:
-    update_user = get_user_model().objects.update_user(user_id=user_id)
-    if username:
-        update_user.username = username
+    user = get_user(user_id)
     if password:
-        update_user.set_password(password)
-    if email:
-        update_user.email = email
-    if first_name:
-        update_user.first_name = first_name
-    if last_name:
-        update_user.last_name = last_name
+        user.set_password(password)
 
-    update_user.save()
+    for field, value in locals().items():
+        setattr(user, field, value)
+
+    user.save()
