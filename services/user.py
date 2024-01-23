@@ -35,7 +35,7 @@ def update_user(
         password: Optional[str] = None,
         email: Optional[str] = None,
         first_name: Optional[str] = None,
-        last_name: Optional[str] = None
+        last_name: Optional[str] = None,
 ) -> None:
     user = get_user(user_id)
 
