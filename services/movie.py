@@ -38,3 +38,6 @@ def create_movie(
         movie.actors.set(actors_ids)
 
     return movie
+
+if __name__ == '__main__':
+    create_movie("gsg", "ada")
