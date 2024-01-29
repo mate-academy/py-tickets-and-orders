@@ -1,4 +1,5 @@
-import init_django_orm  #noqa
+from typing import Any
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.core.exceptions import ValidationError
@@ -69,13 +70,24 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
 
+    class Meta:
+        ordering = ["-created_at"]
+
     def __str__(self) -> str:
         return str(self.created_at)
 
 
 class Ticket(models.Model):
-    movie_session = models.ForeignKey(to=MovieSession, on_delete=models.CASCADE, related_name="tickets")
-    order = models.ForeignKey(to=Order, on_delete=models.CASCADE, related_name="tickets")
+    movie_session = models.ForeignKey(
+        to=MovieSession,
+        on_delete=models.CASCADE,
+        related_name="tickets"
+    )
+    order = models.ForeignKey(
+        to=Order,
+        on_delete=models.CASCADE,
+        related_name="tickets"
+    )
     row = models.IntegerField()
     seat = models.IntegerField()
 
@@ -87,50 +99,36 @@ class Ticket(models.Model):
         ]
 
     def __str__(self) -> str:
-        return f"""{self.movie_session.movie.title} {self.movie_session.show_time} 
-               (row:{self.row}, seat: {self.seat})"""
+        return (f"{self.movie_session.movie.title} "
+                f"{self.movie_session.show_time} "
+                f"(row: {self.row}, seat: {self.seat})")
 
-    def clean(self):
+    def clean(self) -> None:
         if not 1 <= self.row <= self.movie_session.cinema_hall.rows:
-            raise ValidationError(
-                f"Row should be in range [{1};{self.movie_session.cinema_hall.rows}], "
-                f"not {self.row}!!!"
-            )
+            raise ValidationError({
+                "row":
+                    f"row number must be in available range: ({1}, rows): "
+                    f"(1, {self.movie_session.cinema_hall.rows})"
+            })
         if not 1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row:
-            raise ValidationError(
-                f"Seat should be in range [{1};{self.movie_session.cinema_hall.seats_in_row}],"
-                f"not {self.seat}!!!"
-            )
-        
-    def save(self, force_insert=False, force_update=False, using=None,
-             update_fields=None):
+            raise ValidationError({
+                "seat":
+                    f"seat number must be in available range: "
+                    f"(1, seats_in_row):"
+                    f" (1, {self.movie_session.cinema_hall.seats_in_row})"
+            })
+
+    def save(
+            self,
+            force_insert: Any = False,
+            force_update: Any = False,
+            using: Any = None,
+            update_fields: Any = None
+    ) -> Any:
         self.full_clean()
-        return super(Ticket, self).save(force_insert, force_update, using, update_fields)
-
-import datetime
-
-if __name__ == '__main__':
-    cinema_hall = CinemaHall.objects.create(name="Blue", rows=18, seats_in_row=24)
-    movie_session = MovieSession.objects.create(
-        show_time=datetime.datetime(2022, 3, 20, 19, 30),
-        movie_id=1,
-        cinema_hall=cinema_hall)
-    order = Order.objects.create(user_id=1)
-
-    ticket = Ticket.objects.create(
-        movie_session=movie_session,
-        order=order,
-        row=19,
-        seat=20
-    )
-    ticket.clean()
-    # django.core.exceptions.ValidationError: {'row': ['row number must be in available range: (1, rows): (1, 18)']}
-
-    ticket = Ticket.objects.create(
-        movie_session=movie_session,
-        order=order,
-        row=17,
-        seat=26
-    )
-    ticket.clean()
-    # django.core.exceptions.ValidationError: {'seat': ['seat number must be in available range: (1, seats_in_row): (1, 24)']}
+        return super(Ticket, self).save(
+            force_insert,
+            force_update,
+            using,
+            update_fields
+        )
