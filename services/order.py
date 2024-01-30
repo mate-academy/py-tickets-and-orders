@@ -1,5 +1,4 @@
 from django.db import transaction
-
 from django.contrib.auth import get_user_model
 from django.db.models import QuerySet
 
@@ -27,7 +26,6 @@ def create_order(
             order=new_order,
             row=ticket.get("row"),
             seat=ticket.get("seat")
-
         )
     return new_order
 
