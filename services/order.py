@@ -11,7 +11,7 @@ def create_order(
         tickets: list[dict],
         username: str,
         date: str = None
-) -> None:
+) -> Order:
     new_order = Order.objects.create(
         user=get_user_model().objects.get(username=username),
         created_at=date
@@ -29,6 +29,7 @@ def create_order(
             seat=ticket.get("seat")
 
         )
+    return new_order
 
 
 def get_orders(username: str = None) -> QuerySet[Order]:
