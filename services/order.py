@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from datetime import datetime
 
 from django.db.transaction import atomic
@@ -9,7 +11,7 @@ from db.models import Order, User, Ticket
 def create_order(
         tickets: list[dict],
         username: str,
-        date: str = None
+        date: str | None = None
 ) -> Order:
     user_ = User.objects.get(username=username)
     order = Order.objects.create(user=user_)
@@ -27,7 +29,7 @@ def create_order(
     return order
 
 
-def get_orders(username: str = None) -> list[Order]:
+def get_orders(username: str | None = None) -> list[Order]:
     if username:
         return Order.objects.filter(user__username=username)
     return Order.objects.all()
