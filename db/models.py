@@ -111,7 +111,8 @@ class Ticket(models.Model):
                     "row": [
                         f"row number must be in available "
                         f"range: (1, rows): "
-                        f"(1, {self.movie_session.cinema_hall.rows})"]
+                        f"(1, {self.movie_session.cinema_hall.rows})"
+                    ]
                 }
             )
         if not (
@@ -122,7 +123,8 @@ class Ticket(models.Model):
                     "seat": [
                         f"seat number must be in available "
                         f"range: (1, seats_in_row): "
-                        f"(1, {self.movie_session.cinema_hall.seats_in_row})"]
+                        f"(1, {self.movie_session.cinema_hall.seats_in_row})"
+                    ]
                 }
             )
 
