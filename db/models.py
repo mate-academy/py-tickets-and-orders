@@ -91,7 +91,8 @@ class Ticket(models.Model):
     constraints = [
         UniqueConstraint(
             fields=["row", "seat", "movie_session"],
-            name="unique_ticket")]
+            name="unique_ticket")
+    ]
 
     def clean(self) -> None:
         existing_tickets = Ticket.objects.filter(
@@ -103,8 +104,8 @@ class Ticket(models.Model):
         if existing_tickets.exists():
             raise ValidationError("Not Unique Value")
 
-        if not (
-                self.row <= self.movie_session.cinema_hall.rows
+        if (
+                self.row > self.movie_session.cinema_hall.rows
         ):
             raise ValidationError(
                 {
@@ -115,8 +116,8 @@ class Ticket(models.Model):
                     ]
                 }
             )
-        if not (
-                self.seat <= self.movie_session.cinema_hall.seats_in_row
+        if (
+                self.seat > self.movie_session.cinema_hall.seats_in_row
         ):
             raise ValidationError(
                 {
