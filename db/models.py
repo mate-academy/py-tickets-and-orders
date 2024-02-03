@@ -48,12 +48,18 @@ class CinemaHall(models.Model):
 
 
 class MovieSession(models.Model):
+
     show_time = models.DateTimeField()
+
     cinema_hall = models.ForeignKey(
-        to=CinemaHall, on_delete=models.CASCADE, related_name="movie_sessions"
+        to=CinemaHall,
+        on_delete=models.CASCADE,
+        related_name="movie_session"
     )
     movie = models.ForeignKey(
-        to=Movie, on_delete=models.CASCADE, related_name="movie_sessions"
+        to=Movie,
+        on_delete=models.CASCADE,
+        related_name="movie_session"
     )
 
     def __str__(self) -> str:
@@ -76,9 +82,19 @@ class Order(models.Model):
 
 
 class Ticket(models.Model):
-    movie_session = models.ForeignKey("MovieSession", on_delete=models.CASCADE)
-    order = models.ForeignKey("Order", on_delete=models.CASCADE)
+
+    movie_session = models.ForeignKey(
+        "MovieSession",
+        on_delete=models.CASCADE,
+        related_name="ticket")
+
+    order = models.ForeignKey(
+        "Order",
+        on_delete=models.CASCADE,
+        related_name="ticket")
+
     row = models.IntegerField()
+
     seat = models.IntegerField()
 
     def __str__(self) -> str:
@@ -134,6 +150,9 @@ class Ticket(models.Model):
 
     class Meta:
         constraints = [
-            UniqueConstraint(fields=["row", "seat", "movie_session"], name="unique_session_seat")
+            UniqueConstraint(
+                fields=["row", "seat", "movie_session"],
+                name="unique_session_seat"
+            )
         ]
 
