@@ -25,7 +25,7 @@ class Movie(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
     actors = models.ManyToManyField(to=Actor, related_name="movies")
-    genres = models.ManyToManyField(to=Genre, related_name="genre")
+    genres = models.ManyToManyField(to=Genre, related_name="movies")
 
     def __str__(self) -> str:
         return self.title
@@ -75,7 +75,7 @@ class Order(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def __str__(self) -> str:
-        return f"Order: {self.created_at}"
+        return f"{self.created_at}"
 
     class Meta:
         ordering = ["-created_at"]
@@ -98,16 +98,21 @@ class Ticket(models.Model):
     seat = models.IntegerField()
 
     def __str__(self) -> str:
-        return f"Ticket {self.movie_session.name} {self.order.reated_at} (row: {self.row}, seat: {self.seat})"
+        return f"{self.movie_session.movie.title} {self.order.created_at} (row: {self.row}, seat: {self.seat})"
 
     def clean(self) -> None:
 
         # validating of all possible amount of seats
 
         if not (
-            1 <= (self.row * self.seat) <= self.movie_session.cinema_hall.capacity()
+            1 <= (self.row * self.seat) <= self.movie_session.cinema_hall.capacity
         ):
-            raise ValidationError
+            raise ValidationError(
+                {"seat": [
+                    "seat number must be in available range: (1, seats_in_row): "
+                    f"(1, {self.movie_session.cinema_hall.seats_in_row})"
+                ]}
+            )
 
         # validation of number of seat
 
@@ -141,6 +146,7 @@ class Ticket(models.Model):
         update_fields=None
     ):
         self.full_clean()
+
         return super(Ticket, self).save(
             force_insert,
             force_update,

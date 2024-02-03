@@ -151,7 +151,7 @@ def test_order_ordering(orders_data):
 def test_ticket_str(tickets_data):
     assert str(
         Ticket.objects.first()
-    ) == "Matrix 2019-08-19 20:30:00 (row: 7, seat: 10)"
+    ) == "Matrix 2020-11-01 00:00:00 (row: 7, seat: 10)"
 
 
 def test_ticket_unique_constraint(tickets_data):
