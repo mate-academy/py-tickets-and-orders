@@ -98,7 +98,7 @@ class Ticket(models.Model):
     seat = models.IntegerField()
 
     def __str__(self) -> str:
-        return f"{self.movie_session.movie.title} {self.order.created_at} (row: {self.row}, seat: {self.seat})"
+        return f"{self.movie_session.movie.title} {self.movie_session.show_time} (row: {self.row}, seat: {self.seat})"
 
     def clean(self) -> None:
 

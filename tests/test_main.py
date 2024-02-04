@@ -92,11 +92,15 @@ def movie_sessions_data(movies_data, cinema_halls_data):
         movie_id=4,
     )
     MovieSession.objects.create(
-        show_time="2021-4-3 13:50", cinema_hall_id=2, movie_id=5
+        show_time="2021-4-3 13:50",
+        cinema_hall_id=2,
+        movie_id=5
     )
 
     MovieSession.objects.create(
-        show_time="2021-4-3 16:30", cinema_hall_id=3, movie_id=1
+        show_time="2021-4-3 16:30",
+        cinema_hall_id=3,
+        movie_id=1
     )
 
 
@@ -151,7 +155,7 @@ def test_order_ordering(orders_data):
 def test_ticket_str(tickets_data):
     assert str(
         Ticket.objects.first()
-    ) == "Matrix 2020-11-01 00:00:00 (row: 7, seat: 10)"
+    ) == "Matrix 2019-08-19 20:30:00 (row: 7, seat: 10)"
 
 
 def test_ticket_unique_constraint(tickets_data):

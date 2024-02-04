@@ -1,7 +1,6 @@
 from django.db import transaction
 
 from db.models import Order, Ticket, User
-from services.movie_session import get_movie_session_by_id
 
 
 def create_order(
@@ -9,16 +8,14 @@ def create_order(
         username: str,
         date: str = None
 ) -> Order:
-
     with transaction.atomic():
-
         orders_user = User.objects.get(
             username=username
         )
         new_order = Order.objects.create(
             user=orders_user
         )
-        if date:
+        if date is not None:
             new_order.created_at = date
 
         new_order.save()
@@ -39,9 +36,8 @@ def create_order(
 
 
 def get_orders(
-    username: str = None
+        username: str = None
 ) -> Order:
-
     orders = Order.objects.all()
 
     if username:
