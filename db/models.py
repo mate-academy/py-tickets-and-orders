@@ -1,3 +1,5 @@
+from typing import Optional, Iterable
+
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -72,7 +74,10 @@ class User(AbstractUser):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
 
     def __str__(self) -> str:
         return f"{self.created_at}"
@@ -98,14 +103,17 @@ class Ticket(models.Model):
     seat = models.IntegerField()
 
     def __str__(self) -> str:
-        return f"{self.movie_session.movie.title} {self.movie_session.show_time} (row: {self.row}, seat: {self.seat})"
+        return f"{self.movie_session.movie.title} " \
+               f"{self.movie_session.show_time} " \
+               f"(row: {self.row}, seat: {self.seat})"
 
     def clean(self) -> None:
 
         # validating of all possible amount of seats
 
         if not (
-            1 <= (self.row * self.seat) <= self.movie_session.cinema_hall.capacity
+            1 <= (self.row * self.seat) <=
+            self.movie_session.cinema_hall.capacity
         ):
             raise ValidationError(
                 {"seat": [
@@ -117,11 +125,13 @@ class Ticket(models.Model):
         # validation of number of seat
 
         if not (
-            1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row
+            1 <= self.seat <=
+            self.movie_session.cinema_hall.seats_in_row
         ):
             raise ValidationError(
                 {"seat": [
-                    "seat number must be in available range: (1, seats_in_row): "
+                    "seat number must be in available range: "
+                    "(1, seats_in_row): "
                     f"(1, {self.movie_session.cinema_hall.seats_in_row})"
                 ]}
             )
@@ -129,7 +139,8 @@ class Ticket(models.Model):
         # validation of number of row
 
         if not (
-            1 <= self.row <= self.movie_session.cinema_hall.rows
+            1 <= self.row <=
+            self.movie_session.cinema_hall.rows
         ):
             raise ValidationError(
                 {"row": [
@@ -140,11 +151,11 @@ class Ticket(models.Model):
 
     def save(
         self,
-        force_insert=False,
-        force_update=False,
-        using=None,
-        update_fields=None
-    ):
+        force_insert: bool = False,
+        force_update: bool = False,
+        using: Optional[str] = None,
+        update_fields: Optional[Iterable[str]] = None
+    ) -> "Ticket":
         self.full_clean()
 
         return super(Ticket, self).save(
