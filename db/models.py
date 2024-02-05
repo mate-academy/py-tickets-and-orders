@@ -161,4 +161,3 @@ class Ticket(models.Model):
                 name="unique_session_seat"
             )
         ]
-
