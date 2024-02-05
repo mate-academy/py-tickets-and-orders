@@ -50,7 +50,6 @@ class CinemaHall(models.Model):
 
 
 class MovieSession(models.Model):
-
     show_time = models.DateTimeField()
 
     cinema_hall = models.ForeignKey(
@@ -87,7 +86,6 @@ class Order(models.Model):
 
 
 class Ticket(models.Model):
-
     movie_session = models.ForeignKey(
         "MovieSession",
         on_delete=models.CASCADE,
@@ -111,9 +109,9 @@ class Ticket(models.Model):
 
         # validating of all possible amount of seats
 
-        if not (
-            1 <= (
-                self.row * self.seat) <= self.movie_session.cinema_hall.capacity
+        if not (1 <= (
+            self.row * self.seat
+        ) <= self.movie_session.cinema_hall.capacity
         ):
             raise ValidationError(
                 {"seat": [
@@ -126,7 +124,7 @@ class Ticket(models.Model):
         # validation of number of seat
 
         if not (
-            1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row
+                1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row
         ):
             raise ValidationError(
                 {"seat": [
@@ -139,7 +137,7 @@ class Ticket(models.Model):
         # validation of number of row
 
         if not (
-            1 <= self.row <= self.movie_session.cinema_hall.rows
+                1 <= self.row <= self.movie_session.cinema_hall.rows
         ):
             raise ValidationError(
                 {"row": [
@@ -149,11 +147,11 @@ class Ticket(models.Model):
             )
 
     def save(
-        self,
-        force_insert: bool = False,
-        force_update: bool = False,
-        using: Optional[str] = None,
-        update_fields: Optional[Iterable[str]] = None
+            self,
+            force_insert: bool = False,
+            force_update: bool = False,
+            using: Optional[str] = None,
+            update_fields: Optional[Iterable[str]] = None
     ) -> "Ticket":
         self.full_clean()
 
