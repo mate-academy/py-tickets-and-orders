@@ -112,7 +112,8 @@ class Ticket(models.Model):
         # validating of all possible amount of seats
 
         if not (
-            1 <= (self.row * self.seat) <= self.movie_session.cinema_hall.capacity
+            1 <= (
+                self.row * self.seat) <= self.movie_session.cinema_hall.capacity
         ):
             raise ValidationError(
                 {"seat": [
