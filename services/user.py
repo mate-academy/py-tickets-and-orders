@@ -15,21 +15,20 @@ def create_user(
         first_name: str = "",
         last_name: str = ""
 ) -> User:
-    with transaction.atomic():
-        user = get_user_model().objects.create_user(
-            username=username,
-            password=password,
-            email=email,
-            first_name=first_name,
-            last_name=last_name
-        )
-        return user
+    return (get_user_model().objects .create_user(
+        username=username,
+        password=password,
+        email=email,
+        first_name=first_name,
+        last_name=last_name
+    ))
 
 
 def get_user(user_id: int) -> User:
     return get_user_model().objects.get(id=user_id)
 
 
+@transaction.atomic
 def update_user(
         user_id: int,
         username: str = None,
@@ -39,30 +38,27 @@ def update_user(
         last_name: str = None
 ) -> User:
     user = get_user(user_id)
-    with transaction.atomic():
+    try:
         if username:
-            try:
-                UnicodeUsernameValidator(username)
-                user.username = username
-            except ValidationError as e:
-                raise e
+            UnicodeUsernameValidator(username)
             user.username = username
+
         if password:
-            try:
-                validate_password(password)
-                user.set_password(raw_password=password)
-            except ValidationError as e:
-                raise e
+            validate_password(password)
+            user.set_password(raw_password=password)
+
         if email:
-            try:
-                validate_email(email)
-                user.email = email
-            except ValidationError as e:
-                raise e
+            validate_email(email)
+            user.email = email
+
         if first_name:
             user.first_name = first_name
+
         if last_name:
             user.last_name = last_name
-        user.save()
 
-        return user
+    except ValidationError as e:
+        raise e
+
+    user.save()
+    return user
