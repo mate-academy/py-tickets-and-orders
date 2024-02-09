@@ -16,10 +16,12 @@ def create_order(
 
         additional_order_data = {"user": user}
 
-        if date:
-            additional_order_data["created_at"] = date
-
         order = Order.objects.create(**additional_order_data)
+
+        if date:
+            order.created_at = date
+
+        order.save()
 
         ticket_objects = [
             Ticket(
