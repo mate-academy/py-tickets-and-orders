@@ -3,7 +3,7 @@ from typing import Optional
 from django.contrib.auth import get_user_model
 from django.db import transaction
 
-from db.models import Order, Ticket, User
+from db.models import Order, Ticket
 
 
 @transaction.atomic
@@ -32,6 +32,6 @@ def create_order(
 
 def get_orders(username: Optional[str] = None) -> Order:
     if username:
-        user = User.objects.get(username=username)
+        user = get_user_model().objects.get(username=username)
         return Order.objects.filter(user=user)
     return Order.objects.all()
