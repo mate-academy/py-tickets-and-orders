@@ -63,7 +63,7 @@ class Order(models.Model):
                              on_delete=models.CASCADE)
 
     class Meta:
-        ordering =["-created_at"]
+        ordering = ["-created_at"]
 
     def __str__(self) -> str:
         return str(self.created_at)
@@ -92,11 +92,12 @@ class Ticket(models.Model):
                 f"(row: {self.row}, seat: {self.seat})")
 
     def clean(self) -> None:
-        if not (1 <= (self.seat * self.row) <= self.movie_session.cinema_hall.capacity):
+        if not (1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row):
             raise ValidationError(
                 {
                     "seat": [
-                        f"seat number must be in available range: (1, seats_in_row): (1, "
+                        f"seat number must be in available range: ("
+                        f"1, seats_in_row): (1, "
                         f"{self.movie_session.cinema_hall.seats_in_row})"]
                 }
             )
@@ -104,7 +105,8 @@ class Ticket(models.Model):
             raise ValidationError(
                 {
                     "row": [
-                        f"row number must be in available range: (1, rows): (1, "
+                        f"row number must be in available range: ("
+                        f"1, rows): (1, "
                         f"{self.movie_session.cinema_hall.rows})"]
                 }
             )
