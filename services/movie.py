@@ -34,19 +34,14 @@ def create_movie(
     genres_ids: list = None,
     actors_ids: list = None,
 ) -> Movie:
-    try:
-        with transaction.atomic():
-            movie = Movie.objects.create(
-                title=movie_title,
-                description=movie_description,
-            )
-            if genres_ids:
-                movie.genres.set(genres_ids)
-            if actors_ids:
-                movie.actors.set(actors_ids)
+    with transaction.atomic():
+        movie = Movie.objects.create(
+            title=movie_title,
+            description=movie_description,
+        )
+        if genres_ids:
+            movie.genres.set(genres_ids)
+        if actors_ids:
+            movie.actors.set(actors_ids)
 
-            return movie
-
-    except Exception as e:
-        print(f"Error creating movie: {e}")
-        raise ValueError("Error creating movie")
+        return movie
