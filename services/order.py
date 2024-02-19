@@ -3,13 +3,13 @@ from datetime import datetime
 from django.contrib.auth import get_user_model
 from django.db import transaction
 
-from db.models import Order, Ticket, MovieSession
+from db.models import Order, Ticket
 
 
 def create_order(
         tickets: list[Ticket],
         username: str,
-        date: datetime = None
+        date: datetime | None = None
 ) -> None:
     with transaction.atomic():
         user = get_user_model().objects.get(username=username)
@@ -19,20 +19,16 @@ def create_order(
             order.created_at = date
             order.save()
 
-        for ticket_data in tickets:
-            movie_session = MovieSession.objects.get(
-                id=ticket_data["movie_session"]
-            )
+        for ticket in tickets:
             Ticket.objects.create(
                 order=order,
-                movie_session=movie_session,
-                row=ticket_data["row"],
-                seat=ticket_data["seat"]
+                movie_session_id=ticket["movie_session"],
+                row=ticket["row"],
+                seat=ticket["seat"],
             )
 
 
 def get_orders(username: str = None) -> list[Order]:
     if username:
-        user = get_user_model().objects.get(username=username)
-        return Order.objects.filter(user=user)
+        return Order.objects.filter(user__username=username)
     return Order.objects.all()
