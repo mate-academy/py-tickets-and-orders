@@ -68,7 +68,7 @@ class Order(models.Model):
     class Meta:
         ordering = ("-created_at",)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.created_at}"
 
 
@@ -93,11 +93,11 @@ class Ticket(models.Model):
                              f"(1, seats_in_row):"
                              f" (1, {cinema_hall.seats_in_row})"}))
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         self.full_clean()
         super().save(*args, **kwargs)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return (f"{self.movie_session} "
                 f"(row: {self.row}, seat: {self.seat})")
 

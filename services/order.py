@@ -21,7 +21,7 @@ def create_order(tickets: list[Ticket],
             seat=ticket["seat"])
 
 
-def get_orders(username: str = None):
+def get_orders(username: str = None) -> Order:
     if username:
         return Order.objects.filter(user__username=username)
     return Order.objects.all()
