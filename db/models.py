@@ -87,6 +87,14 @@ class Ticket(models.Model):
     row = models.IntegerField()
     seat = models.IntegerField()
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["seat", "row", "movie_session"],
+                name="unique_movie_session_ticket_seat"
+            )
+        ]
+
     def __str__(self) -> str:
         return (
             f"{self.movie_session.movie.title} "
@@ -111,14 +119,6 @@ class Ticket(models.Model):
     def save(self, *args, **kwargs) -> None:
         self.full_clean()
         return super().save(*args, **kwargs)
-
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=["seat", "row", "movie_session"],
-                name="unique_movie_session_ticket_seat"
-            )
-        ]
 
 
 class User(AbstractUser):
