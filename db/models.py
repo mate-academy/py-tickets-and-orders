@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -57,7 +58,7 @@ class MovieSession(models.Model):
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(
-        to="User",
+        to=settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="orders"
     )
@@ -82,6 +83,14 @@ class Ticket(models.Model):
     )
     row = models.IntegerField()
     seat = models.IntegerField()
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["row", "seat", "movie_session"],
+                name="unique_sitting_place"
+            )
+        ]
 
     def clean(self) -> None:
         if not (1 <= self.row <= self.movie_session.cinema_hall.rows):
@@ -108,14 +117,6 @@ class Ticket(models.Model):
     def save(self, *args, **kwargs) -> None:
         self.full_clean()
         return super().save(*args, **kwargs)
-
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=["row", "seat", "movie_session"],
-                name="unique_sitting_place"
-            )
-        ]
 
     def __str__(self) -> str:
         return (
