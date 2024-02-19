@@ -38,8 +38,8 @@ class CinemaHall(models.Model):
     def capacity(self) -> int:
         return self.rows * self.seats_in_row
 
-    def __str__(self):
-        return self
+    def __str__(self) -> str:
+        return str(self)
 
 
 class MovieSession(models.Model):
@@ -80,7 +80,7 @@ class Ticket(models.Model):
     row = models.IntegerField()
     seat = models.IntegerField()
 
-    def clean(self):
+    def clean(self) -> None:
         cinema_hall = self.movie_session.cinema_hall
         if self.row > cinema_hall.rows:
             raise (ValidationError
