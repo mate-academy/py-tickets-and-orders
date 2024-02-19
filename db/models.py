@@ -1,3 +1,6 @@
+from typing import Type
+
+from django.contrib.auth.models import User
 from django.db import models
 
 
@@ -17,7 +20,7 @@ class Actor(models.Model):
 
 
 class Movie(models.Model):
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=255, db_index=True)
     description = models.TextField()
     actors = models.ManyToManyField(to=Actor, related_name="movies")
     genres = models.ManyToManyField(to=Genre, related_name="movies")
@@ -49,4 +52,23 @@ class MovieSession(models.Model):
     )
 
     def __str__(self) -> str:
-        return f"{self.movie.title} {str(self.show_time)}"
+        return f"{self.movie} {self.show_time}"
+
+
+class Order(models.Model):
+    creat_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
+
+    def __str__(self) -> str:
+        return self.creat_at.strftime("%m-%d-%Y, %H:%M:%S")
+
+
+class Ticket(models.Model):
+    movie_session = models.ForeignKey(to=MovieSession, on_delete=models.CASCADE)
+    order = models.ForeignKey(to=Order, on_delete=models.CASCADE)
+    row = models.IntegerField()
+    seat = models.IntegerField()
+
+    def __str__(self) -> Type[int]:
+        return self.movie_session__movie
+
