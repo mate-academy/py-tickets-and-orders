@@ -30,5 +30,5 @@ def create_order(
 def get_orders(username: Optional[str] = None) -> list[Order]:
     if username:
         user = get_user_model().objects.get(username=username)
-        return Order.objects.filter(user=user)
+        return Order.objects.filter(user__exact=user)
     return Order.objects.all()

@@ -1,6 +1,7 @@
+from typing import Optional
+
 from django.db import transaction
 from django.db.models import QuerySet
-from typing import Optional
 
 from db.models import Movie
 
