@@ -3,7 +3,6 @@ from django.contrib.auth import get_user_model
 from django.db import transaction
 
 from db.models import Ticket, Order
-from services.movie_session import get_movie_session_by_id
 
 
 def create_order(
