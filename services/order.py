@@ -1,8 +1,8 @@
 from datetime import datetime
-from typing import Iterable
 
 from django.contrib.auth import get_user_model
 from django.db import transaction
+from django.db.models import QuerySet
 
 from db.models import Ticket, Order
 
@@ -31,7 +31,7 @@ def create_order(
 
 def get_orders(
         username: str | None = None
-) -> Iterable:
+) -> QuerySet:
     if username:
         return Order.objects.filter(user__username=username)
     return Order.objects.all()
