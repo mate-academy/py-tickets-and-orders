@@ -12,11 +12,9 @@ def create_order(tickets: list[Ticket],
         order.save()
     for ticket in tickets:
         movie_session_id = ticket["movie_session"]
-        movie_session = (MovieSession.objects.get
-                         (pk=movie_session_id))
         Ticket.objects.create(
             order=order,
-            movie_session=movie_session,
+            movie_session_id=movie_session_id,
             row=ticket["row"],
             seat=ticket["seat"])
 
