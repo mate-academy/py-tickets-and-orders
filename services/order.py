@@ -1,5 +1,3 @@
-import init_django_orm  # noqa: F401
-
 from django.db import transaction
 
 from django.db.models import QuerySet
@@ -10,7 +8,7 @@ from db.models import Order, User, Ticket
 def create_order(
     tickets: list[dict],
     username: str,
-    date: str = None
+    date: str | None = None
 ) -> None:
     with transaction.atomic():
         user = User.objects.get(username=username)
@@ -32,7 +30,7 @@ def create_order(
             )
 
 
-def get_orders(username: str = None) -> QuerySet:
+def get_orders(username: str | None = None) -> QuerySet:
     query = Order.objects.all()
 
     if username:
