@@ -95,9 +95,7 @@ class Ticket(models.Model):
         ]
 
     def __str__(self) -> str:
-        movie = self.movie_session.movie.title
-        session_time = self.movie_session.show_time
-        return (f"{movie} {session_time} "
+        return (f"{self.movie_session} "
                 f"(row: {self.row}, seat: {self.seat})")
 
     def clean(self) -> None:
