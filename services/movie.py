@@ -7,7 +7,7 @@ from db.models import Movie
 def get_movies(
     genres_ids: list[int] = None,
     actors_ids: list[int] = None,
-    title: str = None
+    title: str | None = None
 ) -> QuerySet:
     queryset = Movie.objects.all()
 
@@ -24,7 +24,7 @@ def get_movies(
 
 
 def get_movie_by_id(movie_id: int) -> Movie:
-    return Movie.objects.get(id=movie_id).values("Tickets")
+    return Movie.objects.get(id=movie_id)
 
 
 @transaction.atomic
