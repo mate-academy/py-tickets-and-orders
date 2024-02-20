@@ -11,7 +11,6 @@ def create_order(
         username: str,
         date: str | None = None
 ) -> None:
-
     order = Order.objects.create(
         user=get_user_model().objects.get(username=username)
     )
@@ -20,16 +19,13 @@ def create_order(
         order.created_at = date
         order.save()
 
-    tickets_db = []
     for ticket in tickets:
-        tickets_db.append(Ticket(
+        Ticket.objects.create(
             movie_session_id=ticket["movie_session"],
             order_id=order.id,
             row=ticket["row"],
             seat=ticket["seat"]
-        ))
-
-    Ticket.objects.bulk_create(tickets_db)
+        )
 
 
 def get_orders(username: str | None = None) -> QuerySet[Order]:
