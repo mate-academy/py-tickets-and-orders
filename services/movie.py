@@ -32,7 +32,7 @@ def create_movie(
     movie_description: str,
     genres_ids: list | None = None,
     actors_ids: list | None = None,
-) -> Movie | None:
+) -> Movie:
     with transaction.atomic():
         movie = Movie.objects.create(
             title=movie_title,
