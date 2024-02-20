@@ -2,6 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import UniqueConstraint
+from settings import AUTH_USER_MODEL
 
 
 class Genre(models.Model):
@@ -66,7 +67,7 @@ class MovieSession(models.Model):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey("User", on_delete=models.CASCADE)
+    user = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     class Meta:
         ordering = ("-created_at",)
@@ -104,13 +105,13 @@ class Ticket(models.Model):
     def clean(self) -> None:
         if self.row > self.movie_session.cinema_hall.rows:
             raise ValidationError(
-                {"row": f"row number must be in available range:"
+                {"row": "row number must be in available range:"
                         " (1, rows):"
                         f" (1, {self.movie_session.cinema_hall.rows})"}
             )
         if self.seat > self.movie_session.cinema_hall.seats_in_row:
             raise ValidationError(
-                {"seat": f"seat number must be in available range:"
+                {"seat": "seat number must be in available range:"
                          " (1, seats_in_row):"
                          f" (1, {self.movie_session.cinema_hall.seats_in_row}"
                          ")"}
