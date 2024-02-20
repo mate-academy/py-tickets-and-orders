@@ -1,7 +1,9 @@
 import datetime
 
 from django.db import transaction
+
 from django.db.models import QuerySet
+
 from db.models import Order, Ticket, User
 
 
