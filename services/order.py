@@ -31,11 +31,7 @@ def create_order(
 def get_orders(username: str = None) -> QuerySet:
 
     if username:
-        try:
-            user = User.objects.get(username=username)
-            order = Order.objects.filter(user=user)
-        except User.DoesNotExist as e:
-            raise e(f"Incorrect username: {username}")
+        order = Order.objects.filter(user__username=username)
     else:
         order = Order.objects.all()
 

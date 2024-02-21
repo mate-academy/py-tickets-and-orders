@@ -1,6 +1,6 @@
+from django.shortcuts import get_object_or_404
 from db.models import User
 from django.contrib.auth import get_user_model
-from django.core.exceptions import ObjectDoesNotExist
 
 
 def create_user(
@@ -21,13 +21,9 @@ def create_user(
 
 
 def get_user(user_id: int) -> User:
-    try:
-        return get_user_model().objects.get(id=user_id)
-    except ObjectDoesNotExist as e:
-        raise e(
-            f"User with this id: "
-            f"{user_id} doe snot exist."
-        )
+    return get_object_or_404(
+        get_user_model(), id=user_id
+    )
 
 
 def update_user(
@@ -41,16 +37,15 @@ def update_user(
 
     user = get_user(user_id)
 
-    if user:
-        if username:
-            user.username = username
-        if password:
-            user.set_password(password)
-        if email:
-            user.email = email
-        if first_name:
-            user.first_name = first_name
-        if last_name:
-            user.last_name = last_name
-        user.save()
+    if username:
+        user.username = username
+    if password:
+        user.set_password(password)
+    if email:
+        user.email = email
+    if first_name:
+        user.first_name = first_name
+    if last_name:
+        user.last_name = last_name
+    user.save()
     return user
