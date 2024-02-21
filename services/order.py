@@ -33,4 +33,5 @@ def create_order(
 def get_orders(username: str | None = None) -> QuerySet:
     if username is None:
         return Order.objects.all()
-    return Order.objects.filter(user__username=username)
+    user = get_user_model().objects.get(username=username)
+    return user.orders.all()
