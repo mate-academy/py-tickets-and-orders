@@ -1,6 +1,6 @@
 from django.db import transaction
 from django.db.models import QuerySet
-from db.models import Order, Ticket, User, MovieSession
+from db.models import Order, Ticket, User
 
 
 @transaction.atomic
@@ -20,7 +20,7 @@ def create_order(
         row, seat, movie_session_id = ticket.values()
 
         Ticket.objects.create(
-            movie_session=MovieSession.objects.get(id=movie_session_id),
+            movie_session_id=movie_session_id,
             order=order,
             row=row,
             seat=seat
