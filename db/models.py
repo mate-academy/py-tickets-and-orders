@@ -79,7 +79,7 @@ class Ticket(models.Model):
     movie_session = models.ForeignKey(
         to=MovieSession,
         on_delete=models.CASCADE,
-        related_name="ticket_sessions"
+        related_name="tickets"
     )
     order = models.ForeignKey(to=Order,
                               on_delete=models.CASCADE,
