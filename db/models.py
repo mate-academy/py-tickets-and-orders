@@ -1,7 +1,12 @@
 from django.contrib.auth.models import AbstractUser
+
 from django.core.exceptions import ValidationError
+
 from django.db import models
+
 from django.db.models import UniqueConstraint
+
+import settings
 
 
 class Genre(models.Model):
@@ -50,10 +55,14 @@ class CinemaHall(models.Model):
 class MovieSession(models.Model):
     show_time = models.DateTimeField()
     cinema_hall = models.ForeignKey(
-        to=CinemaHall, on_delete=models.CASCADE, related_name="movie_sessions"
+        to=CinemaHall,
+        on_delete=models.CASCADE,
+        related_name="movie_sessions"
     )
     movie = models.ForeignKey(
-        to=Movie, on_delete=models.CASCADE, related_name="movie_sessions"
+        to=Movie,
+        on_delete=models.CASCADE,
+        related_name="movie_sessions"
     )
 
     def __str__(self) -> str:
@@ -63,7 +72,7 @@ class MovieSession(models.Model):
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(
-        to="User",
+        to=settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="orders"
     )
@@ -78,9 +87,14 @@ class Order(models.Model):
 class Ticket(models.Model):
     movie_session = models.ForeignKey(
         to="MovieSession",
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name="tickets"
     )
-    order = models.ForeignKey(to="Order", on_delete=models.CASCADE)
+    order = models.ForeignKey(
+        to="Order",
+        on_delete=models.CASCADE,
+        related_name="tickets"
+    )
     row = models.IntegerField()
     seat = models.IntegerField()
 
@@ -112,7 +126,7 @@ class Ticket(models.Model):
                 }
             )
 
-    def save(self, *args, **kwargs) -> None:
+    def save(self, *args, **kwargs) -> None :
         self.full_clean()
         return super().save(*args, **kwargs)
 
