@@ -4,7 +4,6 @@ from django.contrib.auth import get_user_model
 
 
 from db.models import Order, Ticket
-from services.movie_session import get_movie_session_by_id
 
 
 def create_order(
@@ -19,19 +18,14 @@ def create_order(
         if date:
             current_order.created_at = date
 
-        Ticket.objects.bulk_create(
-            [
-                Ticket(
-                    movie_session=get_movie_session_by_id(
-                        ticket["movie_session"]
-                    ),
-                    order=current_order,
-                    row=ticket["row"],
-                    seat=ticket["seat"]
-                )
-                for ticket in tickets
-            ]
-        )
+        for ticket in tickets:
+            Ticket.objects.create(
+                order=current_order,
+                row=ticket["row"],
+                seat=ticket["seat"],
+                movie_session_id=ticket["movie_session"]
+            )
+
         current_order.save()
         return current_order
 
