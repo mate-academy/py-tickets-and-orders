@@ -1,7 +1,6 @@
 from django.contrib.auth.models import User, AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
-from services import cinema_hall
 
 
 class Genre(models.Model):
@@ -57,18 +56,27 @@ class MovieSession(models.Model):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name="orders")
+    user = models.ForeignKey(
+        to=User, on_delete=models.CASCADE,
+        related_name="orders"
+    )
 
     class Meta:
         ordering = ["-created_at"]
 
-    def __str__(self) ->str:
+    def __str__(self) -> str:
         return f" Order: {self.created_at}"
 
 
 class Ticket(models.Model):
-    movie_session = models.ForeignKey(to=MovieSession, on_delete=models.CASCADE, related_name="tickets")
-    order = models.ForeignKey(to=Order, on_delete=models.CASCADE, related_name="tickets")
+    movie_session = models.ForeignKey(
+        to=MovieSession, on_delete=models.CASCADE,
+        related_name="tickets"
+    )
+    order = models.ForeignKey(
+        to=Order, on_delete=models.CASCADE,
+        related_name="tickets"
+    )
     row = models.IntegerField()
     seat = models.IntegerField()
 
