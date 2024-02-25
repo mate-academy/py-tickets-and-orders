@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User, AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import UniqueConstraint
 
 import settings
 
@@ -80,10 +81,8 @@ class Ticket(models.Model):
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(
-                fields=["movie_session", "seat", "row"],
-                name="unique_ticket_seat_movie"
-            )
+            UniqueConstraint(fields=["seat", "row", "movie_session"],
+                             name="unique_ticket_seat_row")
         ]
 
     def clean(self):
