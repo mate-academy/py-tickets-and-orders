@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db import transaction
 
-from db.models import Ticket, Order, User, MovieSession
+from db.models import Ticket, Order, MovieSession
 
 
 def create_order(tickets: list,
