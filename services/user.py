@@ -26,7 +26,7 @@ def create_user(username: str,
 
 
 def get_user(user_id: int) -> User:
-    return User.objects.get(pk=user_id)
+    return get_user(user_id)
 
 
 def update_user(user_id: int,
@@ -36,7 +36,6 @@ def update_user(user_id: int,
                 first_name: str = None,
                 last_name: str = None) -> None:
     user = User.objects.filter(id=user_id)
-    user = user.first()
     if username:
         user.username = username
     if email:
