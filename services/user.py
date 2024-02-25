@@ -26,7 +26,7 @@ def create_user(username: str,
 
 
 def get_user(user_id: int) -> User:
-    return get_user(user_id)
+    return get_user_model().objects.get(user_id=user_id)
 
 
 def update_user(user_id: int,
