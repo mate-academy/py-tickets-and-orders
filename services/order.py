@@ -1,5 +1,3 @@
-from datetime import datetime, timezone
-
 from django.contrib.auth import get_user_model
 from django.db import transaction
 
@@ -26,15 +24,6 @@ def create_order(tickets: list,
                 row=ticket["row"],
                 seat=ticket["seat"]
             )
-    # user = User.objects.get(username=username)
-    # if date:
-    #     created_at = datetime.strptime(date, "%Y-%m-%d %H:%M")
-    # with transaction.atomic():
-    #     order = Order.objects.create(user=user, created_at=created_at)
-    #     for ticket in tickets:
-    #         Ticket.objects.create(order=order, row=ticket["row"], seat=ticket["seat"],
-    #                               movie_session_id=ticket["movie_session"])
-    # return order
 
 
 def get_orders(username: str = None) -> list:
