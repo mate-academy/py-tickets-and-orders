@@ -4,23 +4,20 @@ from django.db.models import QuerySet
 from db.models import User
 
 
-def create_user(
-        username: str,
-        password: str,
-        email: str = None,
-        first_name: str = None,
-        last_name: str = None) -> QuerySet:
+def create_user(username: str,
+                password: str,
+                email: str = None,
+                first_name: str = None,
+                last_name: str = None) -> QuerySet:
     user = get_user_model().objects.create_user(
-        username=username,
+        username,
         password=password
     )
 
     if email:
         user.email = email
-
     if first_name:
         user.first_name = first_name
-
     if last_name:
         user.last_name = last_name
 
@@ -29,7 +26,7 @@ def create_user(
 
 
 def get_user(user_id: int) -> User:
-    return get_user_model().objects.get(id=user_id)
+    return User.objects.get(pk=user_id)
 
 
 def update_user(user_id: int,
@@ -38,21 +35,16 @@ def update_user(user_id: int,
                 email: str = None,
                 first_name: str = None,
                 last_name: str = None) -> None:
-    user = get_user(user_id)
-
+    user = User.objects.filter(id=user_id)
+    user = user.first()
     if username:
         user.username = username
-
-    if password:
-        user.set_password(password)
-
     if email:
         user.email = email
-
     if first_name:
         user.first_name = first_name
-
     if last_name:
         user.last_name = last_name
-
+    if password:
+        user.set_password(password)
     user.save()
