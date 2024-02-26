@@ -18,7 +18,7 @@ def create_order(
         user=get_user_model().objects.get(username=username)
     )
     if date:
-        order.created_at = datetime.strptime(date, "%Y-%m-%d %H:%M")
+        order.created_at = date
         order.save()
 
     tickets_list = [
