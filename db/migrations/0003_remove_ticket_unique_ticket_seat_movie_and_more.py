@@ -9,13 +9,4 @@ class Migration(migrations.Migration):
         ('db', '0002_user_order_ticket_alter_movie_actors_and_more'),
     ]
 
-    operations = [
-        migrations.RemoveConstraint(
-            model_name='ticket',
-            name='unique_ticket_seat_movie',
-        ),
-        migrations.AddConstraint(
-            model_name='ticket',
-            constraint=models.UniqueConstraint(fields=('seat', 'row', 'movie_session'), name='unique_ticket_seat_row'),
-        ),
-    ]
+
