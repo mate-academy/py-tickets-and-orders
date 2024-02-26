@@ -4,7 +4,7 @@ from django.db import transaction
 from db.models import Ticket, Order, MovieSession
 
 
-def create_order(tickets: list,
+def create_order(tickets: list[dict],
                  username: str = None,
                  date: str = None) -> None:
     with transaction.atomic():
