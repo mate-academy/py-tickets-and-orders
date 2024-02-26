@@ -1,6 +1,11 @@
-from django.contrib.auth.models import User, AbstractUser
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
+
+
+class User(AbstractUser):
+    pass
 
 
 class Genre(models.Model):
@@ -57,7 +62,7 @@ class MovieSession(models.Model):
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(
-        to=User, on_delete=models.CASCADE,
+        to=get_user_model(), on_delete=models.CASCADE,
         related_name="orders"
     )
 
@@ -65,7 +70,7 @@ class Order(models.Model):
         ordering = ["-created_at"]
 
     def __str__(self) -> str:
-        return f" Order: {self.created_at}"
+        return f"{self.created_at}"
 
 
 class Ticket(models.Model):
@@ -109,10 +114,6 @@ class Ticket(models.Model):
 
     def __str__(self) -> str:
         return (
-            f"Ticket: {self.movie_session} {MovieSession.show_time} "
-            f"(row: {self.row}, seat: {self})"
+            f"{self.movie_session.movie} {self.movie_session.show_time} "
+            f"(row: {self.row}, seat: {self.seat})"
         )
-
-
-class User(AbstractUser):
-    pass
