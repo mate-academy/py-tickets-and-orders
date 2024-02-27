@@ -9,7 +9,7 @@ you have to create or edit tables:
 2. `Order`, with such fields:
     - datetime field `created_at`, the datetime when the order was created,
 set `auto_now_add` to fill this field automatically during the creation.
-    - foreign key `user`, the user that created the order.
+    - foreign key `user`, the user that created the order.`
    
 There should be implemented the string representation of the order:
 ```python
