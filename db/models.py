@@ -94,21 +94,26 @@ class Ticket(models.Model):
         max_seats = self.movie_session.cinema_hall.seats_in_row
         if not (1 <= row <= max_rows):
             raise ValidationError({"row": ["row number must be in "
-                                           f"available range: "
+                                           "available range: "
                                            f"(1, rows): (1, {max_rows})"]})
         if not (1 <= seat <= max_seats):
             raise ValidationError({"seat": ["seat number must be in "
-                                            f"available range: "
-                                            f"(1, seats_in_row): (1, {max_seats})"]})
+                                            "available range: "
+                                            "(1, seats_in_row): "
+                                            f"(1, {max_seats})"]})
 
-    def save(self, *args, **kwargs) -> function:
+    def save(self, *args, **kwargs) -> None:
         self.full_clean()
         return super().save(*args, **kwargs)
 
     class Meta:
         constraints = [UniqueConstraint(fields=["row",
                                                "seat",
-                                               "movie_session"], name='unique_seat_per_session')]
+                                               "movie_session"
+                                               ],
+                                               name="unique_seat_per_session"
+                                               )
+                                               ]
 
 
 class User(AbstractUser):
