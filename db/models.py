@@ -72,7 +72,7 @@ class Order(models.Model):
 
     def __str__(self) -> str:
         return f"{self.created_at}"
-    
+
 
 class Ticket(models.Model):
     row = models.IntegerField()
@@ -83,21 +83,23 @@ class Ticket(models.Model):
                               on_delete=models.CASCADE)
 
     def __str__(self) -> str:
-        return (f"{self.movie_session.movie.title} "+
-                f"{self.movie_session.show_time} "+
+        return (f"{self.movie_session.movie.title} "
+                f"{self.movie_session.show_time} "
                 f"(row: {self.row}, seat: {self.seat})")
 
-    def clean(self):
+    def clean(self) -> None:
         row = self.row
         max_rows = self.movie_session.cinema_hall.rows
         seat = self.seat
         max_seats = self.movie_session.cinema_hall.seats_in_row
         if not (1 <= row <= max_rows):
-            raise ValidationError({"row": [f"row number must be in available range: (1, rows): (1, {max_rows})"]})
+            raise ValidationError({"row": [f"row number must be in available range: "
+                                           f"(1, rows): (1, {max_rows})"]})
         if not (1 <= seat <= max_seats):
-            raise ValidationError({"seat": [f"seat number must be in available range: (1, seats_in_row): (1, {max_seats})"]})
+            raise ValidationError({"seat": [f"seat number must be in available range: "
+                                            f"(1, seats_in_row): (1, {max_seats})"]})
 
-    def save(self,  *args, **kwargs):
+    def save(self,  *args, **kwargs) -> function:
         self.full_clean()
         return super().save(*args, **kwargs)
 
