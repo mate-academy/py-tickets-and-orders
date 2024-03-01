@@ -10,7 +10,7 @@ INSTALLED_APPS = [
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "db",
-    'django_extensions',
+    "django_extensions",
 ]
 
 AUTH_USER_MODEL = "db.User"
@@ -33,5 +33,3 @@ TIME_ZONE = "Europe/Kiev"
 USE_I18N = True
 
 USE_TZ = False
-
-
