@@ -55,7 +55,11 @@ class MovieSession(models.Model):
     cinema_hall = models.ForeignKey(
         CinemaHall, on_delete=models.CASCADE, related_name="movie_sessions"
     )
-    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name="movie_sessions")
+    movie = models.ForeignKey(
+        Movie,
+        on_delete=models.CASCADE,
+        related_name="movie_sessions"
+    )
 
     def __str__(self) -> str:
         return f"{self.movie.title} {str(self.show_time)}"
@@ -63,7 +67,10 @@ class MovieSession(models.Model):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
 
     class Meta:
         ordering = ["-created_at"]
@@ -80,7 +87,10 @@ class Ticket(models.Model):
 
     class Meta:
         constraints = [
-            UniqueConstraint(fields=["row", "seat", "movie_session"], name="unique_ticket")
+            UniqueConstraint(
+                fields=["row", "seat", "movie_session"],
+                name="unique_ticket"
+            )
         ]
 
     def clean(self) -> None:
@@ -88,7 +98,8 @@ class Ticket(models.Model):
             raise ValidationError(
                 {
                     "row": [
-                        f"Row number must be in available range: (1, {self.movie_session.cinema_hall.rows})"
+                        f"Row number must be in available range: "
+                        f"(1, {self.movie_session.cinema_hall.rows})"
                     ]
                 }
             )
@@ -97,7 +108,8 @@ class Ticket(models.Model):
             raise ValidationError(
                 {
                     "seat": [
-                        f"Seat number must be in available range: (1, {self.movie_session.cinema_hall.seats_in_row})"
+                        f"Seat number must be in available range:"
+                        f" (1, {self.movie_session.cinema_hall.seats_in_row})"
                     ]
                 }
             )
@@ -107,6 +119,19 @@ class Ticket(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self) -> str:
-        movie_title = getattr(self.movie_session.movie, "title", "Unknown Movie")
-        show_time = getattr(self.movie_session, "show_time", "Unknown Time")
-        return f"<Ticket: {movie_title} {str(show_time)} (row: {self.row}, seat: {self.seat})>"
+        movie_title = getattr(
+            self.movie_session.movie,
+            "title",
+            "Unknown Movie"
+        )
+        show_time = getattr(
+            self.movie_session,
+            "show_time",
+            "Unknown Time"
+        )
+        return (f"<Ticket: "
+                f"{movie_title}"
+                f" {str(show_time)}"
+                f" (row: {self.row},"
+                f" seat: {self.seat})>"
+                )
