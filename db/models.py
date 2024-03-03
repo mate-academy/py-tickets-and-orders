@@ -98,14 +98,16 @@ class Ticket(models.Model):
             raise ValidationError(
                 {
                     "row": [
-                        f"row number must be in available range: (1, rows): (1, 10)"]}
+                        "row number must be in available range:"
+                        " (1, rows): (1, 10)"]}
             )
 
         if not (1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row):
             raise ValidationError(
                 {
                     "seat": [
-                        f"seat number must be in available range: (1, seats_in_row): (1, 12)"]}
+                        "seat number must be in available range:"
+                        " (1, seats_in_row): (1, 12)"]}
             )
 
     def save(self, *args, **kwargs) -> None:
@@ -124,4 +126,8 @@ class Ticket(models.Model):
             "Unknown Time"
         )
 
-        return (f"{movie_title} {str(show_time)} (row: {self.row}, seat: {self.seat})")
+        return (
+            f"{movie_title}"
+            f" {str(show_time)}"
+            f" (row: {self.row}, seat: {self.seat})"
+        )
