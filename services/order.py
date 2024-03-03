@@ -1,32 +1,31 @@
-from typing import Optional
+from db.models import Order, Ticket, User, MovieSession
 from django.db import transaction
-from django.contrib.auth import get_user_model
 from django.db.models import QuerySet
-
-from db.models import Order, Ticket, MovieSession
-
-User = get_user_model()
+import datetime
 
 
-def create_order(
-        tickets: list, username: str, date: Optional[str] = None) -> None:
-    user = User.objects.get(username=username)
+def create_order(tickets: list[dict],
+                 username: str,
+                 date: datetime = None) -> Order:
     with transaction.atomic():
-        order = Order.objects.create(
-            user=user, created_at=date)
-        for ticket in tickets:
-            Ticket.objects.create(
-                row=ticket["row"],
-                seat=ticket["seat"],
-                movie_session=MovieSession.objects.get(
-                    id=ticket["movie_session"]),
-                order=order
-            )
-
-
-def get_orders(username: Optional[str] = None) -> "QuerySet[Order]":
-    if username is not None:
         user = User.objects.get(username=username)
-        return Order.objects.filter(user=user)
-    else:
-        return Order.objects.all()
+        order = Order.objects.create(user=user)
+        if date:
+            order.created_at = date
+            order.save()
+
+        for ticket in tickets:
+            movie_session_id = ticket.pop("movie_session")
+            movie_session = MovieSession.objects.get(pk=movie_session_id)
+            Ticket.objects.create(order=order,
+                                  movie_session=movie_session,
+                                  **ticket)
+        return order
+
+
+def get_orders(username: str = None) -> QuerySet:
+    orders = Order.objects.all()
+    if username:
+        user = User.objects.get(username=username)
+        orders = Order.objects.filter(user=user)
+    return orders
