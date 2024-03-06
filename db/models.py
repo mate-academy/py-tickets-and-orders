@@ -71,7 +71,10 @@ class Order(models.Model):
 
 
 class Ticket(models.Model):
-    movie_session = models.ForeignKey(to=MovieSession, on_delete=models.CASCADE)
+    movie_session = models.ForeignKey(
+        to=MovieSession,
+        on_delete=models.CASCADE
+    )
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     row = models.IntegerField()
     seat = models.IntegerField()
@@ -86,13 +89,18 @@ class Ticket(models.Model):
     def clean(self) -> None:
         if not 1 <= self.row <= self.movie_session.cinema_hall.rows:
             raise ValidationError(
-                "The row in the cinema hall must be in the range "
-                f"from 1 to {self.movie_session.cinema_hall.rows}"
+                {
+                    "row": "row number must be in available range: (1, rows): "
+                    f"(1, {self.movie_session.cinema_hall.rows})"
+                }
             )
         if not 1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row:
             raise ValidationError(
-                "The place in the cinema hall must be in the range "
-                f"from 1 to {self.movie_session.cinema_hall.seats_in_row}"
+                {
+                    "seat": "seat number must be in available range: "
+                    f"(1, seats_in_row): "
+                    f"(1, {self.movie_session.cinema_hall.seats_in_row})"
+                }
             )
 
     def save(self, *args, **kwargs) -> None:

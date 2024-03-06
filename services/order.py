@@ -1,7 +1,8 @@
+from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.db.models import QuerySet
 
-from db.models import Order, User
+from db.models import Order, Ticket
 
 
 def create_order(
@@ -9,14 +10,22 @@ def create_order(
         username: str,
         date: str = None
 ) -> None:
-    user = User.objects.get(username=username)
     with transaction.atomic():
+        user = get_user_model().objects.get(username=username)
         order = Order.objects.create(user=user)
 
         if date:
-            order.set_create_date(date)
+            order.created_at = date
 
-        order.objects.bulk_create(tickets)
+        for ticket in tickets:
+            Ticket.objects.create(
+                order=order,
+                row=ticket["row"],
+                seat=ticket["seat"],
+                movie_session_id=ticket["movie_session"]
+            )
+
+        order.save()
 
 
 def get_orders(username: str = None) -> QuerySet[Order]:
