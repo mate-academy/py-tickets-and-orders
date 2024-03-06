@@ -1,3 +1,5 @@
+from typing import Callable, Any
+
 from datetime import date
 from django.contrib.auth import get_user_model
 from django.db import transaction
@@ -5,8 +7,8 @@ from django.db.models import QuerySet
 from db.models import Order, Ticket
 
 
-def transactional_function(func):
-    def wrapper(*args, **kwargs):
+def transactional_function(func: Callable) -> Callable:
+    def wrapper(*args: Any, **kwargs: Any) -> Any:
         with transaction.atomic():
             return func(*args, **kwargs)
     return wrapper
