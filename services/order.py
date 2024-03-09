@@ -10,7 +10,7 @@ from django.contrib.auth import get_user_model
 def create_order(
         tickets: list[dict],
         username: str,
-        date: datetime.date = None
+        date: datetime = None
 ) -> None:
     with transaction.atomic():
         user = get_user_model().objects.get(username=username)
@@ -22,10 +22,10 @@ def create_order(
 
         for ticket_data in tickets:
             Ticket.objects.create(
+                order=order,
                 row=ticket_data["row"],
                 seat=ticket_data["seat"],
-                order=order,
-                movie=MovieSession.objects.get(
+                movie_session=MovieSession.objects.get(
                     id=ticket_data["movie_session"]
                 )
             )
