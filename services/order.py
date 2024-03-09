@@ -22,11 +22,11 @@ def create_order(
 
         for ticket_data in tickets:
             Ticket.objects.create(
-                row=ticket_data['row'],
-                seat=ticket_data['seat'],
+                row=ticket_data["row"],
+                seat=ticket_data["seat"],
                 order=order,
                 movie=MovieSession.objects.get(
-                    id=ticket_data['movie_session']
+                    id=ticket_data["movie_session"]
                 )
             )
 
