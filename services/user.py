@@ -4,9 +4,9 @@ from django.contrib.auth import get_user_model
 def create_user(
         username: str,
         password: str,
-        email: str = None,
-        first_name: str = None,
-        last_name: str = None
+        email: str | None = None,
+        first_name: str | None = None,
+        last_name: str | None = None
 ) -> None:
     new_user = get_user_model().objects.create_user(
         username=username,
@@ -29,11 +29,11 @@ def get_user(user_id: int) -> get_user_model:
 
 def update_user(
         user_id: int,
-        username: str = None,
-        password: str = None,
-        email: str = None,
-        first_name: str = None,
-        last_name: str = None
+        username: str | None = None,
+        password: str | None = None,
+        email: str | None = None,
+        first_name: str | None = None,
+        last_name: str | None = None
 ) -> None:
     selected_user = get_user(user_id)
 
