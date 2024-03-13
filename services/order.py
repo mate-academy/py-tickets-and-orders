@@ -21,9 +21,9 @@ def create_order(
         order.save()
 
         for ticket in tickets:
-            row = ticket.get("row")
-            seat = ticket.get("seat")
-            movie_session = ticket.get("movie_session")
+            row = ticket["row"]
+            seat = ticket["seat"]
+            movie_session = ticket["movie_session"]
 
             Ticket.objects.create(
                 row=row,
