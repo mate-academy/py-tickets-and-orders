@@ -91,7 +91,6 @@ class Ticket(models.Model):
                 f"(row: {self.row}, seat: {self.seat})")
 
     class Meta:
-        # unique_together = ["row", "seat", "movie_session"]
         constraints = [
             UniqueConstraint(
                 fields=["row", "seat", "movie_session"],
