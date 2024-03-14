@@ -34,7 +34,6 @@ def update_user(
     if username:
         user_by_id.username = username
     if password:
-        # user_by_id.password = password
         user_by_id.set_password(password)
     if email:
         user_by_id.email = email

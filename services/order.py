@@ -10,12 +10,11 @@ def create_order(
 ) -> None:
     with transaction.atomic():
         user = get_user_model().objects.get(username=username)
+        order = Order.objects.create(user=user)
 
         if date:
-            # date_time = datetime.datetime.strptime(date, "%Y-%m-%d %H:%M")
-            order = Order.objects.create(created_at=date, user=user)
-        else:
-            order = Order.objects.create(user=user)
+            order.created_at = date
+            order.save()
 
         for ticket in tickets:
             Ticket.objects.create(
@@ -27,7 +26,7 @@ def create_order(
 
 
 def get_orders(username: str = None) -> QuerySet:
-    get_orders = Order.objects.all()
+    orders = Order.objects.all()
     if username:
-        get_orders = Order.objects.filter(user__username=username)
-    return get_orders
+        orders = Order.objects.filter(user__username=username)
+    return orders
