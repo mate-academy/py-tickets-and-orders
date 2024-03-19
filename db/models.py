@@ -1,5 +1,7 @@
 from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import UniqueConstraint
 
 
 class Genre(models.Model):
@@ -81,6 +83,31 @@ class Ticket(models.Model):
     )
     row = models.IntegerField()
     seat = models.IntegerField()
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                fields=["movie_session", "row", "seat"],
+                name="unique_row_seat_movie_session"
+            )
+        ]
+
+    def clean(self):
+        if not (1 <= self.row <= self.movie_session.cinema_hall.rows):
+            raise ValidationError(
+                f"Row must be between 1 and "
+                f"{self.movie_session.cinema_hall.rows}, not {self.row}"
+            )
+        if not (1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row):
+            raise ValidationError(
+                f"Seat must be between 1 and "
+                f"{self.movie_session.cinema_hall.seats_in_row}, "
+                f"not {self.seat}"
+            )
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        return super().save(*args, **kwargs)
 
     def __str__(self) -> str:
         return (f"Ticket: {self.movie_session.movie.title} "
