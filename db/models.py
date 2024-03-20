@@ -64,8 +64,11 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey("User", on_delete=models.CASCADE)
 
-    def __str__(self):
-        return f"Order: {self.created_at}"
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self) -> str:
+        return f"{self.created_at}"
 
 
 class Ticket(models.Model):
@@ -76,20 +79,31 @@ class Ticket(models.Model):
 
     class Meta:
         constraints = [
-            UniqueConstraint(fields=["row", "seat", "movie_session"], name="unique_customer_place"),
+            UniqueConstraint(
+                fields=["row", "seat", "movie_session"],
+                name="unique_customer_place"
+            ),
         ]
 
     def __str__(self) -> str:
-        return f"Ticket: Speed {self.movie_session.show_time} (row: {self.row}, seat: {self.seat})"
+        return (f"{self.movie_session.movie.title} "
+                f"{self.movie_session.show_time} "
+                f"(row: {self.row}, seat: {self.seat})")
 
-    def clean(self):
+    def clean(self) -> None:
         if self.seat > self.movie_session.cinema_hall.seats_in_row:
-            raise ValidationError("")
+            raise ValidationError({"seat": [
+                f"seat number must be in available range: "
+                f"(1, seats_in_row): "
+                f"(1, {self.movie_session.cinema_hall.seats_in_row})"]})
 
         if self.row > self.movie_session.cinema_hall.rows:
-            raise ValidationError("")
+            raise ValidationError(
+                {"row": [f"row number must be in available range: "
+                         f"(1, rows): "
+                         f"(1, {self.movie_session.cinema_hall.rows})"]})
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         self.full_clean()
         return super().save(*args, **kwargs)
 
