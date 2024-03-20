@@ -120,6 +120,6 @@ class Ticket(models.Model):
         return super().save(*args, **kwargs)
 
     def __str__(self) -> str:
-        data = self.movie_session.show_time.strftime("%Y-%m-%d %H:%M:%S")
-        return (f"{self.movie_session.movie.title} {data} "
+        date = self.movie_session.show_time.strftime("%Y-%m-%d %H:%M:%S")
+        return (f"{self.movie_session.movie.title} {date} "
                 f"(row: {self.row}, seat: {self.seat})")
