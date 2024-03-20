@@ -5,11 +5,12 @@ from django.db import transaction
 from db.models import Order, Ticket, User
 
 
+@transaction.atomic()
 def create_order(
         tickets: list[Ticket],
         username: str,
         date: datetime = None,
-) -> Order:
+) -> Order | None:
     with transaction.atomic():
         if tickets and username:
             user = User.objects.get(username=username)
@@ -18,13 +19,12 @@ def create_order(
                 order.created_at = date
                 order.save()
             for ticket_data in tickets:
-                ticket = Ticket.objects.create(
+                Ticket.objects.create(
                     movie_session_id=ticket_data["movie_session"],
                     row=ticket_data["row"],
                     seat=ticket_data["seat"],
                     order=order,
                 )
-                ticket.save()
             return order
 
 
@@ -33,4 +33,4 @@ def get_orders(username: str = None) -> list[Order]:
         return Order.objects.filter(
             user__username=username
         ).order_by("-created_at")
-    return Order.objects.all().order_by("-created_at")
+    return Order.objects.all()
