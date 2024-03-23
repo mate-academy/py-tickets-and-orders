@@ -1,11 +1,13 @@
 from datetime import datetime
 
 from django.db import transaction
+from django.db.models import QuerySet
 
 from db.models import Ticket, Order, User, MovieSession
 
 
-def create_order(  # s/4
+@transaction.atomic()
+def create_order(
         tickets: list[dict],
         username: str,
         date: datetime = None,
@@ -30,7 +32,7 @@ def create_order(  # s/4
 
 def get_orders(
         username: str = None
-) -> Order:
+) -> QuerySet:
     if username:
         return Order.objects.filter(
             user__username=username

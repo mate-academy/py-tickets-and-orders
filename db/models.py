@@ -20,7 +20,7 @@ class Actor(models.Model):
 
 
 class Movie(models.Model):
-    title = models.CharField(max_length=255, db_index=True)  # 1
+    title = models.CharField(max_length=255, db_index=True)
     description = models.TextField()
     actors = models.ManyToManyField(to=Actor, related_name="movies")
     genres = models.ManyToManyField(to=Genre, related_name="movies")
@@ -55,7 +55,7 @@ class MovieSession(models.Model):
         return f"{self.movie.title} {str(self.show_time)}"
 
 
-class User(AbstractUser):  # 4
+class User(AbstractUser):
     pass
 
 
@@ -70,12 +70,17 @@ class Order(models.Model):
         return f"{self.created_at}"
 
 
-class Ticket(models.Model):  # 3  whole class
+class Ticket(models.Model):
     movie_session = models.ForeignKey(
         to=MovieSession,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name="tickets"
     )
-    order = models.ForeignKey(to=Order, on_delete=models.CASCADE)
+    order = models.ForeignKey(
+        to=Order,
+        on_delete=models.CASCADE,
+        related_name="tickets"
+    )
     row = models.IntegerField()
     seat = models.IntegerField()
 
