@@ -5,12 +5,13 @@ from db.models import Order, Ticket, User
 
 
 @transaction.atomic
-def create_order(tickets: list[dict],
-                 username: str,
-                 date: str | None = None) -> Order:
+def create_order(
+        tickets: list[dict],
+        username: str,
+        date: str | None = None
+) -> Order:
     order = Order.objects.create(
-        user=User.objects.get(username=username)
-    )
+        user=User.objects.get(username=username))
 
     if date:
         order.date = date
@@ -28,5 +29,5 @@ def create_order(tickets: list[dict],
 
 def get_orders(username: str | None = None) -> QuerySet[Order]:
     if username:
-        Order.objects.filter(user__username=username)
-    Order.objects.all()
+        return Order.objects.filter(user__username=username)
+    return Order.objects.all()
