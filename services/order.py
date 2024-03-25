@@ -27,7 +27,7 @@ def create_order(tickets: list[dict],
     return order
 
 
-def get_order(username: str) -> QuerySet[Order]:
+def get_orders(username: str) -> QuerySet[Order]:
     if username:
         Order.objects.filter(user__username=username)
     Order.objects.all()
