@@ -78,8 +78,11 @@ class Ticket(models.Model):
     seat = models.IntegerField()
 
     def __str__(self) -> str:
-        return f"{self.movie_session.movie.title} \
-         {self.movie_session.show_time} (row: {self.row}, seat: {self.seat})"
+        return (
+            f"{self.movie_session.movie.title} "
+            f"{self.movie_session.show_time} "
+            f"(row: {self.row}, seat: {self.seat})"
+        )
 
     class Meta:
         constraints = [models.UniqueConstraint(
