@@ -1,4 +1,7 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.core.exceptions import ValidationError
+import settings
 
 
 class Genre(models.Model):
@@ -25,6 +28,9 @@ class Movie(models.Model):
     def __str__(self) -> str:
         return self.title
 
+    class Meta:
+        indexes = [models.Index(fields=["title"])]
+
 
 class CinemaHall(models.Model):
     name = models.CharField(max_length=255)
@@ -50,3 +56,50 @@ class MovieSession(models.Model):
 
     def __str__(self) -> str:
         return f"{self.movie.title} {str(self.show_time)}"
+
+
+class Order(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+    def __str__(self) -> str:
+        return f"{self.created_at}"
+
+    class Meta:
+        ordering = ["-created_at"]
+
+
+class Ticket(models.Model):
+    movie_session = models.ForeignKey(to=MovieSession,
+                                      on_delete=models.CASCADE)
+    order = models.ForeignKey(to=Order, on_delete=models.CASCADE)
+    row = models.IntegerField()
+    seat = models.IntegerField()
+
+    def __str__(self) -> str:
+        return f"{self.movie_session.movie.title} \
+         {self.movie_session.show_time} (row: {self.row}, seat: {self.seat})"
+
+    class Meta:
+        constraints = [models.UniqueConstraint(
+            fields=["row", "seat", "movie_session"],
+            name="unique_row_seat_movie_session")]
+
+    def clean(self) -> None:
+        if self.row > self.movie_session.cinema_hall \
+           or self.seat > self.movie_session:
+            raise ValidationError(
+                {"row": [
+                    "row number must be in available range: "
+                    f"(1, rows): (1, "
+                    f"{self.movie_session.cinema_hall.rows})"]}
+            )
+
+    def save(self, *args, **kwargs) -> None:
+        self.full_clean()
+        super().save(*args, **kwargs)
+
+
+class User(AbstractUser):
+    pass
