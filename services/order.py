@@ -3,7 +3,7 @@ from django.db.models import QuerySet
 from django.db import transaction
 
 
-from db.models import Ticket, Order, User
+from db.models import Ticket, Order
 
 
 @transaction.atomic
