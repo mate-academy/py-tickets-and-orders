@@ -8,10 +8,13 @@ from db.models import Order, Ticket, User
 
 def create_order(tickets: List[Dict], username: str, date: str = None) -> None:
     with transaction.atomic():
-        order = Order.objects.create(user=User.objects.get(username=username))
+        user = User.objects.get(username=username)
+        order = Order.objects.create(user=user)
+
         if date:
             order.created_at = date
             order.save()
+
         for ticket in tickets:
             row, seat, session_id = ticket.values()
             Ticket.objects.create(
@@ -25,5 +28,5 @@ def create_order(tickets: List[Dict], username: str, date: str = None) -> None:
 
 def get_orders(username: str = None) -> QuerySet:
     if username:
-        return Order.objects.filter(user=User.objects.get(username=username))
+        return Order.objects.filter(user__username=username)
     return Order.objects.all()
