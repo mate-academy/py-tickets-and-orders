@@ -2,7 +2,6 @@ from django.contrib.auth import get_user_model
 from django.db.models import QuerySet
 from django.db import transaction
 
-
 from db.models import Ticket, Order
 
 
