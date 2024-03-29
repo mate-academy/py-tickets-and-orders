@@ -7,7 +7,7 @@ from db.models import Order, Ticket, User, MovieSession
 def create_order(
         tickets: list[dict],
         username: str,
-        date: str = None
+        date: str | None = None
 ) -> None:
     with transaction.atomic():
         user = User.objects.get(username=username)
@@ -32,7 +32,7 @@ def create_order(
         new_order.save()
 
 
-def get_orders(username: str = None) -> QuerySet:
+def get_orders(username: str | None = None) -> QuerySet:
     if username:
         user = User.objects.get(username=username).id
         return Order.objects.filter(user_id=user)
