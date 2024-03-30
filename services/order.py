@@ -46,10 +46,8 @@ def create_order(
             )
 
 
-def get_orders(
-        username: Optional[str] = None,
-) -> QuerySet[Order]:
+def get_orders(username: Optional[str] = None) -> QuerySet[Order]:
+    order_query = Order.objects.all()
     if username:
-        return Order.objects.filter(user__username=username)
-    else:
-        return Order.objects.all()
+        order_query = order_query.filter(user__username=username)
+    return order_query

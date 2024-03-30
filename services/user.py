@@ -7,7 +7,7 @@ from db.models import User
 def create_user(
         username: str,
         password: str,
-        email: str = None,
+        email: str | None = None,
         first_name: str = "",
         last_name: str = "",
 ) -> AbstractUser:
@@ -26,9 +26,7 @@ def create_user(
     return user
 
 
-def get_user(
-        user_id: int,
-) -> AbstractUser:
+def get_user(user_id: int,) -> AbstractUser:
 
     user = User.objects.get(pk=user_id)
     return user
@@ -36,11 +34,11 @@ def get_user(
 
 def update_user(
         user_id: int,
-        username: str = None,
-        password: str = None,
-        email: str = None,
-        first_name: str = None,
-        last_name: str = None,
+        username: str | None = None,
+        password: str | None = None,
+        email: str | None = None,
+        first_name: str | None = None,
+        last_name: str | None = None,
 ) -> AbstractUser:
     user_model = get_user_model()
 
