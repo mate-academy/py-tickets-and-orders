@@ -58,12 +58,14 @@ class MovieSession(models.Model):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE
+    )
 
     class Meta:
         ordering = ["-created_at"]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"Order: {self.created_at}"
 
 
@@ -92,19 +94,19 @@ class Ticket(models.Model):
         if not (1 <= self.row <= self.movie_session.cinema_hall.rows):
             raise ValidationError(
                 {"row": f"row must be in range "
-                        f"[1, {self.movie_session.cinema_hall.rows}], "
-                        f"not {self.row}"}
+                 f"[1, {self.movie_session.cinema_hall.rows}], "
+                 f"not {self.row}"}
             )
         if not (1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row):
             raise ValidationError(
                 {"seat": f"seat must be in range "
-                         f"[1, {self.movie_session.cinema_hall.seats_in_row}], "
-                         f"not {self.seat}"}
+                 f"[1, {self.movie_session.cinema_hall.seats_in_row}], "
+                 f"not {self.seat}"}
             )
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         self.full_clean()
-        return super().save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
 
 class User(AbstractUser):
