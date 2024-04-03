@@ -1,31 +1,33 @@
-from django.contrib.auth import get_user_model
 from django.db import transaction
-from db.models import User, Order, MovieSession, Ticket
+from django.db.models import QuerySet
+
+from db.models import Order, User
 
 
-def create_order(tickets: list[dict], username: str, date: str = None) -> None:
-    user = get_user_model().objects.get_or_create(username=username)
+@transaction.atomic
+def create_order(
+        tickets: list[dict],
+        username: str,
+        date: str = None
+) -> None:
 
-    with transaction.atomic():
-        order = Order.objects.create(user=user[0])
+    order = Order.objects.create(
+        user=User.objects.get(username=username))
 
-        if date:
-            order.created_at = date
+    if date is not None:
+        order.created_at = date
         order.save()
-        for ticket in tickets:
-            movie_session = MovieSession.objects.get(
-                id=ticket["movie_session"]
-            )
-            Ticket.objects.create(
-                movie_session=movie_session,
-                order=order,
-                row=ticket["row"],
-                seat=ticket["seat"]
-            )
+
+    for ticket in tickets:
+        order.tickets.create(
+            row=ticket.get("row"),
+            seat=ticket.get("seat"),
+            movie_session_id=ticket.get("movie_session"),
+            order=order.id)
 
 
-def get_orders(username: str = None) -> list[Order]:
-    if username:
-        user = User.objects.get(username=username)
-        return Order.objects.filter(user=user)
-    return Order.objects.all()
+def get_orders(username: str = None) -> QuerySet:
+    query = Order.objects.all()
+    if username is not None:
+        query = query.filter(user__username=username)
+    return query
