@@ -16,14 +16,12 @@ def create_order(tickets: List[Dict], username: str, date: str = None) -> None:
             order.save()
 
         for ticket in tickets:
-            row, seat, session_id = ticket.values()
             Ticket.objects.create(
-                movie_session_id=session_id,
+                movie_session_id=ticket["movie_session"],
                 order=order,
-                row=row,
-                seat=seat
+                row=ticket["row"],
+                seat=ticket["seat"]
             )
-        return
 
 
 def get_orders(username: str = None) -> QuerySet:
