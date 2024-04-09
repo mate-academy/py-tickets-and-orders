@@ -26,3 +26,5 @@ USE_TZ = False
 INSTALLED_APPS = [
     "db",
 ]
+
+AUTH_USER_MODEL = "db.CustomUser"
