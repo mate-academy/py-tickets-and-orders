@@ -61,12 +61,12 @@ class Ticket(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=['row', 'seat', 'movie_session'],
-                name='unique_ticket'
+                fields=["row", "seat", "movie_session"],
+                name="unique_ticket"
             )
         ]
 
-    def clean(self):
+    def clean(self) -> None:
         hall_rows = self.movie_session.cinema_hall.rows
         hall_seats = self.movie_session.cinema_hall.seats_in_row
 
@@ -87,7 +87,7 @@ class Ticket(models.Model):
                 }
             )
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         self.full_clean()
         super().save(*args, **kwargs)
 
