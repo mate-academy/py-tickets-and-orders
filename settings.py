@@ -24,6 +24,9 @@ USE_I18N = True
 USE_TZ = False
 
 INSTALLED_APPS = [
+    "django_extensions",
+    "django.contrib.contenttypes",
+    "django.contrib.auth",
     "db",
 ]
 
