@@ -58,7 +58,8 @@ class MovieSession(models.Model):
     )
 
     def __str__(self) -> str:
-        return f"{self.movie.title} {str(self.show_time)}"
+        return (f"{self.movie.title} "
+                f"{self.show_time.strftime('%Y-%m-%d %H:%M:%S')}")
 
 
 class Order(models.Model):
@@ -76,17 +77,17 @@ class Order(models.Model):
 class Ticket(models.Model):
     movie_session = models.ForeignKey(MovieSession,
                                       on_delete=models.CASCADE,
-                                      related_name="ticket_movie_session")
+                                      related_name="session_tickets")
     order = models.ForeignKey(Order,
                               on_delete=models.CASCADE,
-                              related_name="ticket_order")
+                              related_name="order_tickets")
     row = models.IntegerField()
     seat = models.IntegerField()
 
     class Meta:
         constraints = [
             models.UniqueConstraint(fields=["movie_session", "row", "seat"],
-                                    name="unique_ticket")
+                                    name="row_seat_per_session_uniq")
         ]
 
     def __str__(self) -> str:
