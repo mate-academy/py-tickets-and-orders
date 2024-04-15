@@ -16,8 +16,7 @@ def create_order(tickets: list[Ticket],
 
     if date:
         new_order.created_at = date
-
-    new_order.save()
+        new_order.save()
 
     for ticket in tickets:
         Ticket.objects.create(
