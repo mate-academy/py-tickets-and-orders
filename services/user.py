@@ -1,3 +1,5 @@
+from django.shortcuts import get_object_or_404
+
 from db.models import User
 from typing import Optional
 
@@ -24,10 +26,7 @@ def create_user(
 
 
 def get_user(user_id: int) -> Optional[User]:
-    try:
-        return User.objects.get(pk=user_id)
-    except User.DoesNotExist:
-        return None
+    return get_object_or_404(User, pk=user_id)
 
 
 def update_user(
@@ -38,8 +37,8 @@ def update_user(
         first_name: Optional[str] = None,
         last_name: Optional[str] = None
 ) -> Optional[User]:
-    try:
-        user: User = User.objects.get(pk=user_id)
+    user = get_user(user_id)
+    if user:
         if username:
             user.username = username
         if password:
@@ -52,5 +51,4 @@ def update_user(
             user.last_name = last_name
         user.save()
         return user
-    except User.DoesNotExist:
-        return None
+    return None

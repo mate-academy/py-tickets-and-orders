@@ -15,20 +15,19 @@ def create_order(
         date: Optional[str] = None
 ) -> None:
     user = User.objects.get(username=username)
-    with transaction.atomic():
-        order = Order.objects.create(user=user)
-        for ticket_data in tickets:
-            movie_session_id = ticket_data.pop("movie_session")
-            movie_session = MovieSession.objects.get(pk=movie_session_id)
-            ticket_data["movie_session"] = movie_session
-            Ticket.objects.create(order=order, **ticket_data)
-        if date:
-            order.created_at = datetime.strptime(date, "%Y-%m-%d %H:%M")
-            order.save()
+    order = Order.objects.create(user=user)
+    for ticket_data in tickets:
+        movie_session_id = ticket_data.pop("movie_session")
+        movie_session = MovieSession.objects.get(pk=movie_session_id)
+        ticket_data["movie_session"] = movie_session
+        Ticket.objects.create(order=order, **ticket_data)
+    if date:
+        order.created_at = datetime.strptime(date, "%Y-%m-%d %H:%M")
+        order.save()
 
 
-def get_orders(username: str = None) -> QuerySet:
+def get_orders(username: str = None) -> QuerySet[Order]:
     if username:
         return Order.objects.filter(user__username=username)
-    else:
-        return Order.objects.all()
+
+    return Order.objects.all()
