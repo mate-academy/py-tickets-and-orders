@@ -14,6 +14,11 @@ def email_validator(email: str) -> None:
         raise ValidationError("Wrong email structure")
 
 
+def name_validator(name: str) -> None:
+    if not name.isalpha():
+        raise ValueError(f"Name {name} shoud be alpabet")
+
+
 def create_user(username: str,
                 password: str,
                 email: models.EmailField = None,
@@ -55,7 +60,9 @@ def update_user(user_id: int,
     if password:
         user.set_password(password)
     if first_name:
+        name_validator(first_name)
         user.first_name = first_name
     if last_name:
+        name_validator(last_name)
         user.last_name = last_name
     user.save()
