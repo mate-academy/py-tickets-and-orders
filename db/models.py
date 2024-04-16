@@ -23,8 +23,8 @@ class Actor(models.Model):
 class Movie(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
-    actors = models.ManyToManyField(Actor)
-    genres = models.ManyToManyField(Genre)
+    actors = models.ManyToManyField(Actor, related_name="movies")
+    genres = models.ManyToManyField(Genre, related_name="movies")
 
     class Meta:
         indexes = [
@@ -50,8 +50,12 @@ class CinemaHall(models.Model):
 
 class MovieSession(models.Model):
     show_time = models.DateTimeField()
-    cinema_hall = models.ForeignKey(CinemaHall, on_delete=models.CASCADE)
-    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+    cinema_hall = models.ForeignKey(CinemaHall,
+                                    on_delete=models.CASCADE,
+                                    related_name="movie_sessions")
+    movie = models.ForeignKey(Movie,
+                              on_delete=models.CASCADE,
+                              related_name="movie_sessions")
 
     def __str__(self) -> str:
         return (str(self.movie) + " "
@@ -61,7 +65,8 @@ class MovieSession(models.Model):
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             on_delete=models.CASCADE)
+                             on_delete=models.CASCADE,
+                             related_name="orders")
 
     def __str__(self) -> str:
         return self.created_at.strftime("%Y-%m-%d %H:%M:%S")
@@ -73,8 +78,12 @@ class Order(models.Model):
 class Ticket(models.Model):
     row = models.IntegerField()
     seat = models.IntegerField()
-    movie_session = models.ForeignKey(MovieSession, on_delete=models.CASCADE)
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    movie_session = models.ForeignKey(MovieSession,
+                                      on_delete=models.CASCADE,
+                                      related_name="tickets")
+    order = models.ForeignKey(Order,
+                              on_delete=models.CASCADE,
+                              related_name="tickets")
 
     def __str__(self) -> str:
         return f"{self.movie_session} (row: {self.row}, seat: {self.seat})"
@@ -101,7 +110,7 @@ class Ticket(models.Model):
         # unique_together = ["seat", "trip"]
         constraints = [
             models.UniqueConstraint(fields=["seat", "row", "movie_session"],
-                                    name="unick_ticket")
+                                    name="unique_ticket_row_seat_per_session")
         ]
 
 
