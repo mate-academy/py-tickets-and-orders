@@ -107,7 +107,6 @@ class Ticket(models.Model):
         return super().save(*args, **kwargs)
 
     class Meta:
-        # unique_together = ["seat", "trip"]
         constraints = [
             models.UniqueConstraint(fields=["seat", "row", "movie_session"],
                                     name="unique_ticket_row_seat_per_session")
@@ -115,4 +114,7 @@ class Ticket(models.Model):
 
 
 class User(AbstractUser):
-    pass
+
+    def save(self, *args, **kwargs) -> None:
+        self.full_clean()
+        return super().save(*args, **kwargs)
