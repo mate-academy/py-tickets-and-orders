@@ -3,10 +3,11 @@ from db.models import Order, Ticket
 from django.contrib.auth import get_user_model
 
 
+@transaction.atomic()
 def create_order(
-        tickets: list[dict],
-        username: str,
-        date: str | None = None
+    tickets: list[dict],
+    username: str,
+    date: str | None = None
 ) -> Order:
     user = get_user_model().objects.get(username=username)
     order = Order.objects.create(user=user)
