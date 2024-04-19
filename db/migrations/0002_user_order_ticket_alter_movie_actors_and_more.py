@@ -4,6 +4,7 @@ from django.conf import settings
 import django.contrib.auth.models
 import django.contrib.auth.validators
 from django.db import migrations, models
+import django.db.models.deletion
 import django.utils.timezone
 
 
@@ -21,10 +22,10 @@ class Migration(migrations.Migration):
                 ('password', models.CharField(max_length=128, verbose_name='password')),
                 ('last_login', models.DateTimeField(blank=True, null=True, verbose_name='last login')),
                 ('is_superuser', models.BooleanField(default=False,
-                                                     help_text="Designates that this user has all permissions without explicitly assigning them.",
+                                                     help_text='Designates that this user has all permissions without explicitly assigning them.',
                                                      verbose_name='superuser status')),
                 ('username', models.CharField(error_messages={'unique': 'A user with that username already exists.'},
-                                              help_text="Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.",
+                                              help_text='Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.',
                                               max_length=150, unique=True,
                                               validators=[django.contrib.auth.validators.UnicodeUsernameValidator()],
                                               verbose_name='username')),
@@ -95,19 +96,17 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='ticket',
             name='movie_session',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='tickets',
-                                    to='db.moviesession'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='db.moviesession'),
         ),
         migrations.AddField(
             model_name='ticket',
             name='order',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='orders', to='db.order'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='db.order'),
         ),
         migrations.AddField(
             model_name='order',
             name='user',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='orders',
-                                    to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
         ),
         migrations.AddField(
             model_name='user',
@@ -126,6 +125,6 @@ class Migration(migrations.Migration):
         ),
         migrations.AddConstraint(
             model_name='ticket',
-            constraint=models.UniqueConstraint(fields=('row', 'seat', 'movie_session'), name='unique_row_seat_session'),
+            constraint=models.UniqueConstraint(fields=('movie_session', 'row', 'seat'), name='unique_ticket'),
         ),
     ]
