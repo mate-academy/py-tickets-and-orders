@@ -1,6 +1,4 @@
 from django.db.models import QuerySet
-
-from db.models import MovieSession
 from db.models import MovieSession, Ticket
 
 
