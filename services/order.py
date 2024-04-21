@@ -5,7 +5,7 @@ from db.models import Order, Ticket
 
 @transaction.atomic
 def create_order(
-        tickets: list[dict], username: str, date: str = None
+        tickets: list[dict], username: str, date: str | None = None
 ) -> Order:
     user = get_user_model().objects.get(username=username)
     order = Order.objects.create(user=user)
@@ -24,7 +24,7 @@ def create_order(
     return order
 
 
-def get_orders(username: str = None) -> Order:
+def get_orders(username: str | None = None) -> Order:
     if username:
         return Order.objects.filter(user__username=username)
     return Order.objects.all()

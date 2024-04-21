@@ -5,8 +5,8 @@ User = get_user_model()
 
 
 def create_user(
-        username: str, password: str, email: str = None,
-        first_name: str = None, last_name: str = None
+        username: str, password: str, email: str | None = None,
+        first_name: str | None = None, last_name: str | None = None
 ) -> User:
     user = User.objects.create_user(
         username=username,
@@ -25,11 +25,11 @@ def get_user(user_id: int) -> User:
 @transaction.atomic
 def update_user(
         user_id: int,
-        username: str = None,
-        password: str = None,
-        email: str = None,
-        first_name: str = None,
-        last_name: str = None
+        username: str | None = None,
+        password: str | None = None,
+        email: str | None = None,
+        first_name: str | None = None,
+        last_name: str | None = None
 ) -> None:
     user = User.objects.get(id=user_id)
     if username:
