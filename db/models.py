@@ -1,8 +1,7 @@
+from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
-
-import settings
 
 
 class Genre(models.Model):
