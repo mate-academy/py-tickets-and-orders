@@ -1,6 +1,6 @@
 from django.db.models import QuerySet
 
-from db.models import MovieSession
+from db.models import MovieSession, Ticket
 
 
 def create_movie_session(
@@ -45,11 +45,8 @@ def delete_movie_session_by_id(session_id: int) -> None:
 
 
 def get_taken_seats(movie_session_id: int) -> list[dict] | str:
-    try:
-        movie_session = MovieSession.objects.get(id=movie_session_id)
-    except MovieSession.DoesNotExist:
-        return f"Movie Session {movie_session_id} does not exist"
+    tickets = Ticket.objects.filter(movie_session_id=movie_session_id)
 
     taken_seats = [{"row": ticket.row, "seat": ticket.seat} for
-                   ticket in movie_session.tickets.all()]
+                   ticket in tickets]
     return taken_seats

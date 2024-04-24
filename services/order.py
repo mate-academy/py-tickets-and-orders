@@ -1,6 +1,7 @@
 from datetime import datetime
-from django.db.models import QuerySet
+
 from django.db import transaction
+from django.db.models import QuerySet
 
 from db.models import Order, Ticket, MovieSession, User
 
@@ -16,6 +17,7 @@ def create_order(
         if date:
             order.created_at = date
             order.save()
+
         ticket_instances = []
         for ticket_data in tickets:
             movie_session = MovieSession.objects.get(
@@ -32,7 +34,7 @@ def create_order(
 
 
 def get_orders(username: str = None) -> Order | QuerySet:
+    order = Order.objects.all()
     if username:
-        user = User.objects.get(username=username)
-        return Order.objects.filter(user=user)
-    return Order.objects.all()
+        order = Order.objects.filter(user__username=username)
+    return order
