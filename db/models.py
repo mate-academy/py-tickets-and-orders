@@ -35,25 +35,28 @@ class Order(models.Model):
     class Meta:
         ordering = ["-created_at"]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.created_at}"
 
 
 class Ticket(models.Model):
-    movie_session = models.ForeignKey(to="MovieSession", on_delete=models.CASCADE)
+    movie_session = models.ForeignKey(to="MovieSession",
+                                      on_delete=models.CASCADE)
     order = models.ForeignKey(to=Order, on_delete=models.CASCADE)
     row = models.IntegerField()
     seat = models.IntegerField()
 
     def __str__(self) -> str:
-        return (f"{self.movie_session.movie.title} {self.movie_session.show_time}"
+        return (f"{self.movie_session.movie.title} "
+                f"{self.movie_session.show_time}"
                 f" (row: {self.row}, seat: {self.seat})")
 
-    def clean(self):
+    def clean(self) -> None:
         if not (self.movie_session.cinema_hall.rows >= self.row):
             raise ValidationError(
                 {"row": f"row number must be in available range: "
-                        f"(1, rows): (1, {self.movie_session.cinema_hall.rows})"}
+                        f"(1, rows): "
+                        f"(1, {self.movie_session.cinema_hall.rows})"}
             )
         if not (self.movie_session.cinema_hall.seats_in_row >= self.seat):
             raise ValidationError(
@@ -62,7 +65,7 @@ class Ticket(models.Model):
                          f"(1, {self.movie_session.cinema_hall.seats_in_row})"}
             )
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         self.full_clean()
         return super().save(*args, **kwargs)
 
