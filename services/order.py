@@ -19,22 +19,15 @@ def create_order(
             order.created_at = date
             order.save()
 
-        ticket_instances = []
         for ticket_data in tickets:
-            movie_session = MovieSession.objects.get(
+            ticket_data["movie_session"] = MovieSession.objects.get(
                 pk=ticket_data["movie_session"]
             )
-            ticket_instances.append(Ticket(
-                row=ticket_data["row"],
-                seat=ticket_data["seat"],
-                movie_session=movie_session,
-                order=order
-            ))
-
-        Ticket.objects.bulk_create(ticket_instances)
+            ticket_data["order"] = order
+            Ticket.objects.create(**ticket_data)
 
 
-def get_orders(username: str = None) -> Order | QuerySet:
+def get_orders(username: str = None) -> QuerySet:
     order = Order.objects.all()
     if username:
         order = Order.objects.filter(user__username=username)
