@@ -14,14 +14,11 @@ def create_order(tickets: list,
             order.created_at = date
             order.save()
         for ticket in tickets:
-            movie_session = MovieSession.objects.get(
-                movie_id=ticket["movie_session"]
-            )
             Ticket.objects.create(
-                movie_session=movie_session,
-                order=order,
+                movie_session_id=ticket["movie_session"],
+                order_id=order.id,
+                seat=ticket["seat"],
                 row=ticket["row"],
-                seat=ticket["seat"]
             )
 
 
