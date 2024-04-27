@@ -1,6 +1,6 @@
 from django.db import transaction
 
-from db.models import Order, User, Ticket, MovieSession
+from db.models import Order, User, Ticket
 
 
 def create_order(
