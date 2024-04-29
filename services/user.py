@@ -8,9 +8,9 @@ from db.models import User
 def create_user(
         username: str,
         password: str,
-        email: Optional = None,
-        first_name: Optional = None,
-        last_name: Optional = None
+        email: Optional[str] = None,
+        first_name: Optional[str] = None,
+        last_name: Optional[str] = None
 ) -> None:
     user = get_user_model().objects.create_user(
         username=username, password=password
@@ -30,11 +30,11 @@ def get_user(user_id: int) -> User:
 
 def update_user(
         user_id: int,
-        username: Optional = None,
-        password: Optional = None,
-        email: Optional = None,
-        first_name: Optional = None,
-        last_name: Optional = None
+        username: Optional[str] = None,
+        password: Optional[str] = None,
+        email: Optional[str] = None,
+        first_name: Optional[str] = None,
+        last_name: Optional[str] = None
 ) -> None:
     user = get_user(user_id)
 
@@ -50,8 +50,3 @@ def update_user(
         user.last_name = last_name
 
     user.save()
-
-
-def get_user_id_by_username(username: str) -> int:
-    user = get_user_model().objects.get(username=username)
-    return user.id
