@@ -1,18 +1,20 @@
 import datetime
 from typing import Optional
 
+from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.db.models import QuerySet
 
-from db.models import Ticket, Order, User
+from db.models import Ticket, Order
 
 
 def create_order(
         tickets: list[dict],
         username: str,
-        date: Optional[datetime] = None) -> None:
+        date: Optional[datetime] = None
+) -> None:
     with transaction.atomic():
-        user = User.objects.get(username=username)
+        user = get_user_model().objects.get(username=username)
         order = Order.objects.create(user=user)
         if date:
             order.created_at = date
