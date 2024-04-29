@@ -14,7 +14,7 @@ def create_order(
         date: datetime = None
 ) -> None:
     user = get_user_model().objects.get(username=username)
-    order = Order.objects.create(user=user)
+    order = user.orders.create(user=user)
 
     if date:
         order.created_at = date
@@ -30,8 +30,7 @@ def create_order(
 
 
 def get_orders(username: str = None) -> QuerySet[Order]:
+    order = Order.objects.all()
     if username:
-        user = get_user_model().objects.get(username=username)
-        return Order.objects.filter(user=user)
-    else:
-        return Order.objects.all()
+        order = Order.objects.filter(user__username=username)
+    return order
