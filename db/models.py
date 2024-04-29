@@ -113,6 +113,13 @@ class Ticket(models.Model):
         self.full_clean()
         return super().save(*args, **kwargs)
 
+    def __str__(self) -> str:
+        return (
+            f"{self.movie_session.movie.title} "
+            f"{self.movie_session.show_time} "
+            f"(row: {self.row}, seat: {self.seat})"
+        )
+
     class Meta:
         constraints = [
             UniqueConstraint(
@@ -120,13 +127,6 @@ class Ticket(models.Model):
                 name="unique_movie_session_row_seats"
             ),
         ]
-
-    def __str__(self) -> str:
-        return (
-            f"{self.movie_session.movie.title} "
-            f"{self.movie_session.show_time} "
-            f"(row: {self.row}, seat: {self.seat})"
-        )
 
 
 class User(AbstractUser):
