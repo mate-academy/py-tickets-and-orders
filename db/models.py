@@ -73,12 +73,21 @@ class Order(models.Model):
 
 class Ticket(models.Model):
     movie_session = models.ForeignKey(
-        MovieSession, on_delete=models.DO_NOTHING, related_name="tickets")
+        MovieSession, on_delete=models.DO_NOTHING, related_name="tickets"
+    )
     order = models.ForeignKey(
         Order, on_delete=models.CASCADE, related_name="tickets"
     )
     row = models.IntegerField()
     seat = models.IntegerField()
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["row", "seat", "movie_session"],
+                name="unique_row_seat_movie_session"
+            )
+        ]
 
     def clean(self) -> None:
         if not (1 <= self.row <= self.movie_session.cinema_hall.rows):
@@ -100,14 +109,6 @@ class Ticket(models.Model):
     def save(self, *args, **kwargs) -> None:
         self.full_clean()
         return super().save(*args, **kwargs)
-
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=["row", "seat", "movie_session"],
-                name="unique_row_seat_movie_session"
-            )
-        ]
 
     def __str__(self) -> str:
         return (f"{self.movie_session.movie} {self.movie_session.show_time} "
