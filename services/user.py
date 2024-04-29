@@ -31,8 +31,9 @@ def update_user(
 ) -> None:
     user = get_user(user_id)
     user.username = username if username else user.username
-    user.set_password(password) if password else None
     user.email = email if email else user.email
     user.first_name = first_name if first_name else user.first_name
     user.last_name = last_name if last_name else user.last_name
+    if password:
+        user.set_password(password)
     user.save()
