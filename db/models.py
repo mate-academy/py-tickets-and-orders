@@ -90,7 +90,7 @@ class Ticket(models.Model):
                 "movie_session",
                 "row",
                 "seat", ],
-                name="unique_movie_session")
+                name="uniq_session_row_seat")
         ]
 
     def clean(self) -> None:
