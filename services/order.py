@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Dict
 
 from django.db import transaction
 
@@ -14,7 +14,7 @@ User = get_user_model()
 
 @transaction.atomic
 def create_order(
-    tickets: List[Ticket],
+    tickets: List[Dict],
     username: str,
     date: Optional[str] = None
 ) -> Optional[Order]:

@@ -92,7 +92,7 @@ class Ticket(models.Model):
                 "movie_session",
                 "row",
                 "seat", ],
-                name="unique_movie_session")
+                name="unique_session_row_seat")
         ]
 
     def __str__(self) -> str:
