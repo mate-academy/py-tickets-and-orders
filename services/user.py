@@ -8,8 +8,8 @@ def create_user(username: str,
                 email: str = None,
                 first_name: str = "",
                 last_name: str = "") -> User:
-    user_model = get_user_model()
-    user = user_model.objects.create_user(
+    get_user_model()
+    user = get_user_model().objects.create_user(
         username=username,
         password=password,
         email=email,
@@ -20,7 +20,7 @@ def create_user(username: str,
 
 
 def get_user(user_id: int) -> User:
-    return User.objects.get(id=user_id)
+    return get_user_model().objects.get(id=user_id)
 
 
 def update_user(user_id: int,
@@ -30,7 +30,7 @@ def update_user(user_id: int,
                 first_name: str = None,
                 last_name: str = None) -> None:
     try:
-        user = User.objects.get(id=user_id)
+        user = get_user_model().objects.get(id=user_id)
     except User.DoesNotExist:
         return None
 
