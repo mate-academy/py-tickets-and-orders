@@ -66,7 +66,8 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name="orders"
     )
 
     class Meta:
@@ -101,15 +102,18 @@ class Ticket(models.Model):
 
         if not (1 <= self.row <= valid_row):
             raise ValidationError(
-                {"row": [f"row number must be in available range: "
-                         f"(1, rows): "
-                         f"(1, {valid_row})"]})
-
+                {
+                    "row": f"row number must be in available range: "
+                    f"(1, rows): (1, {valid_row})"
+                }
+            )
         if not (1 <= self.seat <= valid_seat):
-            raise ValidationError({"seat": [
-                f"seat number must be in available range: "
-                f"(1, seats_in_row): "
-                f"(1, {valid_seat})"]})
+            raise ValidationError(
+                {
+                    "seat": f"seat number must be in available range: "
+                    f"(1, seats_in_row): (1, {valid_seat})"
+                }
+            )
 
     def save(self, *args, **kwargs) -> None:
         self.full_clean()
@@ -118,7 +122,7 @@ class Ticket(models.Model):
     class Meta:
         constraints = [
             UniqueConstraint(fields=["movie_session", "seat", "row"],
-                             name="unique_ticket_for_movie_session")
+                             name="unique_seat_row_for_movie_session")
         ]
 
 
