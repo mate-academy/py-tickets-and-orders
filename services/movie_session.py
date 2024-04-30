@@ -52,4 +52,4 @@ def get_taken_seats(movie_session_id: int) -> List[Dict[str, int]]:
     ).values(
         "row", "seat"
     )
-    return [{"row": seat["row"], "seat": seat["seat"]} for seat in taken_seats]
+    return list(taken_seats)

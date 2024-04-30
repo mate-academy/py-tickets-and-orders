@@ -6,8 +6,7 @@ from django.db.models import QuerySet
 
 from db.models import Order, Ticket
 
-from services.user import get_user_model
-
+from django.contrib.auth import get_user_model
 
 User = get_user_model()
 

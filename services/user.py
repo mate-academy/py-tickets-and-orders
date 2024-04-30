@@ -31,7 +31,7 @@ def get_user(user_id: int) -> Optional[User]:
 
 
 def update_user(
-    user_id: int,
+    user_id: Optional[int],
     username: Optional[str] = None,
     password: Optional[str] = None,
     email: Optional[str] = None,
