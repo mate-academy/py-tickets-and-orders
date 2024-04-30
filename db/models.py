@@ -1,9 +1,8 @@
 from django.db import models
 from django.db.models import UniqueConstraint
-from django.core.exceptions import ValidationError
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
-
-import settings
+from django.core.exceptions import ValidationError
 
 
 class Genre(models.Model):
