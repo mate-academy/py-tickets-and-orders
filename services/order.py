@@ -11,7 +11,7 @@ from db.models import Ticket, Order
 def create_order(
         tickets: list[dict],
         username: str,
-        date: Optional[datetime] = None
+        date: Optional[datetime.datetime] = None
 ) -> None:
     with transaction.atomic():
         user = get_user_model().objects.get(username=username)
