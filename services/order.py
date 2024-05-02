@@ -8,8 +8,6 @@ from db.models import Order, Ticket
 
 from django.contrib.auth import get_user_model
 
-User = get_user_model()
-
 
 @transaction.atomic
 def create_order(
@@ -29,7 +27,8 @@ def create_order(
             movie_session_id=ticket["movie_session"],
             order_id=new_order.id,
             seat=ticket["seat"],
-            row=ticket["row"])
+            row=ticket["row"]
+        )
     return new_order
 
 
