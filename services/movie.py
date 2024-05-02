@@ -7,7 +7,7 @@ from db.models import Movie
 
 
 def get_movies(
-        title: str = None,
+        title: Optional[str] = None,
         genres_ids: Optional[list[int]] = None,
         actors_ids: Optional[list[int]] = None,
 ) -> QuerySet:

@@ -74,7 +74,7 @@ class Order(models.Model):
         ordering = ["-created_at"]
 
     def __str__(self) -> str:
-        return f"{self.created_at}"
+        return str(self.created_at)
 
 
 class Ticket(models.Model):
@@ -91,7 +91,8 @@ class Ticket(models.Model):
         constraints = [UniqueConstraint(fields=[
             "row",
             "seat",
-            "movie_session"],
+            "movie_session"
+        ],
             name="unique_ticket_row_seat_movie_session")]
 
     def __str__(self) -> str:
