@@ -23,7 +23,11 @@ def create_order(
 
         for ticket_data in tickets:
             movie_session_id = ticket_data.pop("movie_session")
-            Ticket.objects.create(order=new_order, movie_session_id=movie_session_id, **ticket_data)
+            Ticket.objects.create(
+                order=new_order,
+                movie_session_id=movie_session_id,
+                **ticket_data
+            )
 
 
 def get_orders(username: Optional[str] = None) -> QuerySet[Order]:
