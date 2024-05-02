@@ -2,7 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
 
-import settings
+from django.conf import settings
 
 
 class User(AbstractUser):
@@ -76,7 +76,7 @@ class Order(models.Model):
         ordering = ["-created_at"]
 
     def __str__(self) -> str:
-        return f"{self.created_at}"
+        return str(self.created_at)
 
 
 class Ticket(models.Model):
@@ -92,6 +92,14 @@ class Ticket(models.Model):
     )
     row = models.IntegerField()
     seat = models.IntegerField()
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["row", "seat", "movie_session"],
+                name="unique_ticket_row_seat_movie_session"
+            )
+        ]
 
     def __str__(self) -> str:
         return (f"{self.movie_session.movie} {self.movie_session.show_time} "
@@ -115,10 +123,3 @@ class Ticket(models.Model):
     def save(self, *args, **kwargs) -> None:
         self.full_clean()
         super().save(*args, **kwargs)
-
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=["row", "seat", "movie_session"], name="unique_ticket"
-            )
-        ]
