@@ -12,23 +12,24 @@ def create_user(
         first_name: Optional[str] = "",
         last_name: Optional[str] = ""
 ) -> User:
-    user_model = get_user_model()
-    user = user_model.objects.create_user(
-        username=username,
-        password=password,
-        email=email,
-        first_name=first_name,
-        last_name=last_name
-    )
+    user_data = {
+        'username': username,
+        'password': password,
+    }
+    if email:
+        user_data['email'] = email
+    if first_name:
+        user_data['first_name'] = first_name
+    if last_name:
+        user_data['last_name'] = last_name
+
+    user = get_user_model().objects.create_user(**user_data)
 
     return user
 
 
 def get_user(user_id: int) -> Optional[User]:
-    try:
-        return get_user_model().objects.get(pk=user_id)
-    except User.DoesNotExist:
-        return None
+    return get_user_model().objects.get(pk=user_id)
 
 
 def update_user(
