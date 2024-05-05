@@ -35,6 +35,16 @@ def create_order(tickets: list[dict],
         for ticket_data in tickets
     ]
 
+    # ticket_instances = [
+    #     Ticket(
+    #         movie_session_id=ticket_data["movie_session"],
+    #         order=order,
+    #         row=ticket_data["row"],
+    #         seat=ticket_data["seat"]
+    #     )
+    #     for ticket_data in tickets
+    # ]
+
     Ticket.objects.bulk_create(ticket_instances)
 
 
