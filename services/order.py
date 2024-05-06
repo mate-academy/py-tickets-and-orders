@@ -1,36 +1,28 @@
-import datetime
+from __future__ import annotations
 
-from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.db.models import QuerySet
-from typing import Optional
 
-from db.models import Order, Ticket
-
-
-def create_order(
-        tickets: list[dict],
-        username: str,
-        date: Optional[datetime.datetime] = None
-) -> None:
-    with transaction.atomic():
-        user = get_user_model().objects.get(username=username)
-        new_order = Order.objects.create(user=user)
-
-        if date:
-            new_order.created_at = date
-            new_order.save()
-
-        for ticket_data in tickets:
-            movie_session_id = ticket_data.pop("movie_session")
-            Ticket.objects.create(
-                order=new_order,
-                movie_session_id=movie_session_id,
-                **ticket_data
-            )
+from db.models import Order, Ticket, User
 
 
-def get_orders(username: Optional[str] = None) -> QuerySet[Order]:
+@transaction.atomic
+def create_order(tickets: list[dict], username: str,
+                 date: str | None = None) -> None:
+    order = Order.objects.create(user=User.objects.get(username=username))
+
+    if date:
+        order.created_at = date
+        order.save()
+
+    for ticket in tickets:
+        Ticket.objects.create(movie_session_id=ticket["movie_session"],
+                              order=order, row=ticket["row"],
+                              seat=ticket["seat"])
+
+
+def get_orders(username: str | None = None) -> QuerySet[Order]:
     if username:
-        return Order.objects.filter(user__username=username)
+        return Order.objects.filter(user=User.objects.get(username=username))
+
     return Order.objects.all()
