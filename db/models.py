@@ -97,11 +97,9 @@ class Ticket(models.Model):
         ]
 
     def __str__(self) -> str:
-        return (
-            f"{self.movie_session.movie.title} "
-            f"{self.movie_session.show_time} "
-            f"(row: {self.row} seat: {self.seat})"
-        )
+        return (f"{self.movie_session.movie.title} "
+                f"{self.movie_session.show_time} "
+                f"(row: {self.row}, seat: {self.seat})")
 
     def clean(self) -> None:
         valid_row = self.movie_session.cinema_hall.rows
@@ -110,14 +108,14 @@ class Ticket(models.Model):
         if not (1 <= self.row <= valid_row):
             raise ValidationError(
                 {
-                    "row": f"row number must be in avaliable range:"
-                           f"(1, rows): (1, {valid_row}"
+                    "row": f"row number must be in available range: "
+                           f"(1, rows): (1, {valid_row})"
                 }
             )
         if not (1 <= self.seat <= valid_seat):
             raise ValidationError(
                 {
-                    "seat": f"seat number must be in avaliable range:"
+                    "seat": f"seat number must be in available range: "
                             f"(1, seats_in_row): (1, {valid_seat})"
                 }
             )
