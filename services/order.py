@@ -8,10 +8,15 @@ from db.models import Ticket, Order
 
 
 @transaction.atomic
-def create_order(tickets: list[dict], username: str, date: str = None) -> None:
+def create_order(
+        tickets: list[dict],
+        username: str,
+        date: Optional[str] = None
+) -> None:
     with transaction.atomic():
-        user_id = get_user_model().objects.get(username=username).id
-        order = Order.objects.create(user_id=user_id)
+        order = Order.objects.create(
+            user_id=get_user_model().objects.get(username=username).id
+        )
         if date:
             order.created_at = date
             order.save()

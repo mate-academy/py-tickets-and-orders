@@ -2,7 +2,7 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import AbstractUser
 
-import settings
+from django.conf import settings
 
 
 class Genre(models.Model):
@@ -71,7 +71,7 @@ class Order(models.Model):
         ordering = ("-created_at",)
 
     def __str__(self) -> str:
-        return f"{self.created_at}"
+        return str(self.created_at)
 
 
 class Ticket(models.Model):
@@ -92,7 +92,7 @@ class Ticket(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=["movie_session", "row", "seat"],
-                name="unique_ticket"
+                name="unique_ticket_per_session_row_seat"
             )
         ]
 
