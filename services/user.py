@@ -3,11 +3,13 @@ from __future__ import annotations
 from db.models import User
 
 
-def create_user(username: str,
-                password: str,
-                email: str | None = None,
-                first_name: str | None = None,
-                last_name: str | None = None) -> None:
+def create_user(
+        username: str,
+        password: str,
+        email: str | None = None,
+        first_name: str | None = None,
+        last_name: str | None = None
+) -> None:
     user = User.objects.create_user(username=username, password=password)
 
     if email:
@@ -32,7 +34,8 @@ def update_user(
         password: str | None = None,
         email: str | None = None,
         first_name: str | None = None,
-        last_name: str | None = None) -> None:
+        last_name: str | None = None
+) -> None:
 
     user = get_user(user_id)
 

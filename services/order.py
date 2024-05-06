@@ -7,8 +7,11 @@ from db.models import Order, Ticket, User
 
 
 @transaction.atomic
-def create_order(tickets: list[dict], username: str,
-                 date: str | None = None) -> None:
+def create_order(
+        tickets: list[dict],
+        username: str,
+        date: str | None = None
+) -> None:
     order = Order.objects.create(user=User.objects.get(username=username))
 
     if date:
