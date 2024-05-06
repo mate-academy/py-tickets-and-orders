@@ -2,6 +2,8 @@ from db.models import User
 from django.contrib.auth import get_user_model
 
 
+def create_user(username: str,
+                password: str,
                 email: str = None,
                 first_name: str = None,
                 last_name: str = None) -> None:
