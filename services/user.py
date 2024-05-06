@@ -4,9 +4,9 @@ from db.models import User
 
 def create_user(username: str,
                 password: str,
-                email: str = None,
-                first_name: str = None,
-                last_name: str = None) -> QuerySet:
+                email: str | None = None,
+                first_name: str | None = None,
+                last_name: str | None = None) -> QuerySet[User]:
     user = User.objects.create_user(username=username, password=password)
 
     if email:
@@ -20,17 +20,17 @@ def create_user(username: str,
     return user
 
 
-def get_user(user_id: int) -> QuerySet:
+def get_user(user_id: int) -> QuerySet[User]:
     user = User.objects.get(pk=user_id)
     return user
 
 
 def update_user(user_id: int,
-                username: str = None,
-                password: str = None,
-                email: str = None,
-                first_name: str = None,
-                last_name: str = None) -> QuerySet:
+                username: str | None = None,
+                password: str | None = None,
+                email: str | None = None,
+                first_name: str | None = None,
+                last_name: str | None = None) -> QuerySet[User]:
     user = User.objects.get(pk=user_id)
     if username:
         user.username = username
