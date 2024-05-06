@@ -13,15 +13,15 @@ def create_user(
         last_name: Optional[str] = ""
 ) -> User:
     user_data = {
-        'username': username,
-        'password': password,
+        "username": username,
+        "password": password,
     }
     if email:
-        user_data['email'] = email
+        user_data["email"] = email
     if first_name:
-        user_data['first_name'] = first_name
+        user_data["first_name"] = first_name
     if last_name:
-        user_data['last_name'] = last_name
+        user_data["last_name"] = last_name
 
     user = get_user_model().objects.create_user(**user_data)
 
