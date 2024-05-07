@@ -1,4 +1,9 @@
+from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import UniqueConstraint
+
+import settings
 
 
 class Genre(models.Model):
@@ -17,7 +22,7 @@ class Actor(models.Model):
 
 
 class Movie(models.Model):
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=255, db_index=True)
     description = models.TextField()
     actors = models.ManyToManyField(to=Actor, related_name="movies")
     genres = models.ManyToManyField(to=Genre, related_name="movies")
@@ -50,3 +55,43 @@ class MovieSession(models.Model):
 
     def __str__(self) -> str:
         return f"{self.movie.title} {str(self.show_time)}"
+
+
+class Order(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+    def __str__(self) -> str:
+        return f"<Order: {self.created_at}>"
+
+
+class User(AbstractUser):
+    pass
+
+
+class Ticket(models.Model):
+    movie_session = models.ForeignKey(MovieSession, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    row = models.IntegerField()
+    seat = models.IntegerField()
+
+    def __str__(self) -> str:
+        return (
+            f"<Ticket: {self.movie_session.movie.title}"
+            f" {self.movie_session} (row: {self.row}, seat: {self.seat})>"
+        )
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(fields=["row", "seat", "movie_session"], name="unique_seat_in_session")
+        ]
+
+    def clean(self) -> None:
+        if self.movie_session.cinema_hall.rows < self.row:
+            raise ValidationError(
+                f"Row must be in range [1: {self.movie_session.cinema_hall.rows}]"
+            )
+        if self.movie_session.cinema_hall.seats_in_row < self.seat:
+            raise ValidationError(
+                f"Seat must be in range [1: {self.movie_session.cinema_hall.seats_in_row}]"
+            )
