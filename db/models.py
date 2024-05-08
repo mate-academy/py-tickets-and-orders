@@ -2,8 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import UniqueConstraint
-
-import settings
+from django.conf import settings
 
 
 class Genre(models.Model):
@@ -82,7 +81,11 @@ class Order(models.Model):
 
 
 class Ticket(models.Model):
-    movie_session = models.ForeignKey(MovieSession, on_delete=models.CASCADE)
+    movie_session = models.ForeignKey(
+        MovieSession,
+        on_delete=models.CASCADE,
+        related_name="tickets",
+    )
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     row = models.IntegerField()
     seat = models.IntegerField()
@@ -91,7 +94,7 @@ class Ticket(models.Model):
         constraints = [
             UniqueConstraint(
                 fields=["row", "seat", "movie_session"],
-                name="unique_ticket"
+                name="unique_place_in_cinema_hall"
             )
         ]
 
