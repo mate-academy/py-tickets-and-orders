@@ -4,6 +4,7 @@ from django.contrib.auth.models import AbstractUser
 
 from django.conf import settings
 
+
 class Genre(models.Model):
     name = models.CharField(max_length=255, unique=True)
 
