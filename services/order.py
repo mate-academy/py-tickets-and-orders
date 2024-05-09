@@ -1,9 +1,8 @@
 from datetime import datetime
-
+from django.contrib.auth import get_user_model
 from django.db import transaction
 
 from db.models import Ticket, Order
-from django.contrib.auth import get_user_model
 
 
 @transaction.atomic
