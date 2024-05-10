@@ -37,7 +37,7 @@ def update_user(
     email: str = None,
     first_name: str = None,
     last_name: str = None
-) -> Union[User, None]:
+) -> None:
     user = get_user_model().objects.get(id=user_id)
 
     if username:
