@@ -1,5 +1,3 @@
-from typing import Union
-
 from django.contrib.auth import get_user_model
 
 from db.models import User
