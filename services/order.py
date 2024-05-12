@@ -16,10 +16,16 @@ def create_order(
         if date:
             order.created_at = date
             order.save()
-        tickets = [Ticket(order=order, row=data["row"], seat=data["seat"], movie_session_id=data["movie_session"]) for data in tickets]
+        tickets = [
+            Ticket(
+                order=order,
+                row=data["row"],
+                seat=data["seat"],
+                movie_session_id=data["movie_session"]
+            )
+            for data in tickets
+        ]
         Ticket.objects.bulk_create(tickets)
-        # for ticket in tickets:
-        #     Ticket.objects.create(order=order, row=ticket["row"], seat=ticket["seat"], movie_session_id=ticket["movie_session"])
 
 
 def get_orders(username: str = None) -> QuerySet:
