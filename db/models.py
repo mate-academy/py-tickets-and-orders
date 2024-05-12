@@ -23,12 +23,12 @@ class Actor(models.Model):
 class Movie(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
-    actors = models.ManyToManyField(to=Actor, related_name="movies")
-    genres = models.ManyToManyField(to=Genre, related_name="movies")
+    actors = models.ManyToManyField(Actor, related_name="movies")
+    genres = models.ManyToManyField(Genre, related_name="movies")
 
     class Meta:
         indexes = [
-            models.Index(fields=["title"], name="title_idx"),
+            models.Index(fields=["title"], name="title_index"),
         ]
 
     def __str__(self) -> str:
@@ -51,10 +51,10 @@ class CinemaHall(models.Model):
 class MovieSession(models.Model):
     show_time = models.DateTimeField()
     cinema_hall = models.ForeignKey(
-        to=CinemaHall, on_delete=models.CASCADE, related_name="movie_sessions"
+        CinemaHall, on_delete=models.CASCADE, related_name="movie_sessions"
     )
     movie = models.ForeignKey(
-        to=Movie, on_delete=models.CASCADE, related_name="movie_sessions"
+        Movie, on_delete=models.CASCADE, related_name="movie_sessions"
     )
 
     def __str__(self) -> str:
@@ -86,7 +86,11 @@ class Ticket(models.Model):
         on_delete=models.CASCADE,
         related_name="tickets",
     )
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    order = models.ForeignKey(
+        Order,
+        on_delete=models.CASCADE,
+        related_name="tickets"
+    )
     row = models.IntegerField()
     seat = models.IntegerField()
 
