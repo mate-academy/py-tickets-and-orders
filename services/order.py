@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.db.models import QuerySet
 from django.db import transaction
 
-from db.models import Order, Ticket
+from db.models import Order, Ticket, MovieSession
 
 
 def create_order(
@@ -21,7 +21,9 @@ def create_order(
                 order=order,
                 row=data["row"],
                 seat=data["seat"],
-                movie_session_id=data["movie_session"]
+                movie_session=MovieSession.objects.get(
+                    id=data["movie_session"]
+                )
             )
             for data in tickets
         ]

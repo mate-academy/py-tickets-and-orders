@@ -86,7 +86,6 @@ class Ticket(models.Model):
     seat = models.IntegerField()
 
     def clean(self) -> None:
-        print("clean is called")
         if not self.movie_session.cinema_hall.rows >= self.row >= 1:
             raise ValidationError(
                 {"row": [f"row number must be in available range: (1, rows): "
