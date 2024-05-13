@@ -88,7 +88,8 @@ class Ticket(models.Model):
         if self.row > self.movie_session.cinema_hall.rows:
             raise ValidationError({
                 "row": [
-                    "row number must be in available range: (1, rows): (1, {})".format(
+                    "row number must be in available range:"
+                    "(1, rows): (1, {})".format(
                         self.movie_session.cinema_hall.rows
                     )
                 ]
