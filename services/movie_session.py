@@ -16,8 +16,8 @@ def create_movie_session(
 def get_taken_seats(movie_session_id: int) -> list[dict]:
     return list(Ticket.objects.filter(
         movie_session_id=movie_session_id).values(
-        "row", "seat")
-    )
+        "row", "seat"
+    ))
 
 
 def get_movies_sessions(session_date: str = None) -> QuerySet:
