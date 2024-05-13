@@ -2,6 +2,7 @@ from typing import List, Dict, Optional
 from django.db import transaction
 from db.models import Order, Ticket, User, MovieSession
 from datetime import datetime
+from django.db.models import QuerySet
 
 
 @transaction.atomic
@@ -40,7 +41,7 @@ def create_order(
         raise e
 
 
-def get_orders(username: Optional[str] = None) -> List[Order]:
+def get_orders(username: Optional[str] = None) -> QuerySet[Order]:
     if username:
         orders = Order.objects.filter(user__username=username)
     else:
