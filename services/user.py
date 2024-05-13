@@ -29,13 +29,14 @@ def get_user(user_id: int) -> object:
     return get_user_model().objects.get(pk=user_id)
 
 
-def update_user(user_id: int,
-                username: str = None,
-                password: str = None,
-                email: str = None,
-                first_name: str = None,
-                last_name: str = None
-                ) -> None:
+def update_user(
+        user_id: int,
+        username: str = None,
+        password: str = None,
+        email: str = None,
+        first_name: str = None,
+        last_name: str = None
+) -> None:
     user = get_user_model().objects.get(pk=user_id)
 
     if username:
