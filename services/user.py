@@ -29,8 +29,8 @@ def get_user(user_id: int) -> User:
 def update_user(user_id: int, **kwargs: Any) -> get_user_model():
     user = get_user_model().objects.get(id=user_id)
     for key, value in kwargs.items():
-        if key == "password":  # Если изменяется пароль
-            user.set_password(value)  # Хешируем новый пароль
+        if key == "password":
+            user.set_password(value)
         else:
             setattr(user, key, value)
     user.save()

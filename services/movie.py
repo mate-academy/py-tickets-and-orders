@@ -6,7 +6,7 @@ from db.models import Movie
 def get_movies(
     genres_ids: list[int] = None,
     actors_ids: list[int] = None,
-    title: str = None  # Добавляем аргумент title
+    title: str = None
 ) -> QuerySet:
     queryset = Movie.objects.all()
 
@@ -16,7 +16,7 @@ def get_movies(
     if actors_ids:
         queryset = queryset.filter(actors__id__in=actors_ids)
 
-    if title:  # Проверяем, если передан аргумент title
+    if title:
         queryset = queryset.filter(title__icontains=title)
 
     return queryset
@@ -34,22 +34,19 @@ def create_movie(
         actors_ids: list = None,
 ) -> Movie:
     try:
-        # Создаем фильм
+
         movie = Movie.objects.create(
             title=movie_title,
             description=movie_description,
         )
 
-        # Устанавливаем жанры фильма
         if genres_ids:
             movie.genres.set(genres_ids)
 
-        # Устанавливаем актеров фильма
         if actors_ids:
             movie.actors.set(actors_ids)
 
         return movie
     except Exception as e:
-        # Если произошла ошибка, откатываем транзакцию
         transaction.set_rollback(True)
         raise e
