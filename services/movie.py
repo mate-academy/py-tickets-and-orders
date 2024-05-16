@@ -45,6 +45,3 @@ def create_movie(
             movie.actors.set(actors_ids)
 
         return movie
-
-
-

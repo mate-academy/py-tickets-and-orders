@@ -1,3 +1,5 @@
+from typing import Any
+
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -35,7 +37,10 @@ class Movie(models.Model):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)  # NEW
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
 
     class Meta:
         ordering = ["-created_at"]
@@ -94,7 +99,7 @@ class Ticket(models.Model):
         return (f"{self.movie_session} "
                 f"(row: {self.row}, seat: {self.seat})")
 
-    def clean(self):
+    def clean(self) -> Any:
         cinema_hall = self.movie_session.cinema_hall
         if self.row < 1 or self.row > cinema_hall.rows:
             raise ValidationError(
@@ -103,15 +108,15 @@ class Ticket(models.Model):
             )
         if self.seat < 1 or self.seat > cinema_hall.seats_in_row:
             raise ValidationError(
-                {"seat": [f"seat number must be in available range: "
-                          f"(1, seats_in_row): (1, {cinema_hall.seats_in_row})"]}
+                {"seat":
+                    [f"seat number must be in available range: "
+                     f"(1, seats_in_row): (1, {cinema_hall.seats_in_row})"]}
             )
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         self.full_clean()
         super().save(*args, **kwargs)
 
 
 class User(AbstractUser):
     pass
-
