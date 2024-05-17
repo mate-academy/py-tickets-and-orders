@@ -1,4 +1,3 @@
-from datetime import datetime
 import init_django_orm  # noqa: F401
 from django.db import transaction
 from django.db.models import QuerySet
