@@ -4,7 +4,7 @@ from django.utils import timezone
 from db.models import User, Order, MovieSession, Ticket
 
 
-def create_order(tickets: list, username: str, date: str = None) -> None:
+def create_order(tickets: list[dict], username: str, date: str = None) -> None:
     try:
         user = User.objects.get(username=username)
     except User.DoesNotExist:
