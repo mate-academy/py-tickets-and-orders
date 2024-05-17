@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 
 from db.models import User
@@ -10,7 +11,7 @@ def create_user(
         first_name: str = "",
         last_name: str = ""
 ) -> None:
-    User.objects.create_user(
+    get_user_model().objects.create_user(
         username=username,
         password=password,
         email=email,
@@ -20,7 +21,7 @@ def create_user(
 
 
 def get_user(user_id: int) -> User:
-    return User.objects.filter(id=user_id).first()
+    return get_user_model().objects.filter(id=user_id).first()
 
 
 def update_user(
@@ -32,7 +33,7 @@ def update_user(
         last_name: str = None
 ) -> None:
     try:
-        user = User.objects.get(id=user_id)
+        user = get_user_model().objects.get(id=user_id)
     except User.DoesNotExist:
         raise ValueError(f"User with id {user_id} does not exist")
 
