@@ -36,8 +36,5 @@ def get_orders(
         username: str = None,
 ) -> QuerySet[Ticket]:
     if username:
-        user = User.objects.filter(
-            username=username
-        )[:1]
-        return Order.objects.filter(user=user)
+        return Order.objects.filter(user__username=username)
     return Order.objects.all()
