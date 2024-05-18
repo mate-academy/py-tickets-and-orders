@@ -52,9 +52,6 @@ def update_user(
     if last_name:
         user.last_name = last_name
 
-    try:
-        user.full_clean()
-        user.save()
-        return user
-    except Exception as e:
-        raise ValueError(f"Error: {e}")
+    user.full_clean()
+    user.save()
+    return user

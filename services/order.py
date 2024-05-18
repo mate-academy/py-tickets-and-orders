@@ -10,12 +10,12 @@ def create_order(
         username: str,
         date: str = None
 ) -> Order:
-    try:
-        user = get_user_model().objects.get(username=username)
-    except User.DoesNotExist:
-        raise ValueError(f"There is no user with username '{username}'")
-
     with transaction.atomic():
+        try:
+            user = get_user_model().objects.get(username=username)
+        except User.DoesNotExist:
+            raise ValueError(f"There is no user with username '{username}'")
+
         order = Order.objects.create(user=user)
 
         tickets = [
