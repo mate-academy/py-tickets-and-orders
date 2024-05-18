@@ -2,11 +2,13 @@ from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.db.models import QuerySet
 
-from db.models import Order, User, Ticket, MovieSession
+from db.models import Order, Ticket, MovieSession
 
 
 @transaction.atomic
-def create_order(tickets: list[dict], username: str, date: str = None) -> Order:
+def create_order(tickets: list[dict],
+                 username: str,
+                 date: str = None) -> Order:
     try:
         user = get_user_model().objects.get(username=username)
     except get_user_model().DoesNotExist:
