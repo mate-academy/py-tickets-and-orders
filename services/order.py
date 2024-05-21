@@ -2,6 +2,7 @@ import datetime
 
 from django.contrib.auth import get_user_model
 from django.db import transaction
+from django.db.models import QuerySet
 
 from db.models import Order, Ticket, MovieSession
 
@@ -30,9 +31,8 @@ def create_order(
     return order
 
 
-def get_orders(username: str = None) -> Order:
+def get_orders(username: str = None) -> QuerySet[Order]:
     orders = Order.objects.all()
     if username:
-        user = get_user_model().objects.get(username=username)
-        orders = Order.objects.filter(user=user)
+        orders = Order.objects.filter(user__username=username)
     return orders
