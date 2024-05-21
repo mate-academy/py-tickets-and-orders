@@ -15,7 +15,8 @@ def create_user(
         password=password,
         email=email,
         first_name=first_name,
-        last_name=last_name)
+        last_name=last_name
+    )
 
 
 def get_user(user_id: int) -> User:
