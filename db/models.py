@@ -109,3 +109,7 @@ class Ticket(models.Model):
     def save(self, *args, **kwargs) -> None:
         self.full_clean()
         super().save(*args, **kwargs)
+
+
+class User(AbstractUser):
+    pass
