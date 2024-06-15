@@ -50,4 +50,3 @@ def get_taken_seats(movie_session_id: int) -> list[dict[str, int]]:
         {"row": row, "seat": seat}
         for row, seat in movie_session.tickets.values_list("row", "seat")
     ]
-
