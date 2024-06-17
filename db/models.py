@@ -114,21 +114,23 @@ class Ticket(models.Model):
         if self.row < 1 or self.row > hall.rows:
             raise ValidationError(
                 {
-                    "row":
-                        f"Row must be in range [1, {hall.rows}], "
-                        f"not {self.row}",
+                    "row": (
+                        "row number must be in available range:"
+                        f" (1, rows): (1, {hall.rows})"
+                    ),
                 },
-                code="invalid_row",
+                "invalid_row",
             )
 
         if self.seat < 1 or self.seat > hall.seats_in_row:
             raise ValidationError(
                 {
-                    "seat":
-                        f"Seat must be in range [1, {hall.seats_in_row}], "
-                        f"not {self.seat}",
+                    "seat": (
+                        "seat number must be in available range:"
+                        f" (1, seats_in_row): (1, {hall.seats_in_row})"
+                    ),
                 },
-                code="invalid_seat",
+                "invalid_seat",
             )
 
     def save(self, *args, **kwargs) -> None:
