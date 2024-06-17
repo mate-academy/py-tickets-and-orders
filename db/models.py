@@ -81,7 +81,7 @@ class Order(models.Model):
         return f"<{self.__class__.__name__}: {self.created_at_str}>"
 
     def __str__(self) -> str:
-        return self.__repr__()
+        return self.created_at_str
 
 
 class Ticket(models.Model):
