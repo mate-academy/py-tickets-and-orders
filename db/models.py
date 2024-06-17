@@ -108,13 +108,14 @@ class Ticket(models.Model):
 
     def __repr__(self) -> str:
         return (
-            f"<{self.__class__.__name__}: {self.movie_session.movie.title}"
-            f" {self.order.created_at_str}"
-            f" (row: {self.row}, seat: {self.seat})>"
+            f"<{self.__class__.__name__}: {self.__str__()}>"
         )
 
     def __str__(self) -> str:
-        return self.__repr__()
+        return (
+            f"{self.movie_session.movie.title} {self.movie_session.show_time}"
+            f" (row: {self.row}, seat: {self.seat})"
+        )
 
     def clean(self) -> None:
         hall = self.movie_session.cinema_hall
