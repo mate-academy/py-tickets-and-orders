@@ -78,6 +78,14 @@ class Ticket(models.Model):
     row = models.IntegerField()
     seat = models.IntegerField()
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                name="ticket_row_seat_movie_session",
+                fields=["row", "seat", "movie_session"],
+            ),
+        ]
+
     def __repr__(self) -> str:
         return (
             f"<{self.__class__.__name__}: {self.movie_session.movie.title}"
