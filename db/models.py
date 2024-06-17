@@ -58,9 +58,15 @@ class Order(models.Model):
     class Meta:
         ordering = ["-created_at"]
 
+    @property
+    def created_at_str(self) -> str:
+        if self.created_at is None:
+            return "[unknown time]"
+
+        return self.created_at.strftime("%Y-%m-%d %H:%M:%S")
+
     def __repr__(self) -> str:
-        time = self.created_at.strftime("%Y-%m-%d %H:%M:%S") if self.created_at else None
-        return f"<{self.__class__.__name__}: {time}>"
+        return f"<{self.__class__.__name__}: {self.created_at_str}>"
 
     def __str__(self) -> str:
         return self.__repr__()
