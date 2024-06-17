@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 
 
 class Genre(models.Model):
@@ -95,3 +96,30 @@ class Ticket(models.Model):
 
     def __str__(self) -> str:
         return self.__repr__()
+
+    def clean(self) -> None:
+        hall = self.movie_session.cinema_hall
+
+        if self.row < 1 or self.row > hall.rows:
+            raise ValidationError(
+                {
+                    "row":
+                        f"Row must be in range [1, {hall.rows}], "
+                        f"not {self.row}",
+                },
+                code="invalid_row",
+            )
+
+        if self.seat < 1 or self.seat > hall.seats_in_row:
+            raise ValidationError(
+                {
+                    "seat":
+                        f"Seat must be in range [1, {hall.seats_in_row}], "
+                        f"not {self.seat}",
+                },
+                code="invalid_seat",
+            )
+
+    def save(self, *args, **kwargs) -> None:
+        self.full_clean()
+        super().save(*args, **kwargs)
