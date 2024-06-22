@@ -1,3 +1,5 @@
+import init_django_orm  # noqa
+
 from django.db.models import QuerySet
 
 from db.models import CinemaHall
