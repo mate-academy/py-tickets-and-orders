@@ -12,13 +12,13 @@ def create_order(tickets: list[dict],
         order = Order.objects.create(user=user)
 
         tickets_objects = []
-        for ticket in tickets:
-            temp = (Ticket.objects
-                    .create(seat=ticket["seat"],
-                            row=ticket["row"],
-                            movie_session_id=ticket["movie_session"],
-                            order=order))
-            tickets_objects.append(temp)
+        for ticket_info in tickets:
+            ticket = (Ticket.objects
+                      .create(seat=ticket_info["seat"],
+                              row=ticket_info["row"],
+                              movie_session_id=ticket_info["movie_session"],
+                              order=order))
+            tickets_objects.append(ticket)
 
         order.tickets.set(tickets_objects)
         if date:
