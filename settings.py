@@ -1,5 +1,6 @@
 import os
 
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -7,6 +8,14 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 SECRET_KEY = "6few3nci_q_o@l1dlbk81%wcxe!*6r29yu629&d97!hiqat9fa"
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
+
+AUTH_USER_MODEL = "db.User"
+
+INSTALLED_APPS = [
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "db",
+]
 
 DATABASES = {
     "default": {
@@ -22,7 +31,3 @@ TIME_ZONE = "Europe/Kiev"
 USE_I18N = True
 
 USE_TZ = False
-
-INSTALLED_APPS = [
-    "db",
-]
