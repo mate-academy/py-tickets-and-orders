@@ -97,7 +97,7 @@ class Ticket(models.Model):
             )
         ]
 
-    def clean(self) -> bool:
+    def clean(self) -> None:
         if not (1 <= self.row <= self.movie_session.cinema_hall.rows):
             raise ValidationError(
                 {"row": (f"row number must be in available range: "
