@@ -1,4 +1,7 @@
+from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import UniqueConstraint
 
 
 class Genre(models.Model):
@@ -17,7 +20,7 @@ class Actor(models.Model):
 
 
 class Movie(models.Model):
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=255, db_index=True)
     description = models.TextField()
     actors = models.ManyToManyField(to=Actor, related_name="movies")
     genres = models.ManyToManyField(to=Genre, related_name="movies")
@@ -50,3 +53,43 @@ class MovieSession(models.Model):
 
     def __str__(self) -> str:
         return f"{self.movie.title} {str(self.show_time)}"
+
+
+class Order(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey("User", on_delete=models.CASCADE)
+
+    def __str__(self) -> str:
+        return f"{self}: {self.created_at.strptime('%Y-%m-%d %H:%M:%S')}"
+
+
+class Ticket(models.Model):
+    movie_session = models.ForeignKey("MovieSession", on_delete=models.CASCADE)
+    order = models.ForeignKey("Order", on_delete=models.CASCADE)
+    row = models.IntegerField()
+    seat = models.IntegerField()
+
+    def __str__(self) -> str:
+        return (f"{self}: {self.movie_session.moviesession.title}"
+                f" {self.movie_session.movie_session.show_time.strftime('%Y-%m-%d %H:%M:%S')}"
+                f" (row: {self.row}, seat: {self.seat})")
+
+    def clean(self):
+        super().clean()
+        if self.row > self.movie_session.cinema_hall.rows:
+            raise ValidationError("row out of range")
+        if self.seat > self.movie_session.cinema_hall.seats_in_row:
+            raise ValidationError("seat out of range")
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(fields=["movie_session", "row", "seat"], name="unique_together")
+        ]
+
+
+class User(AbstractUser):
+    pass
