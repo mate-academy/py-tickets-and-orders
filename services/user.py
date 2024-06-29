@@ -28,7 +28,7 @@ def update_user(user_id: int, username: str = None,
     try:
         user = User.objects.get(id=user_id)
     except User.DoesNotExist:
-        raise ValueError(f'User with id {user_id} does not exist')
+        raise ValueError(f"User with id {user_id} does not exist")
 
     if username:
         user.username = username
