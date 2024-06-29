@@ -1,36 +1,36 @@
-from sqlite3 import DatabaseError
 from typing import List, Dict, Any
 
 from django.db import transaction
+from django.contrib.auth import get_user_model
 
-from db.models import Order, Ticket, User
-from datetime import datetime
+from db.models import Order, Ticket, User, MovieSession
 
 
-def create_order(tickets: Ticket, username: User, date: str) -> str:
+def create_order(tickets: Ticket, username: User, date: str = None) -> str:
     with transaction.atomic():
-        try:
-            order = Order.objects.create(user=username)
+        user = get_user_model().objects.get(username=username)
+        order = Order.objects.create(user=user)
 
-            if date:
-                order.created_at = datetime.strptime(date, "%Y-%m-%d %H:%M")
+        if date:
+            order.created_at = date
 
-            for ticket in tickets:
-                ticket_order = Ticket.objects.create(
-                    order=order,
-                    row=ticket["row"],
-                    seat=ticket["seat"],
-                    movie_session=ticket["movie_session"])
-                ticket_order.save()
-            order.save()
+        ticket_order = [
+            Ticket(
+                row=ticket["row"],
+                seat=ticket["seat"],
+                movie_session=MovieSession.objects.get(
+                    id=ticket["movie_session"]
+                ),
+                order=order
+            )
+            for ticket in tickets
+        ]
+        order.save()
+        Ticket.objects.bulk_create(ticket_order)
+        return order
 
-        except DatabaseError:
-            raise DatabaseError("Failed to create order")
 
-
-def get_orders(username: User) -> List[Dict[str, Any]]:
-    orders = Order.objects.all()
+def get_orders(username: User = None) -> List[Dict[str, Any]]:
     if username:
-        orders = orders.filter(user=username)
-
-    return orders
+        return Order.objects.filter(user__username=username)
+    return Order.objects.all()

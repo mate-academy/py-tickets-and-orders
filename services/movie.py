@@ -1,4 +1,4 @@
-from sqlite3 import IntegrityError, DatabaseError
+from sqlite3 import DatabaseError
 
 from django.db import transaction
 from django.db.models import QuerySet
@@ -13,8 +13,8 @@ def get_movies(
 ) -> QuerySet:
 
     queryset = Movie.objects.all()
-    if title is None:
-        queryset = Movie.objects.filter(title=title)
+    if title:
+        queryset = Movie.objects.filter(title__icontains=title)
 
     if genres_ids:
         queryset = queryset.filter(genres__id__in=genres_ids)
