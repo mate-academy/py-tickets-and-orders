@@ -112,5 +112,5 @@ class Ticket(models.Model):
         ]
 
 
-class CustomUser(AbstractUser):
+class User(AbstractUser):
     pass
