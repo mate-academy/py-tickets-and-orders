@@ -1,5 +1,4 @@
 import os
-from pathlib import Path
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -34,4 +33,3 @@ TIME_ZONE = "Europe/Kiev"
 USE_I18N = True
 
 USE_TZ = False
-
