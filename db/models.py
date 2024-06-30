@@ -61,7 +61,9 @@ class MovieSession(models.Model):
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(
-        to="CustomUser", on_delete=models.CASCADE, related_name="orders"
+        to="CustomUser",
+        on_delete=models.CASCADE,
+        related_name="orders"
     )
 
     def __str__(self) -> str:
