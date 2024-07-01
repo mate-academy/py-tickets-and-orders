@@ -61,7 +61,7 @@ class Ticket(models.Model):
             f"(row: {self.row}, seat: {self.seat})"
         )
 
-    def clean(self):
+    def clean(self) -> None:
         if not isinstance(self.row, int) or not isinstance(self.seat, int):
             raise ValidationError(
                 "Ticket row and seat must be integers"
