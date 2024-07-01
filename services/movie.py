@@ -33,18 +33,13 @@ def create_movie(
     actors_ids: list = None,
 ) -> Movie:
     with transaction.atomic():
-        try:
-            movie = Movie.objects.create(
-                title=movie_title,
-                description=movie_description,
-            )
-            if genres_ids:
-                movie.genres.set(genres_ids)
-            if actors_ids:
-                movie.actors.set(actors_ids)
+        movie = Movie.objects.create(
+            title=movie_title,
+            description=movie_description,
+        )
+        if genres_ids:
+            movie.genres.set(genres_ids)
+        if actors_ids:
+            movie.actors.set(actors_ids)
 
-            return movie
-
-        except Exception as e:
-            print(f"Failed to create movie: {e}")
-            transaction.set_rollback(True)
+        return movie
