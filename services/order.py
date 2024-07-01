@@ -18,7 +18,6 @@ def create_order(tickets: list, username: str, date: str = None) -> None:
                                   row=ticket["row"],
                                   seat=ticket["seat"],
                                   movie_session=session)
-        return order
 
 
 def get_orders(username: str = None) -> Order | QuerySet:
