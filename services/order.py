@@ -18,7 +18,9 @@ def create_order(
             order.save()
 
         for ticket_data in tickets:
-            movie_session = MovieSession.objects.get(id=ticket_data["movie_session"])
+            movie_session = MovieSession.objects.get(
+                id=ticket_data["movie_session"]
+            )
             ticket = Ticket(
                 row=ticket_data["row"],
                 seat=ticket_data["seat"],
