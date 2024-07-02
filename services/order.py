@@ -2,7 +2,6 @@ from datetime import datetime
 
 from django.contrib.auth import get_user_model
 from django.db import transaction
-from django.core.exceptions import ValidationError
 from db.models import Order, Ticket
 
 
@@ -34,7 +33,7 @@ def create_order(tickets: list, username: str, date: datetime = None) -> Order:
     return order
 
 
-def get_orders(username: str = None):
+def get_orders(username: str = None) -> None:
     orders = Order.objects.all()
     if username:
         user = get_user_model().objects.get(username=username)
