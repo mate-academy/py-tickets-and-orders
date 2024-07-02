@@ -1,21 +1,17 @@
 from django.db import transaction
 from services.movie_session import get_movie_session_by_id
+
 from db.models import Order, Ticket, User
 
 
 @transaction.atomic
 def create_order(tickets: list, username: str, date: str = None) -> None:
     user = User.objects.get(username=username)
+    order_data = {"user": user}
     if date:
-        order = Order.objects.create(
-            created_at=date,
-            user=user
-        )
-    else:
-        order = Order.objects.create(
-            user=user
-        )
+        order_data["created_at"] = date
 
+    order = Order.objects.create(**order_data)
     order.save()
 
     for ticket_data in tickets:
