@@ -1,4 +1,5 @@
 from django.db import transaction
+from django.db.models.query import QuerySet
 from services.movie_session import get_movie_session_by_id
 
 from db.models import Order, Ticket, User
@@ -27,7 +28,7 @@ def create_order(tickets: list, username: str, date: str = None) -> None:
         ticket_create.save()
 
 
-def get_orders(username: str = None) -> Order:
+def get_orders(username: str = None) -> QuerySet:
     if username:
         return Order.objects.filter(user__username=username)
     else:
