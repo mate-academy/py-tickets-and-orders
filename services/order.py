@@ -20,7 +20,7 @@ def create_order(tickets: list, username: str, date: str = None) -> None:
                                   movie_session=session)
 
 
-def get_orders(username: str = None) -> Order | QuerySet:
+def get_orders(username: str = None) -> QuerySet:
     if username:
         return Order.objects.filter(user__username=username)
     return Order.objects.all()
