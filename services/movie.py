@@ -1,25 +1,23 @@
 from django.db.models import QuerySet
-
+from django.db import transaction
 from db.models import Movie
 
 
-def get_movies(
-    genres_ids: list[int] = None,
-    actors_ids: list[int] = None,
-) -> QuerySet:
-    queryset = Movie.objects.all()
+def get_movies(title: str = None,
+               genres_ids: list[int] = None,
+               actors_ids: list[int] = None) -> QuerySet:
+    movies = Movie.objects.all()
+
+    if title:
+        movies = movies.filter(title__icontains=title)
 
     if genres_ids:
-        queryset = queryset.filter(genres__id__in=genres_ids)
+        movies = movies.filter(genres__id__in=genres_ids).distinct()
 
     if actors_ids:
-        queryset = queryset.filter(actors__id__in=actors_ids)
+        movies = movies.filter(actors__id__in=actors_ids).distinct()
 
-    return queryset
-
-
-def get_movie_by_id(movie_id: int) -> Movie:
-    return Movie.objects.get(id=movie_id)
+    return movies
 
 
 def create_movie(
@@ -28,13 +26,14 @@ def create_movie(
     genres_ids: list = None,
     actors_ids: list = None,
 ) -> Movie:
-    movie = Movie.objects.create(
-        title=movie_title,
-        description=movie_description,
-    )
-    if genres_ids:
-        movie.genres.set(genres_ids)
-    if actors_ids:
-        movie.actors.set(actors_ids)
+    with transaction.atomic():
+        movie = Movie.objects.create(
+            title=movie_title,
+            description=movie_description,
+        )
+        if genres_ids:
+            movie.genres.set(genres_ids)
+        if actors_ids:
+            movie.actors.set(actors_ids)
 
     return movie
