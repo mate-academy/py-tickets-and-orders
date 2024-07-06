@@ -15,14 +15,19 @@ DATABASES = {
     }
 }
 
+
+AUTH_USER_MODEL = "db.User"
+
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "Europe/Kiev"
+TIME_ZONE = "UTC"
 
 USE_I18N = True
 
 USE_TZ = False
 
 INSTALLED_APPS = [
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
     "db",
 ]
