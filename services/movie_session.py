@@ -46,10 +46,10 @@ def delete_movie_session_by_id(session_id: int) -> None:
 
 def get_taken_seats(movie_session_id: int) -> list:
     movie_session = get_movie_session_by_id(movie_session_id)
-    if not movie_session:
-        return []
-    tickets = movie_session.tickets.all()
-    return [
-        {"row": ticket.row, "seat": ticket.seat}
-        for ticket in tickets
-    ]
+    if movie_session:
+        tickets = movie_session.tickets.all()
+        return [
+            {"row": ticket.row, "seat": ticket.seat}
+            for ticket in tickets
+        ]
+    return []
