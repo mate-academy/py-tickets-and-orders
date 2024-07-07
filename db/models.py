@@ -82,7 +82,7 @@ class Ticket(models.Model):
     order = models.ForeignKey(
         to=Order,
         on_delete=models.CASCADE,
-        related_name="orders"
+        related_name="tickets"
     )
     row = models.IntegerField()
     seat = models.IntegerField()
