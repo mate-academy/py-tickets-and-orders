@@ -14,7 +14,7 @@ def create_order(tickets: list[dict],
         for ticket in tickets:
             tick = Ticket.objects.create(movie_session=MovieSession.
                                          objects.
-                                         get(id=ticket['movie_session']),
+                                         get(id=ticket["movie_session"]),
                                          order=order, row=ticket["row"],
                                          seat=ticket["seat"])
             tick.save()
