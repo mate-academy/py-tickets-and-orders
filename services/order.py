@@ -14,7 +14,7 @@ def create_order(
     order = Order.objects.create(created_at=date, user_id=user.id)
     for ticket in tickets:
         row, seat, session = ticket.values()
-        order.ticket_set.create(row=row, seat=seat, movie_session_id=session)
+        order.tickets.create(row=row, seat=seat, movie_session_id=session)
     if date:
         order.created_at = date
     order.save()
