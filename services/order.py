@@ -7,9 +7,9 @@ from db.models import Order, Ticket, MovieSession
 
 @transaction.atomic
 def create_order(
-         tickets: list[dict],
-         username: str,
-         date: str = None
+        tickets: list[dict],
+        username: str,
+        date: str = None
 ) -> None:
 
     user = get_user_model().objects.get(username=username)
@@ -23,11 +23,11 @@ def create_order(
             row=data["row"],
             seat=data["seat"],
             movie_session=MovieSession.objects.get(
-                 id=data["movie_session"]
-             )
-         )
+                id=data["movie_session"]
+            )
+        )
         for data in tickets
-     ]
+    ]
     Ticket.objects.bulk_create(tickets)
 
 
