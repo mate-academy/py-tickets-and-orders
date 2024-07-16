@@ -1,6 +1,9 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models import UniqueConstraint
 from django.core.exceptions import ValidationError
+
+import settings
 
 
 class Genre(models.Model):
@@ -61,7 +64,7 @@ class MovieSession(models.Model):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey("User", on_delete=models.CASCADE,
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
                              related_name="orders")  # NEED TO CHANGE TO THE USER FROM SETTINGS
 
     class Meta:
@@ -78,9 +81,11 @@ class Ticket(models.Model):
     seat = models.IntegerField()
 
     class Meta:
-        constraints = UniqueConstraint(
+        constraints = [
+            UniqueConstraint(
             fields=["movie_session", "row", "seat"], name="unique_movie_session_row_seat"
-        )
+            )
+        ]
 
     def __str__(self):
         return f"{Ticket.__name__}: {self.movie_session.movie} {self.movie_session.show_time} (row: {self.row}, seat: {self.seat})"
@@ -91,6 +96,10 @@ class Ticket(models.Model):
         if not (1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row):
             raise ValidationError(f"seat: seat must be in range [1, {self.movie_session.cinema_hall.seats_in_row}], not {self.seat}")
 
-    def sava(self, *args, **kwargs):
+    def save(self, *args, **kwargs):
         self.full_clean()
         return super().save(*args, **kwargs)
+
+
+class User(AbstractUser):
+    pass
