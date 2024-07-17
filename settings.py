@@ -26,8 +26,8 @@ USE_TZ = False
 INSTALLED_APPS = [
     "db",
     "django_extensions",
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
 
 ]
 
