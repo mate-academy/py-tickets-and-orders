@@ -71,34 +71,43 @@ class Order(models.Model):
     class Meta:
         ordering = ["-created_at"]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.created_at}"
 
 
 class Ticket(models.Model):
-    movie_session = models.ForeignKey(to=MovieSession, on_delete=models.CASCADE, related_name="tickets")
-    order = models.ForeignKey(to=Order, on_delete=models.CASCADE, related_name="tickets")
+    movie_session = models.ForeignKey(
+        to=MovieSession, on_delete=models.CASCADE, related_name="tickets"
+    )
+    order = models.ForeignKey(
+        to=Order, on_delete=models.CASCADE, related_name="tickets"
+    )
     row = models.IntegerField()
     seat = models.IntegerField()
 
     class Meta:
         constraints = [
             UniqueConstraint(
-            fields=["movie_session", "row", "seat"], name="unique_movie_session_row_seat"
+                fields=["movie_session", "row", "seat"],
+                name="unique_movie_session_row_seat"
             )
         ]
 
-    def __str__(self):
-        return f"{self.movie_session.movie} {self.movie_session.show_time} (row: {self.row}, seat: {self.seat})"
+    def __str__(self) -> str:
+        return (f"{self.movie_session.movie} "
+                f"{self.movie_session.show_time} "
+                f"(row: {self.row}, seat: {self.seat})")
 
-    def clean(self):
+    def clean(self) -> None:
         if not (1 <= self.row <= self.movie_session.cinema_hall.rows):
             raise ValidationError(
-                {"row": f"row number must be in available range: (1, rows): (1, {self.movie_session.cinema_hall.rows})"}
+                {"row": f"row number must be in available range: "
+                        f"(1, rows): (1, {self.movie_session.cinema_hall.rows})"}
             )
         if not (1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row):
             raise ValidationError(
-                {"seat": f"seat number must be in available range: (1, seats_in_row): (1, {self.movie_session.cinema_hall.seats_in_row})"}
+                {
+                    "seat": f"seat number must be in available range: (1, seats_in_row): (1, {self.movie_session.cinema_hall.seats_in_row})"}
             )
 
     def save(self, *args, **kwargs):
