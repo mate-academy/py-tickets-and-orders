@@ -34,8 +34,8 @@ def update_user(
     first_name: str = None,
     last_name: str = None,
 ) -> None:
-    updating_user = User.objects.get(
-        id=user_id
+    updating_user = get_user(
+        user_id
     )
     if username:
         updating_user.username = username
