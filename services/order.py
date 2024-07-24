@@ -14,12 +14,12 @@ def create_order(
         order = Order.objects.create(user=user)
 
         if date:
-            user.created_at = date
-            user.save()
+            order.created_at = date
+            order.save()
 
         for ticket in tickets:
             Ticket.objects.create(
-                movie_session_id=ticket["movie_session"],
+                movie_session_id=ticket["movie_session"], order=order,
                 row=ticket["row"], seat=ticket["seat"]
             )
 
@@ -27,7 +27,7 @@ def create_order(
     return order
 
 
-def get_orders(username: str) -> None:
+def get_orders(username: str = None) -> None:
     queryset = Order.objects.all()
     if username:
         queryset = queryset.filter(user__username=username)
