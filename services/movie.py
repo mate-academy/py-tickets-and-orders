@@ -1,6 +1,7 @@
 from django.db.models import QuerySet
 from django.db import transaction
 from db.models import Movie
+from django.contrib.auth import get_user_model
 
 
 def get_movies(
@@ -23,7 +24,7 @@ def get_movies(
 
 
 def get_movie_by_id(movie_id: int) -> Movie:
-    return Movie.objects.get(id=movie_id)
+    return get_user_model().objects.get(pk=movie_id)
 
 
 def create_movie(
