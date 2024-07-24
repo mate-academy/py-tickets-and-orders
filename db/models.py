@@ -1,9 +1,9 @@
-from typing import Any
-
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import UniqueConstraint
+
+import settings
 
 
 class Genre(models.Model):
@@ -64,7 +64,8 @@ class MovieSession(models.Model):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey("User", on_delete=models.CASCADE,
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE,
                              related_name="orders")
 
     def __str__(self) -> str:
@@ -107,7 +108,7 @@ class Ticket(models.Model):
         if errors:
             raise ValidationError(errors)
 
-    def save(self, *args: Any, **kwargs: Any) -> None:
+    def save(self, *args: tuple, **kwargs: dict) -> None:
         self.full_clean()
         return super().save(*args, **kwargs)
 
