@@ -9,18 +9,22 @@ def create_order(
         date: datetime.datetime = None
 ) -> None:
     user = User.objects.get(username=username)
-    created_at = date if date else None
 
     with transaction.atomic():
-        order = Order.objects.create(user=user, created_at=created_at)
+        order = Order.objects.create(user=user)
+        if date:
+            order.created_at = date
+            order.save()
 
         for ticket_data in tickets:
-            movie_session = MovieSession.objects.get(id=ticket_data['movie_session'])
+            movie_session = MovieSession.objects.get(
+                id=ticket_data["movie_session"]
+            )
             Ticket.objects.create(
                 order=order,
                 movie_session=movie_session,
-                row=ticket_data['row'],
-                seat=ticket_data['seat']
+                row=ticket_data["row"],
+                seat=ticket_data["seat"]
             )
 
 
