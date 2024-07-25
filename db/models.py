@@ -3,6 +3,8 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import UniqueConstraint
 
+import settings
+
 
 class Genre(models.Model):
     name = models.CharField(max_length=255, unique=True)
@@ -20,18 +22,18 @@ class Actor(models.Model):
 
 
 class User(AbstractUser):
-    pass
+    username = models.CharField(max_length=255, unique=True)
 
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='orders')
 
     class Meta:
         ordering = ['-created_at']
 
     def __str__(self) -> str:
-        return f"<Order: {self.created_at}>"
+        return f"{self.created_at}"
 
 
 class Movie(models.Model):
@@ -86,21 +88,26 @@ class Ticket(models.Model):
     seat = models.IntegerField()
 
     def __str__(self) -> str:
-        return (f"<Ticket: {self.movie_session} "
-                f"(row: {str(self.order)}, seats: {self.seat})>")
+        return (f"{self.movie_session} "
+                f"(row: {str(self.row)}, seat: {self.seat})")
 
     def save(self, *args, **kwargs):
         self.full_clean()
         return super().save(*args, **kwargs)
 
     def clean(self):
-        from services import movie_session  # Import moved here to avoid circular import
-        max_rows = movie_session.cinema_hall.rows
-        max_seats = movie_session.cinema_hall.seats_in_row
-        if self.row < 0 or self.row > max_rows:
-            raise ValidationError(f"Rows should be in range [1, {max_rows}], got {self.row}")
-        if self.seat < 0 or self.seat > max_seats:
-            raise ValidationError(f"Seats should be in range [1, {max_seats}], got {self.seat}")
+        errors = {}
+
+        max_rows = self.movie_session.cinema_hall.rows
+        if self.row < 1 or self.row > max_rows:
+            errors['row'] = [f"row number must be in the range: 1 to {max_rows}"]
+
+        max_seats = self.movie_session.cinema_hall.seats_in_row
+        if self.seat < 1 or self.seat > max_seats:
+            errors['seat'] = [f"seat number must be in available range: (1, {max_seats}"]
+
+        if errors:
+            raise ValidationError(errors)
 
     class Meta:
         constraints = [
