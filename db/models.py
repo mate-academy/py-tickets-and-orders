@@ -1,5 +1,3 @@
-from typing import Callable
-
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -101,7 +99,7 @@ class Ticket(models.Model):
         return (f"{self.movie_session} "
                 f"(row: {str(self.row)}, seat: {self.seat})")
 
-    def save(self, *args, **kwargs) -> Callable:
+    def save(self, *args, **kwargs) -> None:
         self.full_clean()
         return super().save(*args, **kwargs)
 
