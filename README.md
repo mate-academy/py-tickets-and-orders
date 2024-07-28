@@ -45,7 +45,7 @@ import datetime
 cinema_hall = CinemaHall.objects.create(name="Blue", rows=18, seats_in_row=24)
 movie_session = MovieSession.objects.create(
     show_time=datetime.datetime(2022, 3, 20, 19, 30),
-    movie_id=1,
+    movie_id=1, 
     cinema_hall=cinema_hall)
 order = Order.objects.create(user_id=1)
 
