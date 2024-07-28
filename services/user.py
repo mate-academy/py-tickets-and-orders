@@ -2,8 +2,6 @@ from django.contrib.auth.models import AbstractUser
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
 
-# from db.models import User
-
 
 def create_user(
     username: str,
