@@ -1,4 +1,4 @@
-from datetime import datetime
+from typing import Any
 
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
@@ -61,13 +61,15 @@ class MovieSession(models.Model):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE)
 
     class Meta:
         ordering = ["-created_at"]
 
-    def __str__(self) -> datetime:
-        return self.created_at
+    def __str__(self) -> str:
+        return self.created_at.strftime("%Y-%m-%d %H:%M:%S")
 
 
 class Ticket(models.Model):
@@ -91,12 +93,21 @@ class Ticket(models.Model):
                 f"{self.movie_session.show_time} "
                 f"(row: {self.row}, seat: {self.seat})")
 
-    def clean(self):
-        if not ((1 <= self.row <= self.movie_session.cinema_hall.rows) and
-                (1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row)):
-            raise ValidationError("Invalid ticket")
+    def clean(self) -> None:
+        max_of_row = self.movie_session.cinema_hall.rows
+        max_of_seat = self.movie_session.cinema_hall.seats_in_row
 
-    def save(self, *args, **kwargs):
+        if not (1 <= self.row <= max_of_row):
+            raise ValidationError(
+                {"row": [f"row number must be in available range: "
+                         f"(1, rows): (1, {max_of_row})"]})
+
+        if not (1 <= self.seat <= max_of_seat):
+            raise ValidationError(
+                {"seat": [f"seat number must be in available range: "
+                          f"(1, seats_in_row): (1, {max_of_seat})"]})
+
+    def save(self, *args: Any, **kwargs: Any) -> Any:
         self.full_clean()
         return super().save(*args, **kwargs)
 
