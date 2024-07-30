@@ -1,7 +1,7 @@
 from django.db import transaction
 from django.db.models.query import QuerySet
-from services.movie_session import get_movie_session_by_id
 
+from services.movie_session import get_movie_session_by_id
 from db.models import Order, Ticket, User
 
 
