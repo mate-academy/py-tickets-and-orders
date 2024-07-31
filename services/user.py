@@ -37,23 +37,17 @@ def update_user(user_id: int,
                 last_name: str = None
                 ) -> None:
 
-    get_user_model().objects.filter(id=user_id).update(id=user_id)
-
+    user = get_user_model().objects.filter(id=user_id)
+    user.update(id=user_id)
     if username:
-        get_user_model().objects.filter(id=user_id).update(username=username)
+        user.update(username=username)
+    if email:
+        user.update(email=email)
+    if first_name:
+        user.update(first_name=first_name)
+    if last_name:
+        user.update(last_name=last_name)
     if password:
         user = get_user_model().objects.get(id=user_id)
         user.set_password(password)
         user.save()
-    if email:
-        get_user_model().objects.filter(id=user_id).update(email=email)
-    if first_name:
-        (get_user_model().objects.
-         filter(id=user_id).update(first_name=first_name))
-    if last_name:
-        (get_user_model().objects.
-         filter(id=user_id).update(last_name=last_name))
-
-
-def objects() -> None:
-    return None

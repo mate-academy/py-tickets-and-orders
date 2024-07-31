@@ -12,25 +12,22 @@ def create_order(
 ) -> Order:
     with transaction.atomic():
         user = get_user_model().objects.get(username=username)
-        # order_data = {"user": user}
         order = Order.objects.create(user=user)
         if date:
             order.created_at = date
             order.save()
-            # order = Order.objects.update(created_at=date)
 
         for ticket in tickets:
             movie_session = MovieSession.objects.get(
                 id=ticket["movie_session"]
             )
-            # order = Order.objects.get(id=ticket["movie_session"])
+
             ticket_data = Ticket.objects.create(
                 seat=ticket["seat"],
                 row=ticket["row"],
                 movie_session=movie_session,
                 order=order,
             )
-            # ticket_data.save()
 
         return ticket_data
 
