@@ -22,7 +22,12 @@ TIME_ZONE = "Europe/Kiev"
 USE_I18N = True
 
 USE_TZ = False
+# TIME_ZONE = 'UTC'
 
 INSTALLED_APPS = [
+    "django.contrib.contenttypes",
+    "django.contrib.auth",
     "db",
 ]
+
+AUTH_USER_MODEL = "db.User"
