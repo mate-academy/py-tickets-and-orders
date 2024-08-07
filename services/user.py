@@ -42,7 +42,7 @@ def update_user(
         email: Optional[str] = None,
         first_name: Optional[str] = None,
         last_name: Optional[str] = None,
-) -> None:
+) -> get_user_model:
     user = get_user_model().objects.get(id=user_id)
 
     if username:
