@@ -11,14 +11,13 @@ def create_order(tickets: list, username: str, date=None):
     except ObjectDoesNotExist:
         return None
 
-
     with transaction.atomic():
-
         order = Order.objects.create(user=user)
 
         if date:
-
-            order.created_at = timezone.make_aware(datetime.strptime(date, "%Y-%m-%d %H:%M"))
+            order.created_at = timezone.make_aware(
+                datetime.strptime(date, "%Y-%m-%d %H:%M")
+            )
             order.save()
 
         for ticket_data in tickets:
@@ -32,7 +31,6 @@ def create_order(tickets: list, username: str, date=None):
 
 
 def get_orders(username=None):
-
-     if username:
+    if username:
         return Order.objects.filter(user__username=username).order_by('-created_at')
-     return Order.objects.all().order_by('-created_at')
+    return Order.objects.all().order_by('-created_at')
