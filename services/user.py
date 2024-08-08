@@ -1,4 +1,3 @@
-from django.db.models import QuerySet
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -15,9 +14,9 @@ def create_user(
     user = User.objects.create(
         username=username,
         password=password,
-        email=email if email is not None else '',
-        first_name=first_name if first_name is not None else '',
-        last_name=last_name if last_name is not None else '',
+        email=email if email is not None else "",
+        first_name=first_name if first_name is not None else "",
+        last_name=last_name if last_name is not None else ""
     )
     user.set_password(password)
     user.save()

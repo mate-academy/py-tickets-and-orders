@@ -66,10 +66,10 @@ class Order(models.Model):
     )
 
     class Meta:
-        ordering = ['-created_at']
+        ordering = ["-created_at"]
 
     def __str__(self) -> str:
-        return self.created_at.strftime('%Y-%m-%d %H:%M:%S')
+        return self.created_at.strftime("%Y-%m-%d %H:%M:%S")
 
 
 class Ticket(models.Model):
@@ -80,29 +80,34 @@ class Ticket(models.Model):
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=["row", "seat", "movie_session"], name="unique_ticket")
+            models.UniqueConstraint(
+                fields=["row", "seat", "movie_session"], name="unique_ticket")
         ]
 
-    def clean(self):
+    def clean(self) -> None:
         cinema_hall = self.movie_session.cinema_hall
         if self.row > cinema_hall.rows:
-            raise ValidationError({'row': [f"Row number must be in available range: (1, rows): (1, {cinema_hall.rows})"]})
+            error_message = (
+                f"Row number must be in available range: (1, rows): (1, "
+                f"{cinema_hall.rows})"
+            )
+            raise ValidationError({"row": [error_message]})
 
         if self.seat > cinema_hall.seats_in_row:
-            raise ValidationError({'seat': [f"Seat number must be in available range: (1, seats_in_row): (1, {cinema_hall.seats_in_row})"]})
+            error_message = (
+                f"Seat number must be in available range: "
+                f"(1, seats_in_row): (1, "
+                f"{cinema_hall.seats_in_row})"
+            )
+            raise ValidationError({"seat": [error_message]})
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         self.full_clean()
         super().save(*args, **kwargs)
 
-    def __str__(self):
+    def __str__(self) -> None:
         return f"{self.movie_session} (row: {self.row}, seat: {self.seat})"
 
 
 class User(AbstractUser):
     pass
-
-
-
-
-
