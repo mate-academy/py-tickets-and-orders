@@ -1,8 +1,6 @@
 from django.db import transaction
-from django.utils import timezone
 from db.models import Order, Ticket, MovieSession, User
 from django.core.exceptions import ObjectDoesNotExist
-from datetime import datetime
 from typing import Optional
 
 
