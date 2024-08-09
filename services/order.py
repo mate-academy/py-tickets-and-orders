@@ -15,11 +15,8 @@ def create_order(tickets: list, username: str,
 
     with transaction.atomic():
         order = Order.objects.create(user=user)
-
         if date:
-            order.created_at = timezone.make_aware(
-                datetime.strptime(date, "%Y-%m-%d %H:%M")
-            )
+            order.created_at = date
             order.save()
 
         for ticket_data in tickets:

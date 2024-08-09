@@ -88,14 +88,14 @@ class Ticket(models.Model):
         cinema_hall = self.movie_session.cinema_hall
         if self.row > cinema_hall.rows:
             error_message = (
-                f"Row number must be in available range: (1, rows): (1, "
+                f"row number must be in available range: (1, rows): (1, "
                 f"{cinema_hall.rows})"
             )
             raise ValidationError({"row": [error_message]})
 
         if self.seat > cinema_hall.seats_in_row:
             error_message = (
-                f"Seat number must be in available range: "
+                f"seat number must be in available range: "
                 f"(1, seats_in_row): (1, "
                 f"{cinema_hall.seats_in_row})"
             )
