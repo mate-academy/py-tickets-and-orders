@@ -69,7 +69,10 @@ class User(AbstractUser):
 
 class Order(models.Model):
     created_at = models.DateTimeField(default=datetime.now)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
 
     def __str__(self) -> str:
         return str(self.created_at)
@@ -116,5 +119,3 @@ class Ticket(models.Model):
                 name="unique_ticket_row_seat_session"
             )
         ]
-
-
