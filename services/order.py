@@ -10,9 +10,11 @@ def create_order(
         date: datetime = None
 ) -> Order:
     user = User.objects.get(username=username)
+    if not date:
+        date = datetime.now()
     order = Order.objects.create(
         user=user,
-        created_at=date or datetime.now()
+        created_at=date
     )
     for ticket in tickets:
         ticket.order = order

@@ -1,5 +1,7 @@
 from django.contrib.auth.models import AbstractUser
+
 from django.core.exceptions import ValidationError
+
 from django.db import models
 
 import settings
@@ -27,6 +29,9 @@ class Order(models.Model):
         on_delete=models.CASCADE,
         related_name="orders"
     )
+
+    class Meta:
+        ordering = ('-created_at',)
 
     def __str__(self) -> str:
         return f"{self.created_at}"
@@ -95,7 +100,7 @@ class Ticket(models.Model):
 
     def __str__(self) -> str:
         return (
-            f"Ticket: {self.movie_session} "
+            f"{self.movie_session} "
             f"(row: {self.row}, seat: {self.seat})"
         )
 
