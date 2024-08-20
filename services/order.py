@@ -1,24 +1,38 @@
 from django.db import transaction
+from django.utils import timezone
+
 from db.models import Order, Ticket, User
+
 from datetime import datetime
 
 
 @transaction.atomic
 def create_order(
-        tickets: list[Ticket],
+        tickets: list[dict],
         username: str,
         date: datetime = None
 ) -> Order:
     user = User.objects.get(username=username)
+
     if not date:
-        date = datetime.now()
+        date = timezone.now()
+
     order = Order.objects.create(
         user=user,
         created_at=date
     )
-    for ticket in tickets:
-        ticket.order = order
-    Ticket.objects.bulk_create(tickets)
+
+    ticket_objects = []
+    for ticket_data in tickets:
+        ticket = Ticket(
+            movie_session_id=ticket_data["movie_session"],
+            row=ticket_data["row"],
+            seat=ticket_data["seat"],
+            order=order
+        )
+        ticket_objects.append(ticket)
+
+    Ticket.objects.bulk_create(ticket_objects)
     return order
 
 
