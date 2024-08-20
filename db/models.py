@@ -120,4 +120,3 @@ class Ticket(models.Model):
 
 class User(AbstractUser):
     pass
-
