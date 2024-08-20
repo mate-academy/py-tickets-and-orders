@@ -14,32 +14,20 @@ def create_order(
         date: str = None
 ) -> Order:
     user = User.objects.get(username=username)
+    order = Order.objects.create(user=user)
 
     if date:
-        date = datetime.strptime(date, "%Y-%m-%d %H:%M")
-    else:
-        date = timezone.now()
+        order.created_at = date
+        order.save(update_fields=["created_at"])
 
-    order = Order.objects.create(
-        user=user,
-        created_at=date
-    )
-
-    ticket_objects = []
-    for ticket_data in tickets:
-        ticket = Ticket(
-            movie_session_id=ticket_data["movie_session"],
-            row=ticket_data["row"],
-            seat=ticket_data["seat"],
-            order=order
+    for ticket in tickets:
+        Ticket.objects.create(
+            movie_session_id=ticket["movie_session"],
+            order=order,
+            row=ticket["row"],
+            seat=ticket["seat"]
         )
-        try:
-            ticket.full_clean()
-        except ValidationError as e:
-            raise e
-        ticket_objects.append(ticket)
 
-    Ticket.objects.bulk_create(ticket_objects)
     return order
 
 
