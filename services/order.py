@@ -18,7 +18,7 @@ def create_order(
     )
     for ticket in tickets:
         ticket.order = order
-        ticket.save()
+    Ticket.objects.bulk_create(tickets)
     return order
 
 
