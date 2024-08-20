@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.utils import timezone
 
@@ -32,6 +33,10 @@ def create_order(
             seat=ticket_data["seat"],
             order=order
         )
+        try:
+            ticket.full_clean()
+        except ValidationError as e:
+            raise e
         ticket_objects.append(ticket)
 
     Ticket.objects.bulk_create(ticket_objects)
