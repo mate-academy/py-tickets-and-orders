@@ -1,10 +1,5 @@
-from django.core.exceptions import ValidationError
 from django.db import transaction
-from django.utils import timezone
-
 from db.models import Order, Ticket, User
-
-from datetime import datetime
 
 
 @transaction.atomic
