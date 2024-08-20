@@ -10,11 +10,13 @@ from datetime import datetime
 def create_order(
         tickets: list[dict],
         username: str,
-        date: datetime = None
+        date: str = None
 ) -> Order:
     user = User.objects.get(username=username)
 
-    if not date:
+    if date:
+        date = datetime.strptime(date, "%Y-%m-%d %H:%M")
+    else:
         date = timezone.now()
 
     order = Order.objects.create(
