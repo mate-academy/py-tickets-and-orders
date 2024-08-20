@@ -5,7 +5,7 @@ from db.models import MovieSession, Order, Ticket
 from django.db.models import QuerySet
 
 
-@transaction
+@transaction.atomic
 def create_order(
         tickets: list[dict],
         username: str = None,
