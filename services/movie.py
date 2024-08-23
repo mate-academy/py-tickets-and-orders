@@ -1,6 +1,5 @@
 from django.db import transaction
 from django.db.models import QuerySet
-from django.utils.translation.trans_real import translation
 
 from db.models import Movie
 
