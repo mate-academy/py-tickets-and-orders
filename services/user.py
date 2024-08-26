@@ -1,5 +1,7 @@
-from db.models import User
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
+
+User = get_user_model()
 
 
 def create_user(
@@ -8,7 +10,7 @@ def create_user(
         email: str = None,
         first_name: str = None,
         last_name: str = None
-) -> list:
+) -> User:
     try:
         user = User.objects.create_user(
             username=username,
@@ -25,8 +27,7 @@ def create_user(
 
 
 def get_user(user_id: int) -> User:
-    user = User.objects.get(pk=user_id)
-    return user
+    return User.objects.get(pk=user_id)
 
 
 def update_user(
@@ -36,19 +37,19 @@ def update_user(
         email: str = None,
         first_name: str = None,
         last_name: str = None
-) -> list:
-    if user_id:
-        user = User.objects.get(pk=user_id)
-        if username is not None:
-            user.username = username
-        if email is not None:
-            user.email = email
-        if first_name is not None:
-            user.first_name = first_name
-        if last_name is not None:
-            user.last_name = last_name
-        if password is not None:
-            user.set_password(password)
+) -> User:
+    user = User.objects.get(pk=user_id)
 
-        user.save()
-        return user
+    if username:
+        user.username = username
+    if email:
+        user.email = email
+    if first_name:
+        user.first_name = first_name
+    if last_name:
+        user.last_name = last_name
+    if password:
+        user.set_password(password)
+
+    user.save()
+    return user
