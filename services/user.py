@@ -2,7 +2,13 @@ from db.models import User
 from django.core.exceptions import ValidationError
 
 
-def create_user(username: str, password: str, email: str = None, first_name: str = None, last_name: str = None):
+def create_user(
+        username: str,
+        password: str,
+        email: str = None,
+        first_name: str = None,
+        last_name: str = None
+) -> list:
     try:
         user = User.objects.create_user(
             username=username,
@@ -13,7 +19,9 @@ def create_user(username: str, password: str, email: str = None, first_name: str
         )
         return user
     except Exception as e:
-        raise ValidationError(f"An error occurred while creating the user: {str(e)}")
+        raise ValidationError(
+            f"An error occurred while creating the user: {str(e)}"
+        )
 
 
 def get_user(user_id: int) -> User:
@@ -21,7 +29,14 @@ def get_user(user_id: int) -> User:
     return user
 
 
-def update_user(user_id: int, username: str = None, password: str = None, email: str = None, first_name: str = None, last_name: str = None):
+def update_user(
+        user_id: int,
+        username: str = None,
+        password: str = None,
+        email: str = None,
+        first_name: str = None,
+        last_name: str = None
+) -> list:
     if user_id:
         user = User.objects.get(pk=user_id)
         if username is not None:
