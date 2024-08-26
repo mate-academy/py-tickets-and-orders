@@ -14,8 +14,8 @@ def create_user(
             username=username,
             password=password,
             email=email,
-            first_name=first_name or '',
-            last_name=last_name or ''
+            first_name=first_name or "",
+            last_name=last_name or ""
         )
         return user
     except Exception as e:
