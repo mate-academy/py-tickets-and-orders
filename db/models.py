@@ -126,7 +126,7 @@ class Ticket(models.Model):
         return (
             f"{self.movie_session.movie.title} "
             f"{datetime.strftime(self.movie_session.show_time,
-                                 "%Y-%m-%d %H:%M:%S")} "
+                                 '%Y-%m-%d %H:%M:%S')} "
             f"(row: {self.row}, seat: {self.seat})"
         )
 
