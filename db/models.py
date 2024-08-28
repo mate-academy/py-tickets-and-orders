@@ -1,5 +1,3 @@
-from typing import Self
-
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -123,7 +121,7 @@ class Ticket(models.Model):
                 }
             )
 
-    def save(self, *args, **kwargs) -> Self:
+    def save(self, *args, **kwargs) -> "Ticket":
         self.full_clean()
         return super().save(*args, **kwargs)
 
