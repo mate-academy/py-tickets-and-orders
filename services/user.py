@@ -10,20 +10,15 @@ def create_user(
         email: str = None,
         first_name: str = None,
         last_name: str = None
-) -> User:
-    try:
-        user = User.objects.create_user(
-            username=username,
-            password=password,
-            email=email,
-            first_name=first_name or "",
-            last_name=last_name or ""
-        )
-        return user
-    except Exception as e:
-        raise ValidationError(
-            f"An error occurred while creating the user: {str(e)}"
-        )
+) -> get_user_model:
+    user = User.objects.create_user(
+        username=username,
+        password=password,
+        email=email,
+        first_name=first_name or "",
+        last_name=last_name or ""
+    )
+    return user
 
 
 def get_user(user_id: int) -> User:

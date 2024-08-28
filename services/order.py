@@ -1,9 +1,11 @@
 from django.db import transaction
 from django.db.models import QuerySet
 from django.utils.dateparse import parse_datetime
+from django.contrib.auth import get_user_model
 
-from db.models import MovieSession, Order, Ticket, User
+from db.models import MovieSession, Order, Ticket
 
+User = get_user_model()
 
 @transaction.atomic
 def create_order(tickets: list[dict], username: str, date: str = None) -> None:
@@ -16,11 +18,9 @@ def create_order(tickets: list[dict], username: str, date: str = None) -> None:
         row = ticket_data["row"]
         seat = ticket_data["seat"]
 
-        movie_session = MovieSession.objects.get(id=movie_session_id)
-
         Ticket.objects.create(
             order=order,
-            movie_session=movie_session,
+            movie_session_id=movie_session_id,
             row=row,
             seat=seat
         )
@@ -30,7 +30,6 @@ def create_order(tickets: list[dict], username: str, date: str = None) -> None:
         if created_at:
             order.created_at = created_at
             order.save()
-
 
 def get_orders(username: str = None) -> QuerySet[Order]:
     if username:
