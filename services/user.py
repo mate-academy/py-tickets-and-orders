@@ -10,21 +10,12 @@ def create_user(
     first_name: str | None = None,
     last_name: str | None = None,
 ) -> User:
-    kwargs = {}
-
-    if email:
-        kwargs["email"] = email
-
-    if first_name:
-        kwargs["first_name"] = first_name
-
-    if last_name:
-        kwargs["last_name"] = last_name
-
     return get_user_model().objects.create_user(
         username,
         password=password,
-        **kwargs,
+        email=email or "",
+        first_name=first_name or "",
+        last_name=last_name or "",
     )
 
 
