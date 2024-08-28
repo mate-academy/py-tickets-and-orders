@@ -3,7 +3,7 @@ from django.db.models import QuerySet
 from django.utils.dateparse import parse_datetime
 from django.contrib.auth import get_user_model
 
-from db.models import MovieSession, Order, Ticket
+from db.models import Order, Ticket
 
 User = get_user_model()
 
@@ -26,6 +26,7 @@ def create_order(tickets: list[dict], username: str, date: str = None) -> None:
         if created_at:
             order.created_at = created_at
             order.save()
+
 
 def get_orders(username: str = None) -> QuerySet[Order]:
     if username:
