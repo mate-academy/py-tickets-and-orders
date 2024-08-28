@@ -10,20 +10,20 @@ def create_order(
         date: str = None,
 ) -> None:
 
-    the_user = get_user_model().objects.get(username=username)
+    user = get_user_model().objects.get(username=username)
     with transaction.atomic():
-        the_order = Order.objects.create(
-            user=the_user
+        order = Order.objects.create(
+            user=user
         )
         if date:
-            the_order.created_at = date
-            the_order.save()
+            order.created_at = date
+            order.save()
         [
             Ticket.objects.create(
                 row=ticket["row"],
                 seat=ticket["seat"],
                 movie_session_id=ticket["movie_session"],
-                order=the_order,
+                order=order,
             )
             for ticket in tickets
         ]
