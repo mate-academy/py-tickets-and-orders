@@ -10,15 +10,13 @@ def create_user(
     last_name: str = ""
 ) -> User:
 
-    user = User.objects.create_user(
+    return User.objects.create_user(
         username=username,
         password=password,
         email=email,
         first_name=first_name,
         last_name=last_name
     )
-
-    return user
 
 
 def get_user(user_id: int) -> User:
