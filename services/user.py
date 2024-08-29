@@ -32,7 +32,7 @@ def update_user(
         first_name: str = None,
         last_name: str = None
 ) -> User:
-    user = User.objects.get(pk=user_id)
+    user = get_user(user_id)
 
     if username:
         user.username = username
