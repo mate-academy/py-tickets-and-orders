@@ -1,6 +1,5 @@
 from django.db import transaction
 from django.db.models import QuerySet
-from django.template.defaultfilters import title
 
 from db.models import Movie
 
