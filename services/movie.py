@@ -1,4 +1,5 @@
 from django.db.models import QuerySet
+from django.template.defaultfilters import title
 
 from db.models import Movie
 
@@ -8,6 +9,9 @@ def get_movies(
     actors_ids: list[int] = None,
 ) -> QuerySet:
     queryset = Movie.objects.all()
+
+    if title:
+        queryset = queryset.filter(title_icontains=title)
 
     if genres_ids:
         queryset = queryset.filter(genres__id__in=genres_ids)
