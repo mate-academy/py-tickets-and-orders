@@ -14,9 +14,11 @@ def create_order(
         order = Order(
             user=get_user_model().objects.get(username=username),
         )
-        if date:
-            order.created_at = date
         order.save()
+        if date:
+            # save again to override `auto_now_add`
+            order.created_at = date
+            order.save()
 
         for ticket in tickets:
             Ticket.objects.create(
