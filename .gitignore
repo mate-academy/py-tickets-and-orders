@@ -3,8 +3,8 @@
 *.iml
 .env
 .DS_Store
-venv/
+settings.py
 .pytest_cache/
-**__pycache__/
+**__pycache__/a
 *.pyc
 **db.sqlite3
