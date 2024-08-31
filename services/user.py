@@ -6,11 +6,11 @@ from db.models import User
 def create_user(
         username: str,
         password: str,
-        email: str = None,
+        email: str | None = None,
         first_name: str = "",
         last_name: str = "",
-) -> User:
-    return get_user_model().objects.create_user(
+) -> None:
+    get_user_model().objects.create_user(
         username=username,
         password=password,
         email=email,
@@ -25,11 +25,11 @@ def get_user(user_id: int) -> User:
 
 def update_user(
         user_id: int,
-        username: str = None,
-        password: str = None,
-        email: str = None,
-        first_name: str = None,
-        last_name: str = None,
+        username: str | None = None,
+        password: str | None = None,
+        email: str | None = None,
+        first_name: str | None = None,
+        last_name: str | None = None,
 ) -> None:
     user = get_user_model().objects.get(pk=user_id)
 
