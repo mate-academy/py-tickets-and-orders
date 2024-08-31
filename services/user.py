@@ -7,26 +7,14 @@ from db.models import User
 def create_user(
         username: str,
         password: str,
-        email: str = None,
-        first_name: str = None,
-        last_name: str = None,
+        email: str | None = None,
+        first_name: str | None = None,
+        last_name: str | None = None,
 ) -> None:
     user = User(username=username)
-
-    if first_name:
-        user.first_name = first_name
-    else:
-        user.first_name = ""
-
-    if email:
-        user.email = email
-    else:
-        user.email = ""
-
-    if last_name:
-        user.last_name = last_name
-    else:
-        user.last_name = ""
+    user.first_name = first_name if first_name else ""
+    user.email = email if email else ""
+    user.last_name = last_name if last_name else ""
 
     with transaction.atomic():
         user.set_password(password)
@@ -43,11 +31,11 @@ def get_user_by_username(username: str) -> User:
 
 def update_user(
         user_id: int,
-        username: str = None,
-        password: str = None,
-        email: str = None,
-        first_name: str = None,
-        last_name: str = None,
+        username: str | None = None,
+        password: str | None = None,
+        email: str | None = None,
+        first_name: str | None = None,
+        last_name: str | None = None,
 ) -> None:
     user = get_user_model().objects.get(pk=user_id)
 

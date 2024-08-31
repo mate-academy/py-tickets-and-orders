@@ -21,9 +21,12 @@ def create_order(
             order = Order.objects.create(user=user)
 
         for ticket in tickets:
-            Ticket.objects.create(row=ticket["row"], seat=ticket["seat"],
-                                  movie_session_id=ticket["movie_session"],
-                                  order=order)
+            Ticket.objects.create(
+                row=ticket["row"],
+                seat=ticket["seat"],
+                movie_session_id=ticket["movie_session"],
+                order=order
+            )
 
 
 def get_orders(username: str = None) -> QuerySet[Order]:
