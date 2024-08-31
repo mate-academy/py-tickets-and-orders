@@ -24,7 +24,7 @@ def create_order(tickets: list[dict], username: str, *,
                     get_movie_session_by_id(ticket["movie_session"])
                 except MovieSession.DoesNotExist:
                     raise ValueError(
-                        f"MovieSession with id {ticket["movie_session"]} "
+                        f"MovieSession with id {ticket['movie_session']} "
                         "does not exist")
 
                 ticket_objects.append(
