@@ -9,12 +9,12 @@ from db.models import Order, Ticket, User
 def create_order(
         tickets: list[dict],
         username: str,
-        date: str = None
+        date: str | None = None
 ) -> Order:
     user = User.objects.get(username=username)
 
     with transaction.atomic():
-        new_order = Order.objects.create(user=user, created_at=date)
+        new_order = Order.objects.create(user=user)
 
         if date:
             Order.objects.filter(
@@ -36,7 +36,7 @@ def create_order(
         return new_order
 
 
-def get_orders(username: str = None) -> QuerySet:
+def get_orders(username: str | None = None) -> QuerySet:
     if username:
         return Order.objects.filter(user__username=username)
 
