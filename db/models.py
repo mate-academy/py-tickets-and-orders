@@ -65,7 +65,7 @@ class Order(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def __str__(self) -> str:
-        return f"<Order: {self.created_at.strftime('%Y-%m-%d %H:%M:%S')}>"
+        return f"{self.created_at.strftime('%Y-%m-%d %H:%M:%S')}"
 
     class Meta:
         ordering = ["-created_at"]
@@ -100,8 +100,9 @@ class Ticket(models.Model):
         return super().save(*args, **kwargs)
 
     def __str__(self) -> str:
-        return (f"<Ticket: Speed "
-                f"{self.order.created_at.strftime('%Y-%m-%d %H:%M:%S')}> "
+        return (f"{self.movie_session.movie.title} "
+                f"{self.movie_session.show_time
+                .strftime('%Y-%m-%d %H:%M:%S')} "
                 f"(row: {self.row}, seat: {self.seat})")
 
     class Meta:
