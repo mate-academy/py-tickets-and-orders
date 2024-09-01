@@ -57,15 +57,21 @@ class MovieSession(models.Model):
     )
 
     def __str__(self) -> str:
-        return f"{self.movie.title} {str(self.show_time)}"
+        return (
+            f"{self.movie.title}"
+            f" {str(self.show_time.strftime("%Y-%m-%d %H:%M:%S"))}"
+        )
 
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
 
     def __str__(self) -> str:
-        return f"{self.created_at.strftime('%Y-%m-%d %H:%M:%S')}"
+        return f"{self.created_at.strftime("%Y-%m-%d %H:%M:%S")}"
 
     class Meta:
         ordering = ["-created_at"]
@@ -81,7 +87,7 @@ class Ticket(models.Model):
         if not 1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row:
             raise ValidationError(
                 {
-                    f"seat":
+                    "seat":
                         "seat number must be in available range: "
                         "(1, seats_in_row): "
                         f"(1, {self.movie_session.cinema_hall.seats_in_row})"
@@ -90,8 +96,8 @@ class Ticket(models.Model):
         if not 1 <= self.row <= self.movie_session.cinema_hall.rows:
             raise ValidationError(
                 {
-                    f"row": "row number must be in available range: (1, rows): "
-                            f"(1, {self.movie_session.cinema_hall.rows})"
+                    "row": "row number must be in available range: (1, rows): "
+                           f"(1, {self.movie_session.cinema_hall.rows})"
                 }
             )
 
@@ -101,8 +107,7 @@ class Ticket(models.Model):
 
     def __str__(self) -> str:
         return (f"{self.movie_session.movie.title} "
-                f"{self.movie_session.show_time
-                .strftime('%Y-%m-%d %H:%M:%S')} "
+                f"{self.movie_session.show_time} "
                 f"(row: {self.row}, seat: {self.seat})")
 
     class Meta:
