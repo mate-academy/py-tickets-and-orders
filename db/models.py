@@ -59,7 +59,7 @@ class MovieSession(models.Model):
     def __str__(self) -> str:
         return (
             f"{self.movie.title}"
-            f" {str(self.show_time.strftime("%Y-%m-%d %H:%M:%S"))}"
+            f" {str(self.show_time.strftime('%Y-%m-%d %H:%M:%S'))}"
         )
 
 
@@ -71,7 +71,7 @@ class Order(models.Model):
     )
 
     def __str__(self) -> str:
-        return f"{self.created_at.strftime("%Y-%m-%d %H:%M:%S")}"
+        return f"{self.created_at.strftime('%Y-%m-%d %H:%M:%S')}"
 
     class Meta:
         ordering = ["-created_at"]
