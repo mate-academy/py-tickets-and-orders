@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import AbstractUser
 
@@ -61,7 +62,7 @@ class User(AbstractUser):
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(
-        User,
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="orders"
     )
@@ -88,7 +89,8 @@ class Ticket(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=["movie_session", "row", "seat"], name="unique_ticket"
+                fields=["movie_session", "row", "seat"],
+                name="unique_movie_session_row_seat"
             )
         ]
 

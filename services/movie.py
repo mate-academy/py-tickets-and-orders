@@ -37,15 +37,8 @@ def create_movie(
             title=movie_title,
             description=movie_description,
         )
-
         if genres_ids:
-            if not all(isinstance(id, int) for id in genres_ids):
-                raise ValueError("All genre IDs must be integers")
             movie.genres.set(genres_ids)
-
         if actors_ids:
-            if not all(isinstance(id, int) for id in actors_ids):
-                raise ValueError("All actor IDs must be integers")
             movie.actors.set(actors_ids)
-
         return movie
