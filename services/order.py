@@ -12,7 +12,6 @@ def create_order(
     tickets: list[dict],
     username: str,
     date: Optional[str] = None
-    tickets: list[dict], username: str, date: Optional[str] = None
 ) -> None:
     order = Order.objects.create(
         user=get_user_model().objects.get(username=username)
