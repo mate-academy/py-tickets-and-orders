@@ -28,7 +28,7 @@ def create_user(
 
 
 def get_user(user_id: int) -> User:
-    return get_user_model().objects.filter(id=user_id).first()
+    return get_user_model().objects.filter(pk=user_id).first()
 
 
 def update_user(
@@ -39,11 +39,7 @@ def update_user(
         first_name: str | None = None,
         last_name: str | None = None
 ) -> None:
-    user = get_user_model().objects.filter(id=user_id).first()
-
-    if not user:
-        print(f"User with id {user_id} does not exist.")
-        return
+    user = get_user(user_id=user_id)
 
     if username:
         user.username = username

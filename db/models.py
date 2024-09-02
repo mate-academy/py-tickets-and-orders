@@ -61,7 +61,8 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name="orders"
     )
 
     class Meta:
@@ -77,13 +78,20 @@ class Ticket(models.Model):
     movie_session = models.ForeignKey(
         to=MovieSession,
         on_delete=models.CASCADE,
-        related_name="movie_sessions"
+        related_name="movie_session_tickets"
     )
     order = models.ForeignKey(
         to=Order,
         on_delete=models.CASCADE,
-        related_name="orders"
+        related_name="order_tickets"
     )
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                fields=["row", "seat", "movie_session"],
+                name="unique_ticket_seat_row_movie_session")
+        ]
 
     def __str__(self) -> str:
         return (f"{self.movie_session.movie.title} "
@@ -94,12 +102,12 @@ class Ticket(models.Model):
         max_rows = self.movie_session.cinema_hall.rows
         max_seats = self.movie_session.cinema_hall.seats_in_row
 
-        if max_rows < self.row:
+        if max_rows < self.row or self.row < 0:
             raise ValidationError(
                 {"row": [f"row number must be in available range: "
                          f"(1, rows): (1, {self.row - 1})"]}
             )
-        if max_seats < self.seat:
+        if max_seats < self.seat or self.seat < 0:
             raise ValidationError(
                 {"seat": [f"seat number must be in available range: "
                           f"(1, seats_in_row): (1, {self.seat - 1})"]}
@@ -108,13 +116,6 @@ class Ticket(models.Model):
     def save(self, *args, **kwargs) -> None:
         self.full_clean()
         return super().save(*args, **kwargs)
-
-    class Meta:
-        constraints = [
-            UniqueConstraint(
-                fields=["row", "seat", "movie_session"],
-                name="unique_ticket_seat_row_movie_session")
-        ]
 
 
 class User(AbstractUser):
