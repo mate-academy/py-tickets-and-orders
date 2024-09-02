@@ -1,6 +1,6 @@
 from django.db import transaction
 from db.models import Order, Ticket
-from db.models import User
+from django.contrib.auth import get_user_model
 
 
 def create_order(
@@ -8,13 +8,12 @@ def create_order(
         username: str,
         date: str | None = None
 ) -> Order:
-    new_data = {}
-    if date:
-        new_data["created_at"] = date
     with transaction.atomic():
-        user = User.objects.get(username=username)
-        order = Order.objects.create(user=user, created_at=date)
-        Order.objects.filter(id=order.id).update(**new_data)
+        user = get_user_model().objects.get(username=username)
+        order = Order.objects.create(user=user)
+        if date:
+            order.created_at = date
+            order.save(update_fields=["created_at"])
         for ticket in tickets:
             Ticket.objects.create(
                 order=order,
@@ -25,7 +24,8 @@ def create_order(
     return order
 
 
-def get_orders(username: str = None) -> Order:
+def get_orders(username: str | None = None) -> Order:
+    queryset = Order.objects.all()
     if username:
-        return Order.objects.filter(user__username=username)
-    return Order.objects.all()
+        queryset = queryset.filter(user__username=username)
+    return queryset
