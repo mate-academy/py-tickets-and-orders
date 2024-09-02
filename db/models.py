@@ -83,7 +83,8 @@ class Ticket(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=["movie_session", "row", "seat"], name="unique_ticket"
+                fields=["movie_session", "row", "seat"],
+                name="unique_ticket_movie_session_row_seat"
             )
         ]
 
@@ -94,8 +95,6 @@ class Ticket(models.Model):
                 f" (row: {self.row}, seat: {self.seat})")
 
     def clean(self) -> None:
-        super().clean()
-
         if self.row > self.movie_session.cinema_hall.rows:
             raise ValidationError(
                 {
