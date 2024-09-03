@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.utils.dateparse import parse_datetime
 
@@ -10,7 +11,7 @@ def create_order(
         username: str,
         date: str = None
 ) -> None:
-    user = User.objects.get(username=username)
+    user = get_user_model().objects.get(username=username)
     order = Order.objects.create(user=user)
     if date:
         parsed_date = parse_datetime(date)
