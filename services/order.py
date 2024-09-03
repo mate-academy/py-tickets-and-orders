@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db import transaction
 
-from db.models import Order, User, Ticket
+from db.models import Order, Ticket
 
 
 @transaction.atomic
@@ -26,8 +26,7 @@ def create_order(
 
 
 def get_orders(username: str = None) -> list[Order]:
-    if username is None:
-        return Order.objects.all()
-    user = User.objects.get(username=username)
-    orders = Order.objects.filter(user=user)
+    orders = Order.objects.all()
+    if username:
+        orders = orders.filter(user__username=username)
     return orders
