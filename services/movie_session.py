@@ -46,11 +46,11 @@ def delete_movie_session_by_id(session_id: int) -> None:
 
 def get_taken_seats(movie_session_id: int) -> list[dict]:
     movie_session = MovieSession.objects.get(pk=movie_session_id)
+    tickets = Ticket.objects.filter(movie_session=movie_session)
     result = []
     for row in range(1, movie_session.cinema_hall.rows + 1):
         for seat in range(1, movie_session.cinema_hall.seats_in_row + 1):
-            if Ticket.objects.filter(
-                    movie_session=movie_session,
+            if tickets.filter(
                     row=row,
                     seat=seat
             ).exists():

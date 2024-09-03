@@ -3,6 +3,8 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import UniqueConstraint
 
+from settings import AUTH_USER_MODEL
+
 
 class User(AbstractUser):
     pass
@@ -61,7 +63,7 @@ class MovieSession(models.Model):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    user = models.ForeignKey(to=AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     class Meta:
         ordering = ("-created_at",)
@@ -74,12 +76,12 @@ class Ticket(models.Model):
     movie_session = models.ForeignKey(
         to=MovieSession,
         on_delete=models.CASCADE,
-        related_name="ticket"
+        related_name="tickets"
     )
     order = models.ForeignKey(
         to=Order,
         on_delete=models.CASCADE,
-        related_name="ticket"
+        related_name="tickets"
     )
     row = models.IntegerField()
     seat = models.IntegerField()
@@ -92,7 +94,7 @@ class Ticket(models.Model):
         constraints = [
             UniqueConstraint(
                 fields=["movie_session", "row", "seat"],
-                name="unique_ticket"
+                name="ticket_with_row_seat_movie_session"
             ),
         ]
 
