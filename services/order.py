@@ -1,4 +1,6 @@
 from django.db import transaction
+from django.db.models import QuerySet
+
 from db.models import Order, Ticket, User
 
 
@@ -7,7 +9,7 @@ def create_order(
         tickets: list[dict],
         username: str,
         date: str | None = None
-) -> list[dict]:
+) -> Order:
     user = User.objects.get(username=username)
     order = Order.objects.create(user=user)
     if date:
@@ -24,7 +26,7 @@ def create_order(
     return order
 
 
-def get_orders(username: str = None) -> Order:
+def get_orders(username: str = None) -> QuerySet[Order]:
     orders = Order.objects.all()
     if username:
         orders = orders.filter(user__username=username)
