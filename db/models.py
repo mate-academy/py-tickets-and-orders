@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import AbstractUser
@@ -61,15 +62,16 @@ class MovieSession(models.Model):
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(
-        "User",
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name="orders")
-
-    def __str__(self) -> str:
-        return f"{self.created_at}"
+        related_name="orders"
+    )
 
     class Meta:
         ordering = ("-created_at",)
+
+    def __str__(self) -> str:
+        return f"{self.created_at}"
 
 
 class Ticket(models.Model):
@@ -84,6 +86,15 @@ class Ticket(models.Model):
     row = models.IntegerField()
     seat = models.IntegerField()
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["movie_session", "row", "seat"],
+                name="unique_ticket_constraint_movie_session_row_seat"
+            )
+        ]
+        ordering = ["movie_session", "row", "seat"]
+
     def __str__(self) -> str:
         return (
             f"{self.movie_session.movie.title} {self.movie_session.show_time} "
@@ -91,12 +102,19 @@ class Ticket(models.Model):
         )
 
     def clean(self) -> None:
+        if self.row <= 0:
+            raise ValidationError(
+                {"row": "Row number must be greater than 0."}
+            )
         if self.row > self.movie_session.cinema_hall.rows:
             raise ValidationError(
                 {"row": "row number must be in available range: "
                         "(1, rows): (1, 10)"}
             )
-
+        if self.seat <= 0:
+            raise ValidationError(
+                {"seat": "Seat number must be greater than 0."}
+            )
         if self.seat > self.movie_session.cinema_hall.seats_in_row:
             raise ValidationError(
                 {"seat": "seat number must be in available range: "
@@ -106,11 +124,3 @@ class Ticket(models.Model):
     def save(self, *args, **kwargs) -> None:
         self.full_clean()
         super().save(*args, **kwargs)
-
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=["movie_session", "row", "seat"],
-                name="unique_ticket_constraint"
-            )
-        ]
