@@ -8,10 +8,16 @@ from django.utils import timezone
 
 
 @transaction.atomic
-def create_order(tickets: list[dict], username: str, date: str = None) -> Order:
+def create_order(
+        tickets: list[dict],
+        username: str,
+        date: str = None
+) -> Order:
     user = User.objects.get(username=username)
     if date:
-        created_at = timezone.make_aware(datetime.strptime(date, "%Y-%m-%d %H:%M"))
+        created_at = timezone.make_aware(
+            datetime.strptime(date, "%Y-%m-%d %H:%M")
+        )
 
     else:
         created_at = timezone.now()
@@ -19,7 +25,9 @@ def create_order(tickets: list[dict], username: str, date: str = None) -> Order:
     order = Order.objects.create(user=user, created_at=created_at)
 
     for ticket_data in tickets:
-        movie_session = MovieSession.objects.get(id=ticket_data["movie_session"])
+        movie_session = MovieSession.objects.get(
+            id=ticket_data["movie_session"]
+        )
         Ticket.objects.create(
             order=order,
             movie_session=movie_session,

@@ -1,8 +1,7 @@
 from django.contrib.auth.models import User, AbstractUser
-from django.contrib.sitemaps.views import index
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.forms import IntegerField
+
 
 import settings
 
@@ -60,15 +59,18 @@ class MovieSession(models.Model):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="orders")
-
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="orders"
+    )
 
     class Meta:
         ordering = ["-created_at"]
 
-
     def __str__(self) -> str:
         return f"{self.created_at}"
+
 
 class Ticket(models.Model):
     row = models.IntegerField()
@@ -99,25 +101,29 @@ class Ticket(models.Model):
             )
         ]
 
-    def clean(self):
+    def clean(self) -> None:
         if not (1 <= self.row <= self.movie_session.cinema_hall.rows):
             raise ValidationError(
                 {
-                    "row":
-                     f"row number must be in available range: (1, rows): "
-                     f"(1, {self.movie_session.cinema_hall.rows})"
-                 }
+                    "row": (
+                        f"row number must be in available range: "
+                        f"(1, rows): "
+                        f"(1, {self.movie_session.cinema_hall.rows})"
+                    )
+                }
             )
         if not (1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row):
             raise ValidationError(
                 {
-                    "seat": f"seat number must be in available range: "
-                         f"(1, seats_in_row): "
-                         f"(1, {self.movie_session.cinema_hall.seats_in_row})"
-                 }
+                    "seat": (
+                        f"seat number must be in available range: "
+                        f"(1, seats_in_row): "
+                        f"(1, {self.movie_session.cinema_hall.seats_in_row})"
+                    )
+                }
             )
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         self.full_clean()
         super().save(*args, **kwargs)
 
