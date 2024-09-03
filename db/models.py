@@ -27,7 +27,6 @@ class Movie(models.Model):
     actors = models.ManyToManyField(to=Actor, related_name="movies")
     genres = models.ManyToManyField(to=Genre, related_name="movies")
 
-
     class Meta:
         indexes = [
             models.Index(fields=["title"]),
@@ -83,11 +82,16 @@ class Order(models.Model):
 
 
 class Ticket(models.Model):
-    movie_session = models.ForeignKey(to=MovieSession, on_delete=models.CASCADE)
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    movie_session = models.ForeignKey(
+        to=MovieSession,
+        on_delete=models.CASCADE
+    )
+    order = models.ForeignKey(
+        Order,
+        on_delete=models.CASCADE
+    )
     row = models.IntegerField()
     seat = models.IntegerField()
-
 
     class Meta:
         constraints = [
@@ -97,7 +101,7 @@ class Ticket(models.Model):
             )
         ]
 
-    def clean(self):
+    def clean(self) -> None:
         cinema_hall = self.movie_session.cinema_hall
 
         if not 0 < self.row <= cinema_hall.rows:
@@ -112,10 +116,9 @@ class Ticket(models.Model):
                 f"(1, seats_in_row): (1, {cinema_hall.seats_in_row})"
             })
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         self.full_clean()
         return super().save(*args, **kwargs)
-
 
     def __str__(self) -> str:
         return (
