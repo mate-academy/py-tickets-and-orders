@@ -2,7 +2,6 @@ from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
-from typing_extensions import Callable
 
 
 class Genre(models.Model):
@@ -104,17 +103,17 @@ class Ticket(models.Model):
         if not (1 <= self.row <= self.movie_session.cinema_hall.rows):
             raise ValidationError({
                 "row": f"row number must be in available range: "
-                       f"(1, rows): "
-                       f"(1, {self.movie_session.cinema_hall.rows})"
+                f"(1, rows): "
+                f"(1, {self.movie_session.cinema_hall.rows})"
             })
 
         if not (1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row):
             raise ValidationError({
                 "seat": f"seat number must be in available range: "
-                        f"(1, seats_in_row): "
-                        f"(1, {self.movie_session.cinema_hall.seats_in_row})"
+                f"(1, seats_in_row): "
+                f"(1, {self.movie_session.cinema_hall.seats_in_row})"
             })
 
-    def save(self, *args, **kwargs) -> Callable:
+    def save(self, *args, **kwargs) -> None:
         self.full_clean()
         return super().save(*args, **kwargs)

@@ -1,27 +1,36 @@
 from datetime import datetime
 
+from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.db.models import QuerySet
 
-from db.models import Order, Ticket, User, MovieSession
+from db.models import Order, Ticket, MovieSession
 
 
 def create_order(
         tickets: list[dict],
         username: str,
-        date: datetime = None
+        date: datetime | None = None
 ) -> Order:
     with transaction.atomic():
-        order = Order.objects.create(user=User.objects.get(username=username))
+        order = Order.objects.create(
+            user=get_user_model().objects.get(username=username)
+        )
         if date:
             order.created_at = date
             order.save()
 
+        movie_session_ids = set(ticket["movie_session"] for ticket in tickets)
+        existing_sessions = MovieSession.objects.filter(
+            id__in=movie_session_ids
+        )
+
+        if len(existing_sessions) != len(movie_session_ids):
+            raise ValueError("One or more movie sessions do not exist.")
+
         new_tickets = [
             Ticket(
-                movie_session=MovieSession.objects.get(
-                    pk=ticket["movie_session"]
-                ),
+                movie_session_id=ticket["movie_session"],
                 order=order,
                 row=ticket["row"],
                 seat=ticket["seat"]
@@ -33,7 +42,7 @@ def create_order(
         return order
 
 
-def get_orders(username: str = None) -> QuerySet:
+def get_orders(username: str | None = None) -> QuerySet:
     orders = Order.objects.all()
 
     if username:
