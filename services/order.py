@@ -2,9 +2,12 @@ from datetime import datetime
 
 from django.db import transaction
 from django.db.models import QuerySet
-
-from db.models import Order, Ticket, MovieSession, User
 from django.utils import timezone
+from django.contrib.auth import get_user_model
+
+from db.models import Order, Ticket, MovieSession
+
+User = get_user_model()
 
 
 @transaction.atomic
@@ -18,7 +21,6 @@ def create_order(
         created_at = timezone.make_aware(
             datetime.strptime(date, "%Y-%m-%d %H:%M")
         )
-
     else:
         created_at = timezone.now()
 
