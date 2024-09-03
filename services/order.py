@@ -10,7 +10,7 @@ from services.user import get_user_by_username
 def create_order(
         tickets: list[dict],
         username: str,
-        date: str = None
+        date: str | None = None
 ) -> None:
     user = get_user_by_username(username)
     with transaction.atomic():
@@ -29,7 +29,7 @@ def create_order(
             )
 
 
-def get_orders(username: str = None) -> QuerySet[Order]:
+def get_orders(username: str | None = None) -> QuerySet[Order]:
     if username:
         return Order.objects.filter(user__username=username)
 
