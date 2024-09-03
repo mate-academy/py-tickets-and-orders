@@ -1,15 +1,11 @@
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
 
-import settings
-
 
 class Genre(models.Model):
-    name = models.CharField(
-        max_length=255,
-        unique=True
-    )
+    name = models.CharField(max_length=255, unique=True)
 
     def __str__(self) -> str:
         return self.name
@@ -26,14 +22,8 @@ class Actor(models.Model):
 class Movie(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
-    actors = models.ManyToManyField(
-        to=Actor,
-        related_name="movies"
-    )
-    genres = models.ManyToManyField(
-        to=Genre,
-        related_name="movies"
-    )
+    actors = models.ManyToManyField(to=Actor, related_name="movies")
+    genres = models.ManyToManyField(to=Genre, related_name="movies")
 
     class Meta:
         indexes = [models.Index(fields=["title"])]
