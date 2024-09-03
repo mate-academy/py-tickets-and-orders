@@ -1,10 +1,7 @@
 from datetime import datetime
-
 from django.db import transaction
 from django.db.models import QuerySet
-from django.utils import timezone
 from django.contrib.auth import get_user_model
-
 from db.models import Order, Ticket, MovieSession
 
 User = get_user_model()
@@ -17,13 +14,11 @@ def create_order(
         date: str = None
 ) -> Order:
     user = User.objects.get(username=username)
-    if date:
-        created_at = timezone.make_aware(
-            datetime.strptime(date, "%Y-%m-%d %H:%M")
-        )
-    else:
-        created_at = timezone.now()
 
+    if date:
+        created_at = datetime.strptime(date, "%Y-%m-%d %H:%M")
+    else:
+        created_at = datetime.now()
     order = Order.objects.create(user=user, created_at=created_at)
 
     for ticket_data in tickets:
