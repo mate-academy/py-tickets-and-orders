@@ -47,9 +47,35 @@ class Order(models.Model):
         return f"{self.created_at.strftime('%Y-%m-%d %H:%M:%S')}"
 
 
+class CinemaHall(models.Model):
+    name = models.CharField(max_length=255)
+    rows = models.IntegerField()
+    seats_in_row = models.IntegerField()
+
+    @property
+    def capacity(self) -> int:
+        return self.rows * self.seats_in_row
+
+    def __str__(self) -> str:
+        return self.name
+
+
+class MovieSession(models.Model):
+    show_time = models.DateTimeField()
+    cinema_hall = models.ForeignKey(
+        to=CinemaHall, on_delete=models.CASCADE, related_name="movie_sessions"
+    )
+    movie = models.ForeignKey(
+        to=Movie, on_delete=models.CASCADE, related_name="movie_sessions"
+    )
+
+    def __str__(self) -> str:
+        return f"{self.movie.title} {str(self.show_time)}"
+
+
 class Ticket(models.Model):
     movie_session = models.ForeignKey(
-        to="MovieSession", on_delete=models.CASCADE, related_name="tickets"
+        to=MovieSession, on_delete=models.CASCADE, related_name="tickets"
     )
     order = models.ForeignKey(
         to=Order, on_delete=models.CASCADE, related_name="tickets"
@@ -67,7 +93,7 @@ class Ticket(models.Model):
 
     def clean(self) -> None:
         cinema_hall = self.movie_session.cinema_hall
-        if self.row > cinema_hall.rows:
+        if self.row < 1 or self.row > cinema_hall.rows:
             raise ValidationError(
                 {
                     "row": (
@@ -96,32 +122,6 @@ class Ticket(models.Model):
             f"{self.movie_session.show_time} "
             f"(row: {self.row}, seat: {self.seat})"
         )
-
-
-class CinemaHall(models.Model):
-    name = models.CharField(max_length=255)
-    rows = models.IntegerField()
-    seats_in_row = models.IntegerField()
-
-    @property
-    def capacity(self) -> int:
-        return self.rows * self.seats_in_row
-
-    def __str__(self) -> str:
-        return self.name
-
-
-class MovieSession(models.Model):
-    show_time = models.DateTimeField()
-    cinema_hall = models.ForeignKey(
-        to=CinemaHall, on_delete=models.CASCADE, related_name="movie_sessions"
-    )
-    movie = models.ForeignKey(
-        to=Movie, on_delete=models.CASCADE, related_name="movie_sessions"
-    )
-
-    def __str__(self) -> str:
-        return f"{self.movie.title} {str(self.show_time)}"
 
 
 class User(AbstractUser):
