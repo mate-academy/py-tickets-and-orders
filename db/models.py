@@ -119,11 +119,10 @@ class Ticket(models.Model):
         self.full_clean()
         super().save(*args, **kwargs)
 
-
-class Meta:
-    constraints = [
-        models.UniqueConstraint(
-            fields=["movie_session", "row", "seat"],
-            name="unique_ticket_for_session"
-        )
-    ]
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["movie_session", "row", "seat"],
+                name="unique_ticket_for_session"
+            )
+        ]
