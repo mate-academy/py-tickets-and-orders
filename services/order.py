@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db import transaction
 
-from db.models import Order, MovieSession, Ticket
+from db.models import Order, Ticket
 
 
 def create_order(
@@ -19,11 +19,8 @@ def create_order(
             order.save()
 
         for ticket in tickets:
-            movie_session = MovieSession.objects.get(
-                pk=ticket["movie_session"]
-            )
             Ticket.objects.create(
-                movie_session=movie_session,
+                movie_session_id=ticket["movie_session"],
                 order=order,
                 row=ticket["row"],
                 seat=ticket["seat"]
