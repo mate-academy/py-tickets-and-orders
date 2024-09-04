@@ -10,7 +10,7 @@ from db.models import Order, Ticket
 def create_order(
         tickets: list[dict],
         username: str,
-        date: datetime = None
+        date: datetime | None = None
 ) -> Order:
     with transaction.atomic():
         user = get_user_model().objects.get(username=username)
@@ -33,7 +33,7 @@ def create_order(
 
 def get_orders(
         username: str | None = None,
-) -> QuerySet:
+) -> QuerySet[Order]:
     orders = Order.objects.all()
 
     if username:
