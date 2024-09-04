@@ -1,8 +1,7 @@
-import datetime
-
+from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.conf import settings
 
 
 class Genre(models.Model):
@@ -61,24 +60,28 @@ class User(AbstractUser):
 
 
 class Order(models.Model):
-    created_at = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(
-        User,
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="orders"
     )
 
-    def __str__(self) -> str:
-        return f"{self.created_at}"
-
     class Meta:
         ordering = ["-created_at"]
 
-    def save(self, **kwargs) -> None:
+    @property
+    def created_at_str(self, **kwargs) -> str:
         if not self.created_at:
-            self.created_at = datetime.datetime.now()
+            return "unknown_time"
 
-        super(Order, self).save(**kwargs)
+        return self.created_at.strftime("%Y-%m-%d %H:%M:%S")
+
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__name__}: {self.created_at_str}>"
+
+    def __str__(self) -> str:
+        return f"{self.created_at}"
 
 
 class Ticket(models.Model):
@@ -95,6 +98,14 @@ class Ticket(models.Model):
     row = models.IntegerField()
     seat = models.IntegerField()
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["movie_session", "row", "seat"],
+                name="unique_row_and_seat_for_movie_session"
+            )
+        ]
+
     def __str__(self) -> str:
         return (f"{self.movie_session}"
                 f" (row: {self.row}, seat: {self.seat})")
@@ -102,6 +113,12 @@ class Ticket(models.Model):
     def clean(self) -> None:
         cinema_hall = self.movie_session.cinema_hall
         errors = {}
+
+        if self.row < 0:
+            errors["row"] = ["row should be bigger than 0"]
+
+        if self.seat < 0:
+            errors["seat"] = ["seat should be bigger than 0"]
 
         if self.row > cinema_hall.rows:
             errors["row"] = [f"row number must be in available range:"
@@ -118,11 +135,3 @@ class Ticket(models.Model):
     def save(self, *args, **kwargs) -> None:
         self.full_clean()
         super().save(*args, **kwargs)
-
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=["movie_session", "row", "seat"],
-                name="unique_ticket_for_session"
-            )
-        ]
