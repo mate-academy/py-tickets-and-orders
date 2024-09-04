@@ -6,7 +6,7 @@ from db.models import MovieSession, Ticket
 def get_taken_seats(movie_session_id: int) -> list[dict]:
     return list(
         Ticket.objects.filter(movie_session_id=movie_session_id).
-        values("row", "sear")
+        values("row", "seat")
     )
 
 
