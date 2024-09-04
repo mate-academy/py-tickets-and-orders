@@ -1,7 +1,6 @@
 from typing import Optional
 
 from django.contrib.auth import get_user_model
-from django.core.exceptions import ObjectDoesNotExist
 
 
 User = get_user_model()
@@ -29,7 +28,7 @@ def create_user(
 
 
 def get_user(user_id: int) -> User:
-        return User.objects.get(pk=user_id)
+    return User.objects.get(pk=user_id)
 
 
 def update_user(
