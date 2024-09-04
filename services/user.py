@@ -1,3 +1,5 @@
+from typing import Optional
+
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -8,15 +10,16 @@ User = get_user_model()
 def create_user(
         username: str,
         password: str,
-        email: str = None,
-        first_name: str = None,
-        last_name: str = None
+        email: Optional[str] = None,
+        first_name: Optional[str] = None,
+        last_name: Optional[str] = None
 ) -> User:
     user = User.objects.create_user(
         username=username,
-        password=password,
-        email=email
+        password=password
     )
+    if email:
+        user.email = email
     if first_name:
         user.first_name = first_name
     if last_name:
@@ -26,19 +29,16 @@ def create_user(
 
 
 def get_user(user_id: int) -> User:
-    try:
-        return User.objects.get(id=user_id)
-    except User.DoesNotExist:
-        raise ObjectDoesNotExist(f"User with id {user_id} does not exist.")
+        return User.objects.get(pk=user_id)
 
 
 def update_user(
         user_id: int,
-        username: str = None,
-        password: str = None,
-        email: str = None,
-        first_name: str = None,
-        last_name: str = None
+        username: Optional[str] = None,
+        password: Optional[str] = None,
+        email: Optional[str] = None,
+        first_name: Optional[str] = None,
+        last_name: Optional[str] = None
 ) -> User:
     user = get_user(user_id)
     if username:
