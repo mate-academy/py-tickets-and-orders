@@ -45,8 +45,9 @@ def delete_movie_session_by_id(session_id: int) -> None:
 
 
 def get_taken_seats(movie_session_id: int) -> list:
-    if MovieSession.objects.filter(id=movie_session_id).exists():
-        return list(Ticket.objects.filter(
-            movie_session__id=movie_session_id
-        ).values("row", "seat"))
-    print("Movie session does not exist")
+    return list(Ticket.objects.filter(
+        movie_session__id=movie_session_id
+    ).values("row", "seat"))
+
+
+print("Movie session does not exist")

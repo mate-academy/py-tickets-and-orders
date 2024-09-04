@@ -25,7 +25,9 @@ def create_order(
 
 
 def get_orders(username: str | None = None) -> QuerySet:
-    kwargs = {}
+    query = Order.objects.all()
+
     if username:
-        kwargs["user"] = get_user_model().objects.get(username=username)
-    return Order.objects.filter(**kwargs)
+        query = query.filter(user__username=username)
+
+    return query

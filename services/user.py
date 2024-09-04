@@ -10,27 +10,24 @@ def create_user(
         first_name: str | None = None,
         last_name: str | None = None
 ) -> None:
-    if get_user_model().objects.filter(username=username).exists():
-        print("Username already exists")
-        return
-
-    users_data = {}
-    if email:
-        users_data["email"] = email
-    if first_name:
-        users_data["first_name"] = first_name
-    if last_name:
-        users_data["last_name"] = last_name
-
-    get_user_model().objects.create_user(
+    user = get_user_model().objects.create_user(
         username=username,
-        password=password,
-        **users_data
+        password=password
     )
+
+    if email:
+        user.email = email
+    if first_name:
+        user.first_name = first_name
+    if last_name:
+        user.last_name = last_name
+
+    user.save()
+    return user
 
 
 def get_user(user_id: int) -> User:
-    return get_user_model().objects.filter(pk=user_id).first()
+    return User.objects.get(id=user_id)
 
 
 def update_user(
@@ -40,22 +37,12 @@ def update_user(
     email: str | None = None,
     first_name: str | None = None,
     last_name: str | None = None
-) -> None:
-    if not get_user_model().objects.filter(pk=user_id).exists():
-        print("User not found")
-        return
+) -> User:
 
-    user = get_user_model().objects.get(pk=user_id)
+    user = get_user(user_id)
 
     if username:
-        if (
-            user.username != username
-            and get_user_model().objects.filter(username=username).exists()
-        ):
-            print("Username already exists")
-            return
         user.username = username
-
     if password:
         user.set_password(password)
     if email:
@@ -66,3 +53,4 @@ def update_user(
         user.last_name = last_name
 
     user.save()
+    return user
