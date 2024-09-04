@@ -33,6 +33,7 @@ def create_order(
             )
     return order
 
+
 def get_orders(username: str = None) -> list[Order]:
     if username:
         return Order.objects.filter(user__username=username)
