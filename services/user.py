@@ -14,11 +14,11 @@ def create_user(
         "username": username,
         "password": password,
     }
-    if email is not None:
+    if email:
         user_data["email"] = email
-    if first_name is not None:
+    if first_name:
         user_data["first_name"] = first_name
-    if last_name is not None:
+    if last_name:
         user_data["last_name"] = last_name
 
     get_user_model().objects.create_user(**user_data)
