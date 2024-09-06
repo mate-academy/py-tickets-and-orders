@@ -4,27 +4,27 @@ from django.db import transaction
 from db.models import Order, User, Ticket, MovieSession
 
 
+@transaction.atomic
 def create_order(
         tickets: list,
         username: str,
         date: str = None
 ) -> Order:
     user = User.objects.get(username=username)
-    with transaction.atomic():
-        order = Order.objects.create(user=user)
-        if date:
-            order.created_at = date
-        order.save()
-        for ticket in tickets:
-            movie_session_id = ticket.get("movie_session")
-            movie_session = MovieSession.objects.get(id=movie_session_id)
+    order = Order.objects.create(user=user)
+    if date:
+        order.created_at = date
+    order.save()
+    for ticket in tickets:
+        movie_session_id = ticket.get("movie_session")
+        movie_session = MovieSession.objects.get(id=movie_session_id)
 
-            Ticket.objects.create(
-                row=ticket.get("row"),
-                seat=ticket.get("seat"),
-                movie_session=movie_session,
-                order=order
-            )
+        Ticket.objects.create(
+            row=ticket.get("row"),
+            seat=ticket.get("seat"),
+            movie_session=movie_session,
+            order=order
+        )
 
 
 def get_orders(
