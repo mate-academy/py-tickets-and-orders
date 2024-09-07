@@ -34,4 +34,3 @@ def get_orders(username: str = None) -> QuerySet[Order]:
         user = User.objects.get(username=username)
         orders = orders.filter(user=user)
     return orders.order_by("-created_at", "id")
-
