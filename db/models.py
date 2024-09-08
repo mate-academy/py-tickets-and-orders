@@ -114,10 +114,10 @@ class Ticket(models.Model):
         cinema_hall = self.movie_session.cinema_hall
         errors = {}
 
-        if self.row < 0:
+        if self.row <= 0:
             errors["row"] = ["row should be bigger than 0"]
 
-        if self.seat < 0:
+        if self.seat <= 0:
             errors["seat"] = ["seat should be bigger than 0"]
 
         if self.row > cinema_hall.rows:
