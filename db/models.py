@@ -70,16 +70,6 @@ class Order(models.Model):
     class Meta:
         ordering = ["-created_at"]
 
-    @property
-    def created_at_str(self, **kwargs) -> str:
-        if not self.created_at:
-            return "unknown_time"
-
-        return self.created_at.strftime("%Y-%m-%d %H:%M:%S")
-
-    def __repr__(self) -> str:
-        return f"<{self.__class__.__name__}: {self.created_at_str}>"
-
     def __str__(self) -> str:
         return f"{self.created_at}"
 
@@ -114,17 +104,11 @@ class Ticket(models.Model):
         cinema_hall = self.movie_session.cinema_hall
         errors = {}
 
-        if self.row <= 0:
-            errors["row"] = ["row should be bigger than 0"]
-
-        if self.seat <= 0:
-            errors["seat"] = ["seat should be bigger than 0"]
-
-        if self.row > cinema_hall.rows:
+        if not 0 < self.row <= cinema_hall.rows:
             errors["row"] = [f"row number must be in available range:"
                              f" (1, rows): (1, {cinema_hall.rows})"]
 
-        if self.seat > cinema_hall.seats_in_row:
+        if not 0 < self.seat <= cinema_hall.seats_in_row:
             errors["seat"] = [f"seat number must be in available range:"
                               f" (1, seats_in_row):"
                               f" (1, {cinema_hall.seats_in_row})"]
