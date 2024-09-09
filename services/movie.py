@@ -14,10 +14,13 @@ def get_movies(
         movies = movies.filter(title__icontains=title)
 
     if genres_ids:
-        movies = movies.filter(genres__id__in=genres_ids).distinct()
+        movies = movies.filter(genres__id__in=genres_ids)
 
     if actors_ids:
-        movies = movies.filter(actors__id__in=actors_ids).distinct()
+        movies = movies.filter(actors__id__in=actors_ids)
+
+    if genres_ids or actors_ids:
+        return movies.distinct()
 
     return movies
 
@@ -31,7 +34,7 @@ def create_movie(
         movie_description: str,
         genres_ids: list = None,
         actors_ids: list = None,
-) -> Movie:
+) -> None:
     with transaction.atomic():
         movie = Movie.objects.create(
             title=movie_title,
@@ -41,4 +44,3 @@ def create_movie(
             movie.genres.set(genres_ids)
         if actors_ids:
             movie.actors.set(actors_ids)
-        return movie
