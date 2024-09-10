@@ -1,5 +1,3 @@
-from typing import Optional
-
 from django.db import transaction
 from django.contrib.auth import get_user_model
 from django.db.models import QuerySet
@@ -11,19 +9,17 @@ User = get_user_model()
 
 
 def create_order(
-    tickets: list[dict],
-    username: str,
-    date: Optional[str] = None
+        tickets: list[dict],
+        username: str,
+        date: str | None = None
 ) -> Order:
     user = User.objects.get(username=username)
-    new_data = {}
-    if date:
-        new_data["created_at"] = date
 
     with transaction.atomic():
         order = Order.objects.create(user=user)
-        Order.objects.filter(id=order.id).update(**new_data)
-
+        if date:
+            order.created_at = date
+            order.save()
         for ticket_data in tickets:
             Ticket.objects.create(
                 order=order,
@@ -34,7 +30,7 @@ def create_order(
     return order
 
 
-def get_orders(username: Optional[str] = None) -> QuerySet[Order]:
+def get_orders(username: str | None = None) -> QuerySet[Order]:
     queryset = Order.objects.all()
     if username:
         queryset = queryset.filter(user__username=username)
