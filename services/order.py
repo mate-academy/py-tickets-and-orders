@@ -16,7 +16,7 @@ def create_order(
 
         if date:
             order.created_at = date
-            order.save(update_fields=["created_at"])
+            order.save()
 
         for ticket in tickets:
             Ticket.objects.create(
