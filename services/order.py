@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import Optional
 
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 from django.db.models import QuerySet
 
@@ -21,11 +22,20 @@ def create_order(
             order.created_at = date
             order.save()
 
+        movie_session_ids = {ticket["movie_session"] for ticket in tickets}
+
+        existing_sessions = set(
+            MovieSession.objects.filter(id__in=movie_session_ids).values_list(
+                "id", flat=True
+            )
+        )
+
+        if movie_session_ids - existing_sessions:
+            raise ObjectDoesNotExist
+
         Ticket.objects.bulk_create([
             Ticket(
-                movie_session=MovieSession.objects.get(
-                    id=ticket["movie_session"]
-                ),
+                movie_session_id=ticket["movie_session"],
                 order=order,
                 row=ticket["row"],
                 seat=ticket["seat"]
