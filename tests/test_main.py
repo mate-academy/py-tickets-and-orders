@@ -346,7 +346,7 @@ def test_order_service_create_order_without_date(create_order_data, tickets):
 
 
 def test_order_service_create_order_with_date(create_order_data, tickets):
-    create_order(tickets=tickets, username="user_1", date="2020-11-10 14:40")
+    create_order(tickets=tickets, username="user_1", date_created="2020-11-10 14:40")
     assert list(Order.objects.all().values_list(
         "user__username"
     )) == [("user_1",)]
