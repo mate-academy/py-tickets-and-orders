@@ -1,4 +1,15 @@
+from __future__ import annotations
+
+from typing import Any
+
+from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import UniqueConstraint
+
+
+class User(AbstractUser):
+    pass
 
 
 class Genre(models.Model):
@@ -17,7 +28,7 @@ class Actor(models.Model):
 
 
 class Movie(models.Model):
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=255, db_index=True)
     description = models.TextField()
     actors = models.ManyToManyField(to=Actor, related_name="movies")
     genres = models.ManyToManyField(to=Genre, related_name="movies")
@@ -50,3 +61,69 @@ class MovieSession(models.Model):
 
     def __str__(self) -> str:
         return f"{self.movie.title} {str(self.show_time)}"
+
+
+class Order(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self) -> str:
+        return f"{self.created_at}"
+
+
+class Ticket(models.Model):
+    movie_session = models.ForeignKey(MovieSession, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    row = models.IntegerField()
+    seat = models.IntegerField()
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                fields=["row", "seat", "movie_session"],
+                name="unique_ticket"
+            )
+        ]
+
+    def clean(self) -> None:
+        max_rows = self.movie_session.cinema_hall.rows
+        max_seats = self.movie_session.cinema_hall.seats_in_row
+
+        valid_row = (1 <= self.row <= max_rows)
+        valid_seat = (1 <= self.seat <= max_seats)
+
+        if valid_row is False:
+            raise ValidationError({
+                "row": "row number must be in available range: "
+                       f"(1, rows): (1, {max_rows})"
+            })
+        if valid_seat is False:
+            raise ValidationError({
+                "seat": "seat number must be in available range: "
+                        f"(1, seats_in_row): (1, {max_seats})"
+            })
+
+    def save(
+        self,
+        force_insert: bool = False,
+        force_update: bool = False,
+        using: Any = None,
+        update_fields: Any = None
+    ) -> None:
+
+        self.full_clean()
+
+        return super(Ticket, self).save(
+            force_insert,
+            force_update,
+            using,
+            update_fields
+        )
+
+    def __str__(self) -> str:
+        title = self.movie_session.movie.title
+        time = self.movie_session.show_time
+        return f"{title} {time} (row: {self.row}, seat: {self.seat})"
