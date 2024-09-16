@@ -92,11 +92,15 @@ def movie_sessions_data(movies_data, cinema_halls_data):
         movie_id=4,
     )
     MovieSession.objects.create(
-        show_time="2021-4-3 13:50", cinema_hall_id=2, movie_id=5
+        show_time="2021-4-3 13:50",
+        cinema_hall_id=2,
+        movie_id=5
     )
 
     MovieSession.objects.create(
-        show_time="2021-4-3 16:30", cinema_hall_id=3, movie_id=1
+        show_time="2021-4-3 16:30",
+        cinema_hall_id=3,
+        movie_id=1
     )
 
 
