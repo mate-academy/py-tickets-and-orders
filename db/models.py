@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
 
 class Genre(models.Model):
@@ -17,7 +18,7 @@ class Actor(models.Model):
 
 
 class Movie(models.Model):
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=255, db_index=True)
     description = models.TextField()
     actors = models.ManyToManyField(to=Actor, related_name="movies")
     genres = models.ManyToManyField(to=Genre, related_name="movies")
@@ -50,3 +51,38 @@ class MovieSession(models.Model):
 
     def __str__(self) -> str:
         return f"{self.movie.title} {str(self.show_time)}"
+
+
+class User(AbstractUser):
+    pass
+
+
+class Order(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(
+        to=User, on_delete=models.CASCADE, related_name="orders", null=True
+    )
+
+    def __str__(self) -> str:
+        return f"<Order: {self.created_at}>"
+
+
+class Ticket(models.Model):
+    movie_session = models.ForeignKey(
+        to=MovieSession, on_delete=models.CASCADE, related_name="tickets"
+    )
+    order = models.ForeignKey(
+        to=Order, on_delete=models.CASCADE, related_name="tickets"
+    )
+    row = models.IntegerField()
+    seat = models.IntegerField()
+
+    class Meta:
+        unique_together = ("row", "seat", "movie_session")
+
+    def __str__(self) -> str:
+        return (
+            f"Ticket: {self.movie_session.movie.title} "
+            f"{self.movie_session.show_time} "
+            f"(row: {self.row}), seat: {self.seat}"
+        )
