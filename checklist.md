@@ -1,13 +1,13 @@
 # Сheck Your Code Against the Following Points
 
-## Don't Push db files
-Make sure you don't push db files (files with `.sqlite`, `.db3`, etc. extension).
+## Don"t Push db files
+Make sure you don"t push db files (files with `.sqlite`, `.db3`, etc. extension).
 
-## Don't Forget to Add Migrations to your PR
+## Don"t Forget to Add Migrations to your PR
 This is a required for the tests to pass.
 
-## Don't Repeat Yourself
-Call the `save()` method only one time if it's possible.
+## Don"t Repeat Yourself
+Call the `save()` method only one time if it"s possible.
 
 Good example:
 ```python
@@ -96,4 +96,4 @@ User.objects.create_user(
 
 ## Clean Code
 Add comments, prints, and functions to check your solution when you write your code. 
-Don't forget to delete them when you are ready to commit and push your code.
+Don"t forget to delete them when you are ready to commit and push your code.
