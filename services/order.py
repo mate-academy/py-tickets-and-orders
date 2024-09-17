@@ -1,5 +1,4 @@
 from django.db.models import QuerySet
-from datetime import datetime
 from db.models import Order, Ticket, User
 from django.db import transaction
 
@@ -8,16 +7,15 @@ from django.db import transaction
 def create_order(
         tickets: list[dict],
         username: str,
-        date: datetime = None
+        date: str = None
 ) -> None:
 
     user = User.objects.get(username=username)
-    if date:
-        created_at = date
-    else:
-        created_at = datetime.now()
 
-    order = Order.objects.create(created_at=created_at, user_id=user.id)
+    order = Order.objects.create(user_id=user.id)
+    if date:
+        order.created_at = date
+        order.save()
 
     for ticket in tickets:
         row = ticket.get("row")

@@ -4,8 +4,8 @@ from db.models import User
 def create_user(
         username: str,
         password: str,
-        first_name: str,
-        last_name: str,
+        first_name: str = "",
+        last_name: str = "",
         email: str = None,
 ) -> User:
     User.objects.create_user(
@@ -32,12 +32,14 @@ def update_user(
         last_name: str = None
 ) -> None:
     if username:
-        User.objects.filter(user_id).update(username=username)
+        User.objects.filter(id=user_id).update(username=username)
     if password:
-        User.objects.get(user_id).set_password(password=password)
+        user = User.objects.get(id=user_id)
+        user.set_password(password)
+        user.save()
     if email:
-        User.objects.filter(user_id).update(email=email)
+        User.objects.filter(id=user_id).update(email=email)
     if first_name:
-        User.objects.filter(user_id).update(first_name=first_name)
+        User.objects.filter(id=user_id).update(first_name=first_name)
     if last_name:
-        User.objects.filter(user_id).update(last_name=last_name)
+        User.objects.filter(id=user_id).update(last_name=last_name)
