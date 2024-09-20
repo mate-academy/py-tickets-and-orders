@@ -1,10 +1,14 @@
+from django.contrib.auth import get_user_model
 from django.utils import timezone
 
 from datetime import datetime
 
 from django.db import transaction
 
-from db.models import Order, User, Ticket
+from db.models import Order, Ticket
+
+
+User = get_user_model()
 
 
 def create_order(tickets: list, username: str, date: datetime = None) -> Order:
