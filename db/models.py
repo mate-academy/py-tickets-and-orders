@@ -1,8 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
-from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
-from django.db.models import IntegerField, UniqueConstraint
+from django.db.models import UniqueConstraint
 
 
 class Genre(models.Model):
@@ -92,16 +91,22 @@ class Ticket(models.Model):
 
     def clean(self) -> None:
         if not (1 <= self.row <= self.movie_session.cinema_hall.rows):
-            raise ValidationError({
-                "row": f"row number must be in "
-                       f"available range: (1, rows): (1, 10)"
-            })
-        if not (
-                1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row):
-            raise ValidationError({
-                "seat": f"seat number must be in available "
-                        f"range: (1, seats_in_row): (1, 12)"
-            })
+            raise ValidationError(
+                {
+                    "row": (
+                        "row number must be in "
+                        "available range: (1, rows): (1, 10)")
+                }
+            )
+        if not (1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row):
+            raise ValidationError(
+                {
+                    "seat": (
+                        "seat number must be in "
+                        "available range: (1, seats_in_row): (1, 12)"
+                    )
+                }
+            )
 
     def save(self, *args, **kwargs) -> None:
         self.full_clean()
