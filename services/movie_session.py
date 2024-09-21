@@ -4,7 +4,7 @@ from db.models import MovieSession
 
 
 def create_movie_session(
-    movie_show_time: str, movie_id: int, cinema_hall_id: int
+        movie_show_time: str, movie_id: int, cinema_hall_id: int
 ) -> MovieSession:
     return MovieSession.objects.create(
         show_time=movie_show_time,
@@ -25,10 +25,10 @@ def get_movie_session_by_id(movie_session_id: int) -> MovieSession:
 
 
 def update_movie_session(
-    session_id: int,
-    show_time: str = None,
-    movie_id: int = None,
-    cinema_hall_id: int = None,
+        session_id: int,
+        show_time: str = None,
+        movie_id: int = None,
+        cinema_hall_id: int = None,
 ) -> None:
     movie_session = MovieSession.objects.get(id=session_id)
     if show_time:
@@ -42,3 +42,14 @@ def update_movie_session(
 
 def delete_movie_session_by_id(session_id: int) -> None:
     MovieSession.objects.get(id=session_id).delete()
+
+
+def get_taken_seats(movie_session_id: int) -> list[dict]:
+    movie_session = MovieSession.objects.get(pk=movie_session_id)
+    tickets_all = movie_session.ticket_set.all()
+
+    taken_seats = [
+        {"row": ticket.row, "seat": ticket.seat} for ticket in tickets_all
+        if ticket.row is not None and ticket.seat is not None
+    ]
+    return taken_seats
