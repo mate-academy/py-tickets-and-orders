@@ -1,7 +1,7 @@
 from django.db import transaction
 from django.db.models import QuerySet
 
-from db.models import Order, User, Ticket, MovieSession
+from db.models import Order, User, Ticket
 
 
 @transaction.atomic
@@ -10,7 +10,6 @@ def create_order(
         username: str,
         date: str = None
 ) -> Order:
-
     user = User.objects.get(username=username)
     order = Order.objects.create(user=user)
     if date:
@@ -21,9 +20,7 @@ def create_order(
     tickets_obj = [
         Ticket(
             order=order,
-            movie_session=MovieSession.objects.get(
-                pk=ticket["movie_session"]
-            ),
+            movie_session_id=ticket["movie_session"],
             row=ticket["row"],
             seat=ticket["seat"]
         )
@@ -36,7 +33,7 @@ def create_order(
 
 
 @transaction.atomic
-def get_orders(username: str = None) -> QuerySet:
+def get_orders(username: str = None) -> QuerySet[Order]:
     orders = Order.objects.all()
     if username:
         orders = Order.objects.filter(user__username=username)

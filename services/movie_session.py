@@ -1,6 +1,6 @@
 from django.db.models import QuerySet
 
-from db.models import MovieSession
+from db.models import MovieSession, Movie
 
 
 def create_movie_session(
@@ -41,15 +41,12 @@ def update_movie_session(
 
 
 def delete_movie_session_by_id(session_id: int) -> None:
-    MovieSession.objects.get(id=session_id).delete()
+    MovieSession.objects.filter(id=session_id).delete()
 
 
 def get_taken_seats(movie_session_id: int) -> list[dict]:
-    movie_session = MovieSession.objects.get(pk=movie_session_id)
-    tickets_all = movie_session.ticket_set.all()
-
-    taken_seats = [
-        {"row": ticket.row, "seat": ticket.seat} for ticket in tickets_all
-        if ticket.row is not None and ticket.seat is not None
-    ]
-    return taken_seats
+    return list(
+        MovieSession.objects.get(
+            id=movie_session_id
+        ).ticket_set.values("row", "seat")
+    )
