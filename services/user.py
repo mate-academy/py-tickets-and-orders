@@ -10,7 +10,7 @@ def create_user(
         first_name: str = None,
         last_name: str = None
 ) -> User:
-    user = self.get_user().objects.create_user(
+    user = get_user_model().objects.create_user(
         username=username,
         password=password,
     )
