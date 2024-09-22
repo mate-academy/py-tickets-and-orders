@@ -13,14 +13,12 @@ def create_order(
 ) -> Order:
     user = get_user_model().objects.get(username=username)
     order = Order.objects.create(user=user)
-    print(f"Order before {order}")
 
     if date:
         order.created_at = date
         order.save(update_fields=["created_at"])
 
     for ticket in tickets:
-        print(f"Creating ticket: {ticket.values()} for order: {order}")
         Ticket.objects.create(
             order=order,
             movie_session_id=ticket["movie_session"],
