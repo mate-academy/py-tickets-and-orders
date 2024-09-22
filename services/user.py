@@ -15,14 +15,13 @@ def create_user(
         username=username,
         password=password,
     )
+    if email:
+        user.email = email
+    if first_name:
+        user.first_name = first_name
+    if last_name:
+        user.last_name = last_name
 
-    for field, value in {
-        "email": email,
-        "first_name": first_name,
-        "last_name": last_name
-    }.items():
-        if value:
-            setattr(user, field, value)
     user.save()
 
 
@@ -38,17 +37,17 @@ def update_user(
         first_name: str = None,
         last_name: str = None
 ) -> None:
-    user = get_user_model().objects.get(id=user_id)
+    user = get_user(user_id=user_id)
 
-    for field, value in {
-        "username": username,
-        "email": email,
-        "first_name": first_name,
-        "last_name": last_name
-    }.items():
-        if value:
-            setattr(user, field, value)
-
+    if username:
+        user.username = username
+    if email:
+        user.email = email
+    if first_name:
+        user.first_name = first_name
+    if last_name:
+        user.last_name = last_name
     if password:
         user.set_password(password)
+
     user.save()
