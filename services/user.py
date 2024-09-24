@@ -13,18 +13,18 @@ def create_user(
         "password": password,
     }
 
-    if email is not None:
+    if email:
         user["email"] = email
 
-    if first_name is not None:
+    if first_name:
         user["first_name"] = first_name
 
-    if last_name is not None:
+    if last_name:
         user["last_name"] = last_name
 
-    users = User.objects.create_user(**user)
+    user = User.objects.create_user(**user)
 
-    return users
+    return user
 
 
 def get_user(user_id: int) -> User:
