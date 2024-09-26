@@ -7,28 +7,28 @@ from db.models import Order, Ticket
 from services.movie_session import get_movie_session_by_id
 
 
+@transaction.atomic
 def create_order(
         tickets: list[dict],
         username: str,
         date: datetime = None
 ) -> Order:
-    with transaction.atomic():
-        user = get_user_model().objects.get_by_natural_key(username=username)
-        order = Order.objects.create(user=user)
-        if date:
-            order.created_at = date
-            order.save()
-        for ticket in tickets:
-            movie_session = get_movie_session_by_id(
-                movie_session_id=ticket["movie_session"]
-            )
-            Ticket.objects.create(
-                movie_session=movie_session,
-                order=order,
-                row=ticket["row"],
-                seat=ticket["seat"]
-            )
-        return order
+
+    user = get_user_model().objects.get_by_natural_key(username=username)
+    order = Order.objects.create(user=user)
+    if date:
+        order.created_at = date
+        order.save()
+    for ticket in tickets:
+        movie_session = get_movie_session_by_id(
+            movie_session_id=ticket["movie_session"])
+        Ticket.objects.create(
+            movie_session=movie_session,
+            order=order,
+            row=ticket["row"],
+            seat=ticket["seat"]
+        )
+    return order
 
 
 def get_orders(username: str = None) -> QuerySet:
