@@ -93,8 +93,7 @@ should be encrypted), use method `.create_user()` for this purpose. Also,
 set fields if appropriate optional values are provided.
    - `get_user`, takes `user_id`, returns user with the given id.
    - `update_user`, takes `user_id`, optional parameters `username`, `password`, 
-`email`, 
-`first_name`, `last_name`. Update user with
+`email`, `first_name`, `last_name`. Update user with
 provided id and set fields if appropriate values are provided. To save password
 properly use the method `.set_password()`.
 3. Edit `movie_session.py`, add such functions:
