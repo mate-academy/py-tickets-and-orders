@@ -1,8 +1,14 @@
-from django.db.models import QuerySet
-
-from db.models import MovieSession
+from db.models import MovieSession, Ticket
 
 
+def create_movie_session(movie_show_time: int,
+                         movie_id: int,
+                         cinema_hall_id: int) -> None:
+    MovieSession.objects.create(show_time=movie_show_time,
+                                movie_id=movie_id,
+                                cinema_hall_id=cinema_hall_id)
+                                
+                                
 def create_movie_session(
     movie_show_time: str, movie_id: int, cinema_hall_id: int
 ) -> MovieSession:
@@ -42,3 +48,12 @@ def update_movie_session(
 
 def delete_movie_session_by_id(session_id: int) -> None:
     MovieSession.objects.get(id=session_id).delete()
+
+
+def get_taken_seats(movie_session_id: int):
+    """Getting information about engaged places"""
+    movies = Ticket.objects.filter(movie_session_id=movie_session_id).all()
+    result = []
+    for movie in movies:
+        result.append({"row": movie.row, "seat": movie.seat})
+    return result
