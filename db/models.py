@@ -1,4 +1,8 @@
+from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import UniqueConstraint
+import settings
 
 
 class Genre(models.Model):
@@ -22,8 +26,13 @@ class Movie(models.Model):
     actors = models.ManyToManyField(to=Actor, related_name="movies")
     genres = models.ManyToManyField(to=Genre, related_name="movies")
 
+    class Meta:
+        indexes = [
+            models.Index(fields=["title"])
+        ]
+
     def __str__(self) -> str:
-        return self.title
+        return self.indexes
 
 
 class CinemaHall(models.Model):
@@ -42,11 +51,103 @@ class CinemaHall(models.Model):
 class MovieSession(models.Model):
     show_time = models.DateTimeField()
     cinema_hall = models.ForeignKey(
-        to=CinemaHall, on_delete=models.CASCADE, related_name="movie_sessions"
+        to=CinemaHall, on_delete=models.CASCADE, related_name="cinema_hall"
     )
     movie = models.ForeignKey(
-        to=Movie, on_delete=models.CASCADE, related_name="movie_sessions"
+        to=Movie, on_delete=models.CASCADE, related_name="movie"
     )
 
     def __str__(self) -> str:
         return f"{self.movie.title} {str(self.show_time)}"
+
+
+class Order(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE
+    )
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self) -> str:
+        return f"{self.created_at.strftime('%Y-%m-%d %H:%M:%S')}"
+
+
+class Ticket(models.Model):
+    movie_session = models.ForeignKey(
+        "MovieSession",
+        on_delete=models.CASCADE,
+        null=False
+    )
+    order = models.ForeignKey(
+        "Order",
+        on_delete=models.CASCADE,
+        null=False
+    )
+    row = models.IntegerField()
+    seat = models.IntegerField()
+
+    constraints = [
+        UniqueConstraint(
+            fields=["row", "seat", "movie_session"],
+            name="unique_ticket")
+    ]
+
+    def clean(self) -> None:
+        existing_tickets = Ticket.objects.filter(
+            row=self.row,
+            seat=self.seat,
+            movie_session=self.movie_session
+        )
+
+        if existing_tickets.exists():
+            raise ValidationError("Not Unique Value")
+
+        if (
+                self.row > self.movie_session.cinema_hall.rows
+        ):
+            raise ValidationError(
+                {
+                    "row": [
+                        f"row number must be in available "
+                        f"range: (1, rows): "
+                        f"(1, {self.movie_session.cinema_hall.rows})"
+                    ]
+                }
+            )
+        if (
+                self.seat > self.movie_session.cinema_hall.seats_in_row
+        ):
+            raise ValidationError(
+                {
+                    "seat": [
+                        f"seat number must be in available "
+                        f"range: (1, seats_in_row): "
+                        f"(1, {self.movie_session.cinema_hall.seats_in_row})"
+                    ]
+                }
+            )
+
+    def save(
+            self,
+            force_insert: bool = False,
+            force_update: bool = False,
+            using: str = None,
+            update_fields: list = None
+    ) -> None:
+        self.full_clean()
+        return super(Ticket, self).save(force_insert,
+                                        force_update,
+                                        using,
+                                        update_fields)
+
+    def __str__(self) -> str:
+        return (
+            f"{MovieSession.objects.get(pk=1)} "
+            f"(row: {self.row}, seat: {self.seat})"
+        )
+
+
+class User(AbstractUser):
+    pass
