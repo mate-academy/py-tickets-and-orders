@@ -1,4 +1,8 @@
+from typing import Iterable
+from django.core.exceptions import ValidationError
+from django.contrib.auth.models import AbstractUser
 from django.db import models
+import settings
 
 
 class Genre(models.Model):
@@ -17,7 +21,7 @@ class Actor(models.Model):
 
 
 class Movie(models.Model):
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=255, db_index=True)
     description = models.TextField()
     actors = models.ManyToManyField(to=Actor, related_name="movies")
     genres = models.ManyToManyField(to=Genre, related_name="movies")
@@ -50,3 +54,72 @@ class MovieSession(models.Model):
 
     def __str__(self) -> str:
         return f"{self.movie.title} {str(self.show_time)}"
+
+
+class User(AbstractUser):
+    pass
+
+
+class Order(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE)
+
+    def __str__(self) -> str:
+        return f"{self.created_at}"
+
+    class Meta:
+        ordering = ["-created_at"]
+
+
+class Ticket(models.Model):
+    movie_session = models.ForeignKey(MovieSession, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    row = models.IntegerField()
+    seat = models.IntegerField()
+
+    def __str__(self) -> str:
+        return (f"{self.movie_session.movie.title}"
+                f" {self.movie_session.show_time}"
+                f" (row: {self.row}, seat: {self.seat})")
+
+    def clean(self) -> ValidationError:
+        if not (
+            1 <= self.row <= self.movie_session.
+            cinema_hall.rows
+        ):
+            raise ValidationError(
+                {
+                    "row": "row number must be in available range: (1, rows):"
+                    f" (1, {self.movie_session.cinema_hall.rows})"
+                }
+            )
+        if not (
+            1 <= self.seat <= self.movie_session.
+            cinema_hall.seats_in_row
+        ):
+            raise ValidationError(
+                {
+                    "seat": "seat number must be in available range:"
+                    " (1, seats_in_row): (1,"
+                    f" {self.movie_session.cinema_hall.seats_in_row})"
+                }
+            )
+
+    def save(
+        self,
+        force_insert: bool = ...,
+        force_update: bool = ...,
+        using: list[str, None] = ...,
+        update_fields: list[Iterable[str], None] = ...,
+    ) -> None:
+        self.full_clean()
+        return super().save()
+
+    class Meta:
+        constraints = (
+            models.UniqueConstraint(
+                fields=["movie_session", "row", "seat"],
+                name="constraint_on_seat_and_session",
+            ),
+        )
