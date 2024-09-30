@@ -1,6 +1,8 @@
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import UniqueConstraint
 
 
 class Genre(models.Model):
@@ -79,6 +81,21 @@ class Ticket(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     row = models.IntegerField()
     seat = models.IntegerField()
+
+    def clean(self) -> None:
+        if not (1 <= self.row <= CinemaHall.rows):
+            raise ValidationError(f"'row': ['row number must be in available range: (1, rows): (1, {CinemaHall.rows})']")
+        if not (1 <= self.row <= CinemaHall.seats_in_row):
+            raise ValidationError(f"'seat': ['seat number must be in available range: (1, seats_in_row): (1, {CinemaHall.seats_in_row})']")
+
+    def save(self, *args, **kwargs) -> None:
+        self.full_clean()
+        return super().save(*args, **kwargs)
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(fields=["movie_session", "row", "seat"], name="unique_movie_session"),
+        ]
 
     def __str__(self) -> str:
         return f"Ticket: {self.movie_session.movie.title} {self.order.created_at} (row: {self.row}, seat: {self.seat})"
