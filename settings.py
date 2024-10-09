@@ -23,6 +23,12 @@ USE_I18N = True
 
 USE_TZ = False
 
+
 INSTALLED_APPS = [
     "db",
+    "django_extensions",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
 ]
+
+AUTH_USER_MODEL = "db.User"
