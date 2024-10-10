@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.db.models import QuerySet
 
 from db.models import MovieSession
@@ -41,4 +42,13 @@ def update_movie_session(
 
 
 def delete_movie_session_by_id(session_id: int) -> None:
-    MovieSession.objects.get(id=session_id).delete()
+    get_user_model().objects.get(id=session_id).delete()
+
+
+def get_taken_seats(movie_session_id: int) -> list[dict]:
+    return [
+        {"row": rows_and_seats.row, "seat": rows_and_seats.seat}
+        for rows_and_seats in MovieSession.objects.get(
+            pk=movie_session_id
+        ).tickets.all()
+    ]
