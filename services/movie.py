@@ -1,4 +1,3 @@
-from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.db.models import QuerySet
 
@@ -25,7 +24,7 @@ def get_movies(
 
 
 def get_movie_by_id(movie_id: int) -> Movie:
-    return get_user_model().objects.get(pk=movie_id)
+    return Movie.objects.get(pk=movie_id)
 
 
 @transaction.atomic()

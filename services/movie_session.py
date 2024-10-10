@@ -1,4 +1,3 @@
-from django.contrib.auth import get_user_model
 from django.db.models import QuerySet
 
 from db.models import MovieSession
@@ -42,7 +41,7 @@ def update_movie_session(
 
 
 def delete_movie_session_by_id(session_id: int) -> None:
-    get_user_model().objects.get(id=session_id).delete()
+    MovieSession.objects.get(id=session_id).delete()
 
 
 def get_taken_seats(movie_session_id: int) -> list[dict]:
