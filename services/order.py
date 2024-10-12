@@ -12,7 +12,7 @@ def create_order(
 ) -> Order:
     user = get_user_model().objects.get(username=username)
     with transaction.atomic():
-        order = Order.objects.create(user=user,)
+        order = Order.objects.create(user=user)
         if date:
             order.created_at = date
 
