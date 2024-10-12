@@ -22,7 +22,7 @@ def create_order(
                                   row=ticket["row"],
                                   seat=ticket["seat"]
                                   )
-        order.save()
+        order.save(update_fields=["created_at"] if date else None)
         return order
 
 

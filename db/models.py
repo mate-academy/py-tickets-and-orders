@@ -88,16 +88,19 @@ class Ticket(models.Model):
         ]
 
     def clean(self) -> None:
-        if self.row < 1 or self.row > 10:
+        rows = self.movie_session.cinema_hall.rows
+        seats_in_row = self.movie_session.cinema_hall.seats_in_row
+        if self.row < 1 or self.row > rows:
             raise ValidationError({
                 "row":
-                    "row number must be in available range: (1, rows): (1, 10)"
+                    "row number must be in available range: "
+                    f"(1, rows): (1, {rows})"
             })
-        if self.seat < 1 or self.seat > 12:
+        if self.seat < 1 or self.seat > seats_in_row:
             raise ValidationError({
                 "seat": (
                     "seat number must be in available range: "
-                    "(1, seats_in_row): (1, 12)"
+                    f"(1, seats_in_row): (1, {seats_in_row})"
                 )
             })
 
