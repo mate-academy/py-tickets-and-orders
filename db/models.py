@@ -34,7 +34,7 @@ class Movie(models.Model):
 
 
 class Order(models.Model):
-    created_at = models.DateTimeField(null=True)
+    created_at = models.DateTimeField(default=timezone.now)
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
 
     def __str__(self) -> str:
@@ -47,7 +47,7 @@ class Order(models.Model):
 def create_order(tickets: Any, username: Any,
                  date: Any = None) -> None:
     with transaction.atomic():
-        user, _ = User.objects.get_or_create(username=username)
+        user, _ = get_user_model().objects.get_or_create(username=username)
         order = Order.objects.create(
             user=user, created_at=date or timezone.now())
 
