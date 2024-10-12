@@ -3,7 +3,7 @@ from django.db import transaction
 from db.models import Movie
 
 
-def get_movie(
+def get_movies(
     title: Optional[str] = None,
     genres_ids: Optional[List[int]] = None,
     actors_ids: Optional[List[int]] = None,
