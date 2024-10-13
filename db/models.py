@@ -1,9 +1,12 @@
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import CASCADE, UniqueConstraint
+from django.db.models import UniqueConstraint
 
-import settings
+
+class User(AbstractUser):
+    pass
 
 
 class Genre(models.Model):
@@ -64,7 +67,7 @@ class MovieSession(models.Model):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=CASCADE)
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
 
     class Meta:
         ordering = ["-created_at"]
@@ -74,8 +77,8 @@ class Order(models.Model):
 
 
 class Ticket(models.Model):
-    movie_session = models.ForeignKey(MovieSession, on_delete=CASCADE)
-    order = models.ForeignKey(Order, on_delete=CASCADE)
+    movie_session = models.ForeignKey(MovieSession, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
     row = models.IntegerField()
     seat = models.IntegerField()
 
@@ -110,7 +113,3 @@ class Ticket(models.Model):
         return (f"{self.movie_session.movie.title} "
                 f"{self.movie_session.show_time} "
                 f"(row: {self.row}, seat: {self.seat})")
-
-
-class User(AbstractUser):
-    pass
