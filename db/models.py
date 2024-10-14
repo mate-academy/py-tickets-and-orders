@@ -1,7 +1,8 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.conf import settings
+from django.contrib.auth import get_user_model
+
 
 class Genre(models.Model):
     name = models.CharField(max_length=255)
@@ -43,13 +44,18 @@ class MovieSession(models.Model):
     cinema_hall = models.ForeignKey(CinemaHall, on_delete=models.CASCADE)
 
     def __str__(self) -> str:
-        return f"{self.movie.title} {str(self.show_time)}"
+        show_time_str = self.show_time.strftime('%Y-%m-%d %H:%M:%S')
+        return f"{self.movie.title} {show_time_str}"
+
+
+class User(AbstractUser):
+    pass
 
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+        get_user_model(),
         on_delete=models.CASCADE,
         related_name="orders"
     )
@@ -67,14 +73,6 @@ class Ticket(models.Model):
     row = models.IntegerField()
     seat = models.IntegerField()
 
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=["row", "seat", "movie_session"],
-                name="unique_movie_session"
-            )
-        ]
-
     def __str__(self) -> str:
         return (
             f"{self.movie_session.movie.title} "
@@ -86,16 +84,19 @@ class Ticket(models.Model):
         if not 1 <= self.row <= self.movie_session.cinema_hall.rows:
             raise ValidationError(
                 {
-                    "row": "row number must be in available range: (1, rows): "
-                    f"(1, {self.movie_session.cinema_hall.rows})"
+                    "row": (
+                        f"Row number must be in available range: "
+                        f"(1, {self.movie_session.cinema_hall.rows})"
+                    )
                 }
             )
         if not 1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row:
             raise ValidationError(
                 {
-                    "seat": "seat number must be in available range: "
-                    "(1, seats_in_row): "
-                    f"(1, {self.movie_session.cinema_hall.seats_in_row})"
+                    "seat": (
+                        f"Seat number must be in available range: "
+                        f"(1, {self.movie_session.cinema_hall.seats_in_row})"
+                    )
                 }
             )
 
@@ -103,11 +104,10 @@ class Ticket(models.Model):
         self.full_clean()
         super().save(*args, **kwargs)
 
-
-class User(AbstractUser):
-    groups = models.ManyToManyField(
-        "auth.Group", related_name="custom_user_set", blank=True
-    )
-    user_permissions = models.ManyToManyField(
-        "auth.Permission", related_name="custom_user_permissions", blank=True
-    )
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["row", "seat", "movie_session"],
+                name="unique_ticket_for_movie_session"
+            )
+        ]
