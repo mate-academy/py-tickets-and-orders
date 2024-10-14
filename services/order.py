@@ -24,7 +24,6 @@ def create_order(
             row=ticket.get("row"),
             seats=ticket.get("seat")
         )
-        ticket.save()
 
 
 def get_orders(username: str = None) -> QuerySet:
