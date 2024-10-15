@@ -4,9 +4,9 @@ from db.models import User
 
 def create_user(username: str,
                 password: str,
-                email=None,
-                first_name=None,
-                last_name=None
+                email: str = None,
+                first_name: str = None,
+                last_name: str = None
                 ) -> User:
     user = get_user_model().objects.create_user(username=username)
     user.set_password(password)
@@ -21,8 +21,10 @@ def create_user(username: str,
     user.save()
     return user
 
+
 def get_user(user_id: int) -> User:
     return get_user_model().objects.get(pk=user_id)
+
 
 def update_user(user_id: int,
                 username: str = None,
