@@ -1,6 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.db.models import QuerySet
 from django.db import transaction
+
+
 from db.models import Ticket, Order
 
 
@@ -14,7 +16,6 @@ def create_order(tickets: list[dict],
 
     if date:
         order.created_at = date
-        order.save()
 
     for ticket in tickets:
         Ticket.objects.create(order=order,
@@ -22,6 +23,7 @@ def create_order(tickets: list[dict],
                               row=ticket["row"],
                               seat=ticket["seat"]
                               )
+    order.save()
     return order
 
 
