@@ -23,7 +23,7 @@ def create_order(tickets: list[dict], username: str, date: str = None) -> None:
             row=row,
         )
 
-        order.save()
+    order.save()
 
 
 def get_orders(username: str = None) -> QuerySet:
