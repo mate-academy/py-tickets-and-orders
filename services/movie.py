@@ -1,5 +1,4 @@
-from django.core.exceptions import ValidationError
-from django.db import transaction, IntegrityError, DatabaseError
+from django.db import transaction
 from django.db.models import QuerySet
 
 from db.models import Movie
@@ -34,21 +33,14 @@ def create_movie(
     genres_ids: list = None,
     actors_ids: list = None,
 ) -> Movie:
-    try:
-        with transaction.atomic():
-            movie = Movie.objects.create(
-                title=movie_title,
-                description=movie_description,
-            )
-            if genres_ids:
-                movie.genres.set(genres_ids)
-            if actors_ids:
-                movie.actors.set(actors_ids)
+    with transaction.atomic():
+        movie = Movie.objects.create(
+            title=movie_title,
+            description=movie_description,
+        )
+        if genres_ids:
+            movie.genres.set(genres_ids)
+        if actors_ids:
+            movie.actors.set(actors_ids)
 
         return movie
-    except IntegrityError as ie:
-        raise ValueError(f"Integrity error while creating movie: {str(ie)}")
-    except ValidationError as ve:
-        raise ValueError(f"Validation error while creating movie: {str(ve)}")
-    except DatabaseError as de:
-        raise ValueError(f"Database error while creating movie: {str(de)}")
