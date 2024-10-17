@@ -1,4 +1,5 @@
-from django.db import transaction
+from django.core.exceptions import ValidationError
+from django.db import transaction, IntegrityError, DatabaseError
 from django.db.models import QuerySet
 
 from db.models import Movie
@@ -45,5 +46,9 @@ def create_movie(
                 movie.actors.set(actors_ids)
 
         return movie
-    except Exception as e:
-        raise ValueError(f"Error creating movie: {str(e)}")
+    except IntegrityError as ie:
+        raise ValueError(f"Integrity error while creating movie: {str(ie)}")
+    except ValidationError as ve:
+        raise ValueError(f"Validation error while creating movie: {str(ve)}")
+    except DatabaseError as de:
+        raise ValueError(f"Database error while creating movie: {str(de)}")
