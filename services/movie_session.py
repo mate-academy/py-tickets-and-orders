@@ -55,4 +55,6 @@ def get_taken_seats(movie_session_id: int) -> list[dict]:
         tickets = movie_session.ticket_set.values("row", "seat")
         return list(tickets)
     except ObjectDoesNotExist:
-        raise ValueError(f"MovieSession with id {movie_session_id} does not exist.")
+        raise ValueError(
+            f"MovieSession with id {movie_session_id} does not exist."
+        )
