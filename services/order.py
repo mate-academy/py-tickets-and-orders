@@ -1,5 +1,7 @@
 
 from datetime import datetime
+
+from django.contrib.auth import get_user_model
 from django.utils import timezone
 from django.db import transaction
 from django.core.exceptions import ValidationError
@@ -15,7 +17,7 @@ def create_order(
 ) -> Order:
     # Знаходимо користувача за username
     try:
-        user = User.objects.get(username=username)
+        user = get_user_model().objects.get(username=username)
     except User.DoesNotExist:
         raise ValidationError(
             f"User with username '{username}' does not exist"
@@ -28,12 +30,10 @@ def create_order(
                 order.created_at = datetime.strptime(date, "%Y-%m-%d %H:%M")
             except ValueError:
                 raise ValidationError(
-                    "Invalid date formate. Use 'YYYY-MM-DD HH:MM'."
+                    "Invalid date format. Use 'YYYY-MM-DD HH:MM'."
                 )
         else:
             order.created_at = timezone.now()
-
-        order.save()
 
         for ticket_data in tickets:
             try:
@@ -45,13 +45,13 @@ def create_order(
                     f"Movie session with id "
                     f"{ticket_data['movie_session']} does not exist"
                 )
-
             Ticket.objects.create(
                 order=order,
                 row=ticket_data["row"],
                 seat=ticket_data["seat"],
                 movie_session=movie_session
             )
+        order.save()
 
     return order
 
