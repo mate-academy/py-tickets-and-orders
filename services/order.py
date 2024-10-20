@@ -24,8 +24,11 @@ def create_order(tickets: list[dict],
             seats = hall.seats_in_row
             rows = hall.rows
 
-            if ticket["seat"] > seats or ticket["row"] > rows:
-                raise ValueError("Seat or row number exceeds limit.")
+            if ticket["seat"] > seats:
+                raise ValueError(f"Seat number exceeds limit: {seats} seats.")
+            if ticket["row"] > rows:
+                raise ValueError(f"Row number exceeds limit: {rows} rows.")
+
             tickets_instances.append(
                 Ticket(movie_session_id=ticket["movie_session"],
                        order=order,
