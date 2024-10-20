@@ -1,4 +1,4 @@
-from db.models import User
+from db.models import get_user_model, User
 
 
 def create_user(username: str,
@@ -7,7 +7,10 @@ def create_user(username: str,
                 first_name: str = None,
                 last_name: str = None,
                 ) -> User:
-    user = User.objects.create_user(username=username, password=password)
+    user = get_user_model().objects.create_user(
+        username=username,
+        password=password
+    )
     if email:
         user.email = email
 
@@ -22,7 +25,7 @@ def create_user(username: str,
 
 
 def get_user(user_id: int) -> User:
-    return User.objects.get(pk=user_id)
+    return get_user_model().objects.get(pk=user_id)
 
 
 def update_user(user_id: int,
@@ -31,7 +34,7 @@ def update_user(user_id: int,
                 email: str = None,
                 first_name: str = None,
                 last_name: str = None) -> User:
-    user = User.objects.get(pk=user_id)
+    user = get_user_model().objects.get(pk=user_id)
     if username:
         user.username = username
 

@@ -1,20 +1,20 @@
 from django.db import transaction
 from django.db.models import QuerySet
-from db.models import Ticket, Order, User, MovieSession
+from db.models import Ticket, Order, get_user_model, MovieSession
 
 
 def create_order(tickets: list[dict],
                  username: str,
-                 date: str = None) -> QuerySet:
+                 date: str = None) -> None:
 
     with transaction.atomic():
 
-        user = User.objects.get(username=username)
+        user = get_user_model().objects.get(username=username)
         order = Order.objects.create(user=user)
         tickets_instances = []
         if date:
             order.created_at = date
-            order.save()
+        order.save()
 
         for ticket in tickets:
             movie_session = MovieSession.objects.get(
@@ -33,11 +33,10 @@ def create_order(tickets: list[dict],
                        seat=ticket["seat"])
             )
         Ticket.objects.bulk_create(tickets_instances)
-        return Ticket.objects.all()
 
 
 def get_orders(username: str = None) -> QuerySet:
     if username:
-        user = User.objects.get(username=username)
+        user = get_user_model().objects.get(username=username)
         return Order.objects.filter(user=user)
     return Order.objects.all()
