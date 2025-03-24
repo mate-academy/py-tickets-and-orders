@@ -24,5 +24,9 @@ USE_I18N = True
 USE_TZ = False
 
 INSTALLED_APPS = [
-    "db",
+    "django.contrib.auth",  # Added for authentication
+    "django.contrib.contenttypes",  # Added for content types
+    "db",  # Your custom app
 ]
+
+AUTH_USER_MODEL = "db.User"  # Set the custom user model
