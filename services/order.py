@@ -1,15 +1,17 @@
 from datetime import datetime
-from typing import List, Dict, Any
+from typing import Optional, Dict, List
 
 from django.db import transaction
 from django.db.models import QuerySet
 
 from db.models import User, Order, MovieSession, Ticket
 
-from django.core.exceptions import ObjectDoesNotExist
 
-
-def create_order(username, tickets, date=None):
+def create_order(
+        username: str,
+        tickets: List[Dict[str, int]],
+        date: Optional[datetime] = None
+) -> Order:
     try:
         user = User.objects.get(username=username)
     except User.DoesNotExist:
@@ -23,9 +25,14 @@ def create_order(username, tickets, date=None):
 
         for ticket in tickets:
             try:
-                movie_session = MovieSession.objects.get(id=ticket["movie_session"])
+                movie_session = MovieSession.objects.get(
+                    id=ticket["movie_session"]
+                )
             except MovieSession.DoesNotExist:
-                raise ValueError(f"Movie session with id {ticket['movie_session']} does not exist")
+                raise ValueError(
+                    f"Movie session with id {ticket['movie_session']} "
+                    f"does not exist"
+                )
 
             row = ticket["row"]
             seat = ticket["seat"]
