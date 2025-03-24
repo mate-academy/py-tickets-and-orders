@@ -1,28 +1,32 @@
 from datetime import datetime
+from typing import List, Dict, Any
 
 from django.db import transaction
 from django.db.models import QuerySet
 
 from db.models import User, Order, MovieSession, Ticket
 
+from django.core.exceptions import ObjectDoesNotExist
 
-def create_order(tickets: list,
-                 username: str,
-                 date: datetime = None
-                 ) -> Order:
-    with transaction.atomic():
+
+def create_order(username, tickets, date=None):
+    try:
         user = User.objects.get(username=username)
-        order = Order.objects.create(
-            user=user
-        )
+    except User.DoesNotExist:
+        raise ValueError(f"User with username {username} does not exist")
+
+    with transaction.atomic():
+        order = Order.objects.create(user=user)
         if date:
             order.created_at = date
         order.save()
 
         for ticket in tickets:
-            movie_session = MovieSession.objects.get(
-                id=ticket["movie_session"]
-            )
+            try:
+                movie_session = MovieSession.objects.get(id=ticket["movie_session"])
+            except MovieSession.DoesNotExist:
+                raise ValueError(f"Movie session with id {ticket['movie_session']} does not exist")
+
             row = ticket["row"]
             seat = ticket["seat"]
 

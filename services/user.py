@@ -9,7 +9,7 @@ def create_user(
         email: str = None,
         first_name: str = None,
         last_name: str = None
-) -> QuerySet:
+) -> User:
     user = User.objects.create_user(
         username=username,
         password=password
@@ -26,7 +26,10 @@ def create_user(
 
 
 def get_user(user_id: int) -> User:
-    return User.objects.get(id=user_id)
+    try:
+        return User.objects.get(id=user_id)
+    except User.DoesNotExist as e:
+        raise e
 
 
 def update_user(
@@ -37,7 +40,10 @@ def update_user(
         first_name: str = None,
         last_name: str = None
 ) -> None:
-    user = User.objects.get(id=user_id)
+    try:
+        user = User.objects.get(id=user_id)
+    except User.DoesNotExist as e:
+        raise e
 
     if username:
         user.username = username
