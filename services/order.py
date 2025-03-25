@@ -5,13 +5,16 @@ from django.db.models import QuerySet
 from db.models import Order, Ticket
 
 
+USER = get_user_model()
+
+
 def create_order(
         tickets: list[dict],
         username: str,
         date: str = None
 ) -> Order:
     with transaction.atomic():
-        customer = get_user_model().objects.get(username=username)
+        customer = USER.objects.get(username=username)
 
         new_order = Order.objects.create(user=customer)
         if date:
@@ -35,7 +38,7 @@ def get_orders(
     orders = Order.objects.all()
 
     if username:
-        user = get_user_model().objects.get(username=username)
+        user = USER.objects.get(username=username)
         orders = orders.filter(user=user)
 
     return orders
