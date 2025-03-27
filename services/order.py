@@ -22,7 +22,7 @@ def create_order(tickets: list, username: User, date: str = None) -> None:
                 seat=ticket["seat"])
 
 
-def get_orders(username: str = None) -> Order | QuerySet[Order]:
+def get_orders(username: str = None) -> Order | QuerySet[Order] | QuerySet:
     user = User.objects.filter(username=username).first()
     if username:
         return Order.objects.filter(user=user)
