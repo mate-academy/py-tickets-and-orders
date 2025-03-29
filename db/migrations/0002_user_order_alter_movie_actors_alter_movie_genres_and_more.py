@@ -7,6 +7,8 @@ from django.db import migrations, models
 import django.db.models.deletion
 import django.utils.timezone
 
+from tests.test_main import tickets
+
 
 class Migration(migrations.Migration):
 
@@ -84,8 +86,8 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('row', models.IntegerField()),
                 ('seat', models.IntegerField()),
-                ('movie_session', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='db.moviesession')),
-                ('order', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='db.order')),
+                ('movie_session', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='tickets', to='db.moviesession')),
+                ('order', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='tickets', to='db.order')),
             ],
         ),
         migrations.AddConstraint(
