@@ -85,22 +85,22 @@ class Ticket(models.Model):
 
     def __str__(self) -> str:
         return (f"""
-            Ticket: {self.movie_session.movie.title} 
-            {self.movie_session.show_time} 
-            (row: {self.row}, seat: {self.seat}")
-        """)
+        Ticket: {self.movie_session.movie.title} 
+{self.movie_session.show_time} 
+(row: {self.row}, seat: {self.seat}")
+""")
 
     def clean(self) -> None:
         errors = {}
 
         if not (1 <= self.row <= self.movie_session.cinema_hall.rows):
             errors["row"] = f"""
-                            row number must be in available range: (1, rows): (1, 
+            row number must be in available range: (1, rows): (1, 
 {self.movie_session.cinema_hall.rows})
                             """
         if not (1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row):
             errors["seat"] = f"""
-                            seat number must be in available range: (1, seats_in_row): (1, 
+            seat number must be in available range: (1, seats_in_row): (1, 
 {self.movie_session.cinema_hall.seats_in_row})
                             """
         if errors:
