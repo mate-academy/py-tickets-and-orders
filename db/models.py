@@ -1,3 +1,5 @@
+import datetime
+
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -71,7 +73,7 @@ class Order(models.Model):
     )
 
     def __str__(self) -> str:
-        return {self.created_at}
+        return str(self.created_at)
 
     class Meta:
         ordering = ["-created_at"]
