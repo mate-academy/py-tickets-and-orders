@@ -85,17 +85,17 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='ticket',
             name='movie_session',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='db.moviesession'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='db.moviesession', related_name='tickets'),
         ),
         migrations.AddField(
             model_name='ticket',
             name='order',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='db.order'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='db.order', related_name='tickets'),
         ),
         migrations.AddField(
             model_name='order',
             name='user',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, related_name='orders'),
         ),
         migrations.AddField(
             model_name='user',
