@@ -1,5 +1,3 @@
-from typing import Any
-
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -62,10 +60,6 @@ class MovieSession(models.Model):
         to=Movie, on_delete=models.CASCADE, related_name="movie_sessions"
     )
 
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
-        super().__init__(args, kwargs)
-        self.ticket_set = None
-
     def __str__(self) -> str:
         return f"{self.movie.title} {str(self.show_time)}"
 
@@ -104,16 +98,15 @@ class Ticket(models.Model):
         if not 1 <= self.row <= self.movie_session.cinema_hall.rows:
             raise ValidationError(
                 {"row": f"row number must be in available range: "
-                        f"(1, {self.movie_session.cinema_hall.rows}): "
-                        f"(1, 10)"
+                        f"(1, rows): "
+                        f"(1, {self.movie_session.cinema_hall.rows})"
                  }
             )
         if not 1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row:
             raise ValidationError(
                 {"seat": f"seat number must be in available range: "
-                         f"(1, "
-                         f"{self.movie_session.cinema_hall.seats_in_row}): "
-                         f"(1, 12)"
+                         f"(1, seats_in_row): "
+                         f"(1, {self.movie_session.cinema_hall.seats_in_row})"
                  }
             )
 

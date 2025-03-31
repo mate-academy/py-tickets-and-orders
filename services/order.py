@@ -14,11 +14,11 @@ def create_order(tickets: list[dict],
                  date: datetime = None) -> Order:
 
     user = get_user_model().objects.get(username=username)
+    new_order = Order.objects.create(user=user)
 
-    if not date:
-        date = timezone.now()
-
-    new_order = Order.objects.create(created_at=date, user=user)
+    if date:
+        new_order.created_at = date
+        new_order.save()
 
     for ticket in tickets:
         movie_session_id = ticket.pop("movie_session")
