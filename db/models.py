@@ -105,7 +105,7 @@ class Ticket(models.Model):
                 {
                     "row": [
                         f"row number must be in available range:"
-                        f" (1, rows): "
+                        f" (1, rows):"
                         f" (1, {self.movie_session.cinema_hall.rows})"
                     ]
                 }
@@ -128,6 +128,6 @@ class Ticket(models.Model):
     def __str__(self) -> str:
         return (
             f"{self.movie_session.movie.title}"
-            f" {self.order.created_at}"
+            f" {self.movie_session.show_time}"
             f" (row: {self.row}, seat: {self.seat})"
         )
