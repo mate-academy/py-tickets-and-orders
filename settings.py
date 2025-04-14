@@ -17,12 +17,18 @@ DATABASES = {
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "Europe/Kiev"
+TIME_ZONE = "UTC"
 
 USE_I18N = True
 
 USE_TZ = False
 
+ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+
 INSTALLED_APPS = [
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
     "db",
 ]
+
+AUTH_USER_MODEL = "db.User"
