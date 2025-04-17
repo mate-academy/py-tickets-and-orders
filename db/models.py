@@ -1,5 +1,7 @@
 from django.db import models
-
+from django.core.exceptions import ValidationError
+from django.contrib.auth.models import AbstractUser
+from django.db.models import Q
 
 class Genre(models.Model):
     name = models.CharField(max_length=255, unique=True)
@@ -7,6 +9,9 @@ class Genre(models.Model):
     def __str__(self) -> str:
         return self.name
 
+
+class User(AbstractUser):
+    pass
 
 class Actor(models.Model):
     first_name = models.CharField(max_length=255)
@@ -17,7 +22,7 @@ class Actor(models.Model):
 
 
 class Movie(models.Model):
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=255, db_index=True)
     description = models.TextField()
     actors = models.ManyToManyField(to=Actor, related_name="movies")
     genres = models.ManyToManyField(to=Genre, related_name="movies")
@@ -50,3 +55,39 @@ class MovieSession(models.Model):
 
     def __str__(self) -> str:
         return f"{self.movie.title} {str(self.show_time)}"
+
+class Order(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
+
+    class Meta:
+        ordering=["-created_at"]
+
+    def __str__(self) -> str:
+        return f"{self.created_at.strftime('%Y-%m-%d %H:%M:%S')}"
+
+class Ticket(models.Model):
+    movie_session = models.ForeignKey(to=MovieSession, on_delete=models.CASCADE)
+    order = models.ForeignKey(to=Order, on_delete=models.CASCADE)
+    row = models.IntegerField()
+    seat = models.IntegerField()
+
+    def __str__(self):
+        return f"Ticket: {self.movie_session} {self.order.created_at} (row: {self.row}, seat: {self.seat})"
+
+    def clean(self):
+        hall = self.movie_session.cinema_hall
+        if self.row > hall.rows or self.seat > hall.seats_in_row:
+            raise ValidationError("Row or seat number exceeds cinema hall size.")
+    
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["row", "seat", "movie_session"],
+                name="unique_row_seat_movie_session"
+            )
+        ]
+
+    def __save__(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
