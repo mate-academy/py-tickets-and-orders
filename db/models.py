@@ -67,8 +67,8 @@ class Order(models.Model):
         return f"{self.created_at.strftime('%Y-%m-%d %H:%M:%S')}"
 
 class Ticket(models.Model):
-    movie_session = models.ForeignKey(to=MovieSession, on_delete=models.CASCADE)
-    order = models.ForeignKey(to=Order, on_delete=models.CASCADE)
+    movie_session = models.ForeignKey(to=MovieSession, on_delete=models.CASCADE, related_name="tickets")
+    order = models.ForeignKey(to=Order, on_delete=models.CASCADE, related_name="tickets")
     row = models.IntegerField()
     seat = models.IntegerField()
 
@@ -88,6 +88,6 @@ class Ticket(models.Model):
             )
         ]
 
-    def __save__(self, *args, **kwargs):
+    def save(self, *args, **kwargs):
         self.full_clean()
         super().save(*args, **kwargs)

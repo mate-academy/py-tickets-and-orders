@@ -12,9 +12,9 @@ def get_user(user_id: int):
     except User.DoesNotExist:
         return None   
 
-def update_user(user_id: int, username: str = None, password: int = None, email: str = None, first_name: str = None, last_name: str = None):
+def update_user(user_id: int, username: str = None, password: str = None, email: str = None, first_name: str = None, last_name: str = None):
     try:
-        user = User.objects.get(id=user_id)
+        user = User.objects.get_user(id=user_id)
 
         if username:
             user.username = username
