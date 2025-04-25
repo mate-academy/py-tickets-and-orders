@@ -88,9 +88,9 @@ class Ticket(models.Model):
     def clean(self) -> None:
         hall = self.movie_session.cinema_hall
         if not (1 <= self.row <= hall.rows):
-            raise ValidationError("Row number must be between 1 and {hall.rows}")
+            raise ValidationError(f"Row number must be between 1 and {hall.rows}")
         if not (1 <= self.seat <= hall.seats_in_row):
-            raise ValidationError("Seat number must be between 1 and {hall.seats_in_row}")
+            raise ValidationError(f"Seat number must be between 1 and {hall.seats_in_row}")
 
     def save(self, *args, **kwargs) -> None:
         self.full_clean()
