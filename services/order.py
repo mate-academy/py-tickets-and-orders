@@ -21,17 +21,17 @@ def create_order(
         )
         if date:
             order.created_at = date
+            order.save()
 
         for ticket in tickets:
             movie_session = MovieSession.objects.get(
                 id=ticket["movie_session"])
-            ticket = Ticket.objects.create(
+            Ticket.objects.create(
                 movie_session=movie_session,
                 order=order,
                 row=ticket["row"],
                 seat=ticket["seat"],
             )
-        return ticket
         return order
 
 
