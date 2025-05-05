@@ -25,7 +25,6 @@ def create_order(
                 seat=ticket["seat"],
                 order=new_order
             )
-            new_ticket.save()
 
         new_order.save()
 
