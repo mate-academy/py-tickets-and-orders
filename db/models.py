@@ -63,7 +63,7 @@ class Order(models.Model):
     user = models.ForeignKey(
         to=settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name="order"
+        related_name="orders"
     )
 
     class Meta:
