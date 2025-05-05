@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from db.models import Order, Ticket, User, MovieSession
 from django.db import transaction
 from django.db.models import QuerySet
@@ -6,7 +8,7 @@ from django.db.models import QuerySet
 def create_order(
         tickets: list[dict],
         username: str,
-        date: str | None = None
+        date: datetime | None = None
 ) -> None:
     with transaction.atomic():
         user = User.objects.get(username=username)
