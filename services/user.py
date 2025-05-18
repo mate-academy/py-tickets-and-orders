@@ -1,5 +1,4 @@
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import User
 from typing import Optional
 
 
@@ -9,7 +8,7 @@ def create_user(
         email: Optional[str] = None,
         first_name: Optional[str] = None,
         last_name: Optional[str] = None,
-) -> User:
+) -> get_user_model:
     users = get_user_model()
 
     user_data = {
@@ -29,7 +28,7 @@ def create_user(
     return user
 
 
-def get_user(user_id: int) -> Optional[User]:
+def get_user(user_id: int) -> Optional[get_user_model]:
     user = get_user_model().objects.get(pk=user_id)
     return user
 
@@ -41,7 +40,7 @@ def update_user(
         email: Optional[str] = None,
         first_name: Optional[str] = None,
         last_name: Optional[str] = None,
-) -> User:
+) -> get_user_model:
 
     user = get_user_model().objects.get(pk=user_id)
 
