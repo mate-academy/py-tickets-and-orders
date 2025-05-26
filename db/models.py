@@ -1,5 +1,5 @@
 from django.contrib.auth.models import AbstractUser
-
+from django.db import IntegrityError
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import ForeignKey
@@ -103,7 +103,19 @@ class Ticket(models.Model):
 
     def save(self, *args, **kwargs) -> None:
         self.full_clean()
-        return super().save(*args, **kwargs)
+        # return super().save(*args, **kwargs)
+        try:
+            return super().save(*args,
+                                **kwargs)
+        except IntegrityError as e:
+            if "unique_seat_row" in str(e):
+                raise ValidationError(
+                    {
+                        "__all__": "This seat "
+                                   "in this row for "
+                                   "this session is already taken."}
+                )
+            raise
 
     class Meta:
         constraints = [
