@@ -1,5 +1,4 @@
 from django.contrib.auth.models import AbstractUser
-from django.db import IntegrityError
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import ForeignKey
@@ -86,36 +85,24 @@ class Ticket(models.Model):
                 f"{self.movie_session.show_time} "
                 f"(row: {self.row}, seat: {self.seat})")
 
-    def clean(self) -> None:  # ANN201 fixed
-        if not (self.row > 0
-                and self.row <= self.movie_session.cinema_hall.rows):
-            raise ValidationError({
-                "row": "row number must be in available range: (1, rows): "
-                f"(1, {self.row - 1})"
-            })
-        if not (self.seat <= self.movie_session.cinema_hall.seats_in_row
-                and self.seat > 0):
-            raise ValidationError({
-                "seat": "seat number must be in available range:"
-                        " (1, seats_in_row): "
-                f"(1, {self.seat - 1})"
-            })
+    def clean(self) -> None:
+        cinema_hall = self.movie_session.cinema_hall
+        if not 1 <= self.row <= cinema_hall.rows:
+            raise ValidationError({"row" : [f"row number must be "
+                                            f"in available range: "
+                                            f"(1, rows): "
+                                            f"(1, {cinema_hall.rows})"]})
+        if not 1 <= self.seat <= cinema_hall.seats_in_row:
+            raise ValidationError(
+                {"seat": [f"seat number must be in available "
+                          f"range: (1, seats_in_row): "
+                          f"(1, "
+                          f"{cinema_hall.seats_in_row})"]}
+            )
 
     def save(self, *args, **kwargs) -> None:
         self.full_clean()
-        # return super().save(*args, **kwargs)
-        try:
-            return super().save(*args,
-                                **kwargs)
-        except IntegrityError as e:
-            if "unique_seat_row" in str(e):
-                raise ValidationError(
-                    {
-                        "__all__": "This seat "
-                                   "in this row for "
-                                   "this session is already taken."}
-                )
-            raise
+        super().save(*args, **kwargs)
 
     class Meta:
         constraints = [
