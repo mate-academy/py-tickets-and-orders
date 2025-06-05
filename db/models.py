@@ -2,8 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import UniqueConstraint
-
-import settings
+from django.conf import settings
 
 
 class Genre(models.Model):
@@ -92,7 +91,7 @@ class Ticket(models.Model):
     )
 
     def clean(self) -> None:
-        if 1 <= self.row > self.movie_session.cinema_hall.rows:
+        if 1 < self.row > self.movie_session.cinema_hall.rows:
             raise ValidationError(
                 {
                     "row" :
@@ -104,7 +103,7 @@ class Ticket(models.Model):
                 }
             )
 
-        elif 1 <= self.seat > self.movie_session.cinema_hall.seats_in_row:
+        elif 1 < self.seat > self.movie_session.cinema_hall.seats_in_row:
             raise ValidationError(
                 {
                     "seat" :
