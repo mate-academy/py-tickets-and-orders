@@ -10,6 +10,8 @@ def create_order(tickets: list[dict], username: str, date: datetime = None):
         user = User.objects.get(username=username)
         if date:
             order = Order.objects.create(user=user, created_at=date)
+        else:
+            order = Order.objects.create(user=user)
         for item in tickets:
             movie_session = MovieSession.objects.get(id=item["movie_session"])
             Ticket.objects.create(movie_session=movie_session,
@@ -20,5 +22,7 @@ def create_order(tickets: list[dict], username: str, date: datetime = None):
         return order
 
 def get_orders(username: str = None):
-    return Order.objects.filter(user__username=username)
+    if username:
+        return Order.objects.filter(user__username__icontains=username)
+    return Order.objects.all()
 
