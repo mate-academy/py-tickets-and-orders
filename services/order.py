@@ -9,8 +9,7 @@ def create_order(tickets, username, date=None):
 
     order = Order.objects.create(user=user)
     if created_at:
-        order.created_at = created_at
-        order.save(update_fields=["created_at"])
+        Order.objects.filter(id=order.id).update(created_at=created_at)
 
     for ticket_data in tickets:
         Ticket.objects.create(
