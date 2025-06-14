@@ -60,7 +60,7 @@ class User(AbstractUser):
 
 
 class Order(models.Model):
-    created_at = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
 
     class Meta:
