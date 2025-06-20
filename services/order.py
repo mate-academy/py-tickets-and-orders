@@ -2,6 +2,7 @@ from django.db import transaction
 from db.models import Order, Ticket, User, MovieSession
 from django.utils.dateparse import parse_datetime
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import QuerySet
 
 
 def create_order(
@@ -30,7 +31,7 @@ def create_order(
     return order
 
 
-def get_orders(username: str = None) -> list[Order]:
+def get_orders(username: str = None) -> QuerySet:
     if username:
         try:
             user = User.objects.get(username=username)
