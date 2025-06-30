@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.db.models import QuerySet
 from django.utils.dateparse import parse_datetime
@@ -17,10 +18,20 @@ def create_order(
             order.created_at = parse_datetime(date)
             order.save()
         for ticket in tickets:
+            movie_session_obj = MovieSession.objects.get(
+                id=ticket["movie_session"]
+            )
+            if Ticket.objects.filter(
+                    movie_session=movie_session_obj,
+                    row=ticket["row"],
+                    seat=ticket["seat"]
+            ).exists():
+                raise ValidationError(
+                    f"Seat {ticket['row']}-{ticket['seat']} is already taken "
+                    f"for session {movie_session_obj.id}."
+                )
             Ticket.objects.create(
-                movie_session=MovieSession.objects.get(
-                    id=ticket["movie_session"]
-                ),
+                movie_session=movie_session_obj,
                 order=order,
                 row=ticket["row"],
                 seat=ticket["seat"]
