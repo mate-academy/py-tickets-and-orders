@@ -27,10 +27,10 @@ def create_order(
             )
             created_tickets.append(
                 Ticket.objects.create(
-                order=order,
-                row=ticket["row"],
-                seat=ticket["seat"],
-                movie_session=movie_session
+                    order=order,
+                    row=ticket["row"],
+                    seat=ticket["seat"],
+                    movie_session=movie_session
                 )
             )
 
