@@ -1,4 +1,4 @@
-django==4.0.2
+django
 flake8==5.0.4
 flake8-annotations==2.9.1
 flake8-quotes==3.3.1
