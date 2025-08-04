@@ -3,8 +3,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models.constraints import UniqueConstraint
 from django.utils import timezone
-
-import settings
+from django.conf import settings
 
 
 class Genre(models.Model):
@@ -63,6 +62,10 @@ class MovieSession(models.Model):
         return f"{self.movie.title} {str(self.show_time)}"
 
 
+class User(AbstractUser):
+    pass
+
+
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=False, default=timezone.now)
     user = models.ForeignKey(
@@ -76,10 +79,6 @@ class Order(models.Model):
 
     def __str__(self) -> str:
         return f"{self.created_at}"
-
-
-class User(AbstractUser):
-    pass
 
 
 class Ticket(models.Model):
