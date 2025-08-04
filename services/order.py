@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.db.models import QuerySet
 from db.models import Order, Ticket, User, MovieSession
@@ -9,8 +10,8 @@ def create_order(
         username: str,
         date: str = None,
 ) -> Order:
-    new_order = Order(
-        user=User.objects.get(username=username)
+    new_order = Order.objects.create(
+        user=get_user_model().objects.get(username=username)
     )
 
     if date:
