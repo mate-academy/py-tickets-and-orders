@@ -7,7 +7,7 @@ def create_user(
         email: str = None,
         first_name: str = "",
         last_name: str = ""
-    ) -> User:
+) -> User:
     return User.objects.create_user(
         username=username,
         password=password,
