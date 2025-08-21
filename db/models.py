@@ -59,7 +59,7 @@ class MovieSession(models.Model):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey("User",
+    user = models.ForeignKey("db.User",
                              on_delete=models.CASCADE,
                              related_name="orders")
 
@@ -67,7 +67,7 @@ class Order(models.Model):
         ordering = ("-created_at",)
 
     def __str__(self) -> str:
-        return f"Order: {self.created_at.strftime("%Y-%m-%d %H:%M:%S")}"
+        return f'<Order: {self.created_at.strftime("%Y-%m-%d %H:%M:%S")}>'
 
 
 class Ticket(models.Model):
@@ -88,19 +88,19 @@ class Ticket(models.Model):
         ]
 
     def __str__(self) -> str:
-        return (f"Ticket: {self.movie_session.movie.title} "
+        return (f"<Ticket: {self.movie_session.movie.title} "
                 f"{self.movie_session.show_time} (row: {self.row}, "
-                f"seat: {self.seat})")
+                f"seat: {self.seat})>")
 
     def clean(self) -> None:
         if not 1 <= self.row <= self.movie_session.cinema_hall.rows:
             raise ValidationError(
-                f"row number must be in available range: "
+                f"\"row\": row number must be in available range: "
                 f"(1, {self.movie_session.cinema_hall.rows})"
             )
         if not 1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row:
             raise ValidationError(
-                f"seat number must be in available range: "
+                f"\"seat\": seat number must be in available range: "
                 f"(1, {self.movie_session.cinema_hall.seats_in_row})"
             )
 
