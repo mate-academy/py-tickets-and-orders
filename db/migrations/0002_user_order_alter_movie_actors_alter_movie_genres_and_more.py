@@ -85,7 +85,7 @@ class Migration(migrations.Migration):
                 ('row', models.IntegerField()),
                 ('seat', models.IntegerField()),
                 ('movie_session', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='db.moviesession')),
-                ('order', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='db.order')),
+                ('order', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name="tickets", to='db.order')),
             ],
         ),
         migrations.AddConstraint(
