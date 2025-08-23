@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 from django.db.models.constraints import UniqueConstraint
 from django.db import models
 
-import settings
+from django.conf import settings
 
 
 class Genre(models.Model):
@@ -79,9 +79,13 @@ class Ticket(models.Model):
     movie_session = models.ForeignKey(
         "MovieSession",
         on_delete=models.CASCADE,
-        related_name="ticket"
+        related_name="tickets"
     )
-    order = models.ForeignKey("Order", on_delete=models.CASCADE)
+    order = models.ForeignKey(
+        "Order",
+        on_delete=models.CASCADE,
+        related_name="orders"
+    )
     row = models.IntegerField()
     seat = models.IntegerField()
 
@@ -116,5 +120,6 @@ class Ticket(models.Model):
     def __str__(self) -> str:
         return (
             f"<Ticket: {self.movie_session.movie.title} "
-            f"{self.order.created_at} (row: {self.row}, seat: {self.seat})>"
+            f"{self.movie_session.show_time} "
+            f"(row: {self.row}, seat: {self.seat})>"
         )
