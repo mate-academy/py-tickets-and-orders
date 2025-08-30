@@ -9,7 +9,7 @@ def create_order(
         tickets: list,
         username:str = None,
         date: str = None
-):
+) -> Order:
     try:
         user = User.objects.get(username=username)
     except User.DoesNotExist:
