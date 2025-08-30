@@ -9,18 +9,20 @@ def create_user(
         password: str,
         email: str = None,
         first_name: str = None,
-        last_name: str = None,
+        last_name: str = None
 ) -> User:
     if User.objects.filter(username=username).exists():
         raise ValidationError(f"Username {username} already exists")
-    user = User.objects.create_user(
-        username = username,
-        password = password,
-        email = email,
-        first_name = first_name,
-        last_name = last_name,
-    )
-    return user
+
+    user_data = {"username": username, "password": password}
+    if email:
+        user_data["email"] = email
+    if first_name:
+        user_data["first_name"] = first_name
+    if last_name:
+        user_data["last_name"] = last_name
+
+    return User.objects.create_user(**user_data)
 
 
 def get_user(user_id: int) -> User:
