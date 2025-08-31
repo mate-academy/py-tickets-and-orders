@@ -87,9 +87,9 @@ class Ticket(models.Model):
     seat = models.IntegerField()
 
     def __str__(self) -> str:
-        return (f"{self.movie_session.movie.title}"
-                f" {self.movie_session.show_time} "
-                f"(row: {self.row}, seat: {self.seat})")
+        return (f"{self.movie_session.movie.title} "
+                f"{self.movie_session.show_time} (row: {self.row}, "
+                f"seat: {self.seat})")
 
     def clean(self) -> None:
         seats_in_row = self.movie_session.cinema_hall.seats_in_row
@@ -99,12 +99,12 @@ class Ticket(models.Model):
         if not 1 <= self.seat <= seats_in_row:
             errors["seat"] = (f"seat number must be in available"
                               f" range: (1, seats_in_row):"
-                              f" (1, {seats_in_row })")
-            raise ValidationError(errors)
+                              f" (1, {seats_in_row})")
 
         if not 1 <= self.row <= rows:
             errors["row"] = (f"row number must be in available"
                              f" range: (1, rows): (1, {rows})")
+        if errors:
             raise ValidationError(errors)
 
     def save(self, *args, **kwargs) -> None:
