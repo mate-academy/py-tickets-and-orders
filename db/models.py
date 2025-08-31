@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -28,13 +29,13 @@ class Movie(models.Model):
     actors = models.ManyToManyField(to=Actor, related_name="movies")
     genres = models.ManyToManyField(to=Genre, related_name="movies")
 
+    def __str__(self) -> str:
+        return self.title
+
     class Meta:
         indexes = [
             models.Index(fields=["title"]),
         ]
-
-    def __str__(self) -> str:
-        return self.title
 
 
 class CinemaHall(models.Model):
@@ -65,11 +66,11 @@ class MovieSession(models.Model):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(to=User, on_delete=models.CASCADE,
+    user = models.ForeignKey(to=get_user_model(), on_delete=models.CASCADE,
                              related_name="orders")
 
     def __str__(self) -> str:
-        return f"{self.created_at}"
+        return f"{self.created_at.strftime('%Y-%m-%d %H:%M:%S')}"
 
     class Meta:
         ordering = ["-created_at"]
@@ -99,12 +100,11 @@ class Ticket(models.Model):
             errors["seat"] = (f"seat number must be in available"
                               f" range: (1, seats_in_row):"
                               f" (1, {seats_in_row })")
+            raise ValidationError(errors)
 
         if not 1 <= self.row <= rows:
             errors["row"] = (f"row number must be in available"
                              f" range: (1, rows): (1, {rows})")
-
-        if errors:
             raise ValidationError(errors)
 
     def save(self, *args, **kwargs) -> None:
