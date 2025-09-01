@@ -3,11 +3,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 INSTALLED_APPS = [
-    # ... inne aplikacje
-    "django.contrib.auth",  #  aplikacja do uwierzytelniania
-    "django.contrib.contenttypes",  #  aplikacja do typów treści
-    "db",  #  Twoja aplikacja z modelami
-    # ...
+    "django.contrib.contenttypes",
 ]
 
 AUTH_USER_MODEL = "db.User"

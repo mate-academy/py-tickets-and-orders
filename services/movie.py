@@ -2,6 +2,7 @@ from db.models import Movie
 from django.db import transaction
 from typing import Optional, List
 
+
 def get_movies(title: Optional[str] = None) -> List[Movie]:
     qs = Movie.objects.all()
     if title:
