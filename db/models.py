@@ -13,7 +13,10 @@ class User(AbstractUser):
 class Movie(models.Model):
     title = models.CharField(max_length=255, db_index=True)
     description = models.TextField(blank=True, null=True)
-    duration = models.PositiveIntegerField(help_text="Duration in minutes")
+    duration = models.PositiveIntegerField(
+        help_text="Duration in minutes",
+        null=True  # Dodaj tę linię, aby pole mogło być puste
+    )
 
     def __str__(self) -> str:
         return self.title
@@ -38,15 +41,11 @@ class MovieSession(models.Model):
 
 
 class Order(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        ordering = ["-created_at"]
-
+    # ...
     def __str__(self) -> str:
-        return f"<Order: {self.created_at.strftime('%Y-%m-%d %H:%M:%S')}>"
+        # Prawidłowe formatowanie bez strefy czasowej
+        formatted_date = self.created_at.strftime('%Y-%m-%d %H:%M:%S')
+        return f"<Order: {formatted_date}>"
 
 
 class Ticket(models.Model):

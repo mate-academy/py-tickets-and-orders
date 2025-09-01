@@ -1,6 +1,6 @@
 import pytest
 import datetime
-
+from db.models import User, Movie, CinemaHall, MovieSession, Order, Ticket
 from django.contrib.auth import get_user_model
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -74,13 +74,19 @@ def users_data():
 
 @pytest.fixture()
 def orders_data(users_data):
+    # Pobieranie instancji użytkowników z fixture users_data
+    user1 = User.objects.get(id=1)
+    user2 = User.objects.get(id=2)
+
+    # Użycie instancji użytkowników do tworzenia zamówień
     for ind, order in enumerate([
-        Order.objects.create(id=1, user_id=1),
-        Order.objects.create(id=2, user_id=1),
-        Order.objects.create(id=3, user_id=2)
+        Order.objects.create(id=1, user=user1),
+        Order.objects.create(id=2, user=user1),
+        Order.objects.create(id=3, user=user2)
     ]):
-        order.created_at = datetime.datetime(2020, 11, 1 + ind, 0, 0)
-        order.save()
+        pass
+    yield
+    Order.objects.all().delete()
 
 
 @pytest.fixture()
