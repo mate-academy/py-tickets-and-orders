@@ -1,11 +1,18 @@
-# services/user.py
 from django.contrib.auth import get_user_model
 from django.db import transaction
+from typing import Optional
 
 User = get_user_model()
 
+
 @transaction.atomic
-def create_user(username, password, email=None, first_name=None, last_name=None):
+def create_user(
+    username: str,
+    password: str,
+    email: Optional[str] = None,
+    first_name: Optional[str] = None,
+    last_name: Optional[str] = None
+) -> User:
     user = User.objects.create_user(
         username=username,
         password=password,
@@ -15,12 +22,20 @@ def create_user(username, password, email=None, first_name=None, last_name=None)
     )
     return user
 
-def get_user(user_id):
+
+def get_user(user_id: int) -> User:
     return User.objects.get(id=user_id)
 
+
 @transaction.atomic
-def update_user(user_id, username=None, password=None, email=None,
-                first_name=None, last_name=None):
+def update_user(
+    user_id: int,
+    username: Optional[str] = None,
+    password: Optional[str] = None,
+    email: Optional[str] = None,
+    first_name: Optional[str] = None,
+    last_name: Optional[str] = None
+) -> User:
     user = User.objects.get(id=user_id)
     if username:
         user.username = username
