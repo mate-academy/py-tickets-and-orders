@@ -3,13 +3,17 @@ from django.db import transaction
 from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import get_user_model
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 
 User = get_user_model()
 
 
 @transaction.atomic
-def create_order(tickets: List[Dict[str, Any]], username: str, date: Any = None) -> Order:
+def create_order(
+    tickets: List[Dict[str, Any]],
+    username: str,
+    date: Any = None
+) -> Order:
     try:
         user = User.objects.get(username=username)
     except ObjectDoesNotExist:
@@ -19,7 +23,9 @@ def create_order(tickets: List[Dict[str, Any]], username: str, date: Any = None)
     order = Order.objects.create(user=user, created_at=created_at)
 
     for ticket_data in tickets:
-        movie_session = MovieSession.objects.get(id=ticket_data["movie_session"])
+        movie_session = MovieSession.objects.get(
+            id=ticket_data["movie_session"]
+        )
         ticket = Ticket(
             movie_session=movie_session,
             order=order,
