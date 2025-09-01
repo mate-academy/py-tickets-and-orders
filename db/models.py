@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
-from django.conf import settings
 from typing import Dict, Any
 
 
@@ -44,7 +43,7 @@ class Order(models.Model):
     # ...
     def __str__(self) -> str:
         # Prawidłowe formatowanie bez strefy czasowej
-        formatted_date = self.created_at.strftime('%Y-%m-%d %H:%M:%S')
+        formatted_date = self.created_at.strftime("%Y-%m-%d %H:%M:%S")
         return f"<Order: {formatted_date}>"
 
 
