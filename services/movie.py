@@ -1,21 +1,14 @@
-from db.models import Movie
 from django.db import transaction
-from typing import Optional, List
+from db.models import Movie
 
 
-def get_movies(title: Optional[str] = None) -> List[Movie]:
-    qs = Movie.objects.all()
+def get_movies(title: str | None = None):
+    movies = Movie.objects.all()
     if title:
-        qs = qs.filter(title__icontains=title)
-    return qs
+        movies = movies.filter(title__icontains=title)
+    return movies
 
 
 @transaction.atomic
-def create_movie(
-    title: str,
-    description: Optional[str] = None,
-    duration: Optional[int] = None
-) -> Movie:
-    movie = Movie(title=title, description=description, duration=duration)
-    movie.save()
-    return movie
+def create_movie(title: str) -> Movie:
+    return Movie.objects.create(title=title)
