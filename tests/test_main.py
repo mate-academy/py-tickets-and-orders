@@ -23,16 +23,12 @@ pytestmark = pytest.mark.django_db
 
 @pytest.fixture()
 def movies_data():
-    Movie.objects.create(title="Matrix", description="Matrix movie")
-    Movie.objects.create(title="Matrix 2", description="Matrix 2 movie")
-    Movie.objects.create(title="Batman", description="Batman movie")
-    Movie.objects.create(title="Titanic", description="Titanic movie")
-    Movie.objects.create(title="The Good, the Bad and the Ugly",
-                         description="Western classic")
-    Movie.objects.create(title="Harry Potter 1")
-    Movie.objects.create(title="Harry Potter 2")
-    Movie.objects.create(title="Harry Potter 3")
-    Movie.objects.create(title="Harry Kasparov: Documentary")
+    Movie.objects.create(title="Matrix", description="Matrix movie", duration=148)
+    # Dodaj duration do wszystkich filmów, które tworzysz
+    Movie.objects.create(id=2, title='Shrek', duration=90)
+    Movie.objects.create(id=3, title='Dune', duration=155)
+    yield
+    Movie.objects.all().delete()
 
 
 @pytest.fixture()
