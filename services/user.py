@@ -4,7 +4,13 @@ from django.shortcuts import get_object_or_404
 User = get_user_model()
 
 
-def create_user(username, password, email=None, first_name=None, last_name=None):
+def create_user(
+    username: str,
+    password: str,
+    email: str | None = None,
+    first_name: str | None = None,
+    last_name: str | None = None,
+) -> User:
     user = User.objects.create_user(username=username, password=password)
     if email:
         user.email = email
@@ -20,8 +26,14 @@ def get_user(user_id: int) -> User:
     return get_object_or_404(User, id=user_id)
 
 
-def update_user(user_id, username=None, password=None, email=None,
-                first_name=None, last_name=None):
+def update_user(
+    user_id: int,
+    username: str | None = None,
+    password: str | None = None,
+    email: str | None = None,
+    first_name: str | None = None,
+    last_name: str | None = None,
+) -> User:
     user = get_object_or_404(User, id=user_id)
 
     if username:

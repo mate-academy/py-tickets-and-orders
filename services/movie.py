@@ -2,11 +2,11 @@ from django.db import transaction
 from db.models import Movie
 
 
-def get_movies(title: str | None = None):
+def get_movies(title: str | None = None) -> list[Movie]:
     movies = Movie.objects.all()
     if title:
         movies = movies.filter(title__icontains=title)
-    return movies
+    return list(movies)
 
 
 @transaction.atomic

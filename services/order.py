@@ -6,7 +6,11 @@ User = get_user_model()
 
 
 @transaction.atomic
-def create_order(tickets: list[dict], username: str, date=None) -> Order:
+def create_order(
+    tickets: list[dict],
+    username: str,
+    date: str | None = None,
+) -> Order:
     user = User.objects.get(username=username)
     order = Order.objects.create(user=user)
     if date:
@@ -15,7 +19,9 @@ def create_order(tickets: list[dict], username: str, date=None) -> Order:
 
     for ticket_data in tickets:
         Ticket.objects.create(
-            movie_session=MovieSession.objects.get(id=ticket_data["movie_session"]),
+            movie_session=MovieSession.objects.get(
+                id=ticket_data["movie_session"]
+            ),
             order=order,
             row=ticket_data["row"],
             seat=ticket_data["seat"],
@@ -23,7 +29,7 @@ def create_order(tickets: list[dict], username: str, date=None) -> Order:
     return order
 
 
-def get_orders(username: str | None = None):
+def get_orders(username: str | None = None) -> list[Order]:
     if username:
-        return Order.objects.filter(user__username=username)
-    return Order.objects.all()
+        return list(Order.objects.filter(user__username=username))
+    return list(Order.objects.all())
