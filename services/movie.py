@@ -1,12 +1,15 @@
 from django.db.models import QuerySet
+from django.db import transaction
+from typing import Optional
 
 from db.models import Movie
 
 
 def get_movies(
-    genres_ids: list[int] = None,
-    actors_ids: list[int] = None,
-) -> QuerySet:
+        genres_ids: Optional[list[int]] = None,
+        actors_ids: Optional[list[int]] = None,
+        title: Optional[str] = None,
+) -> QuerySet[Movie]:
     queryset = Movie.objects.all()
 
     if genres_ids:
@@ -15,6 +18,9 @@ def get_movies(
     if actors_ids:
         queryset = queryset.filter(actors__id__in=actors_ids)
 
+    if title:
+        queryset = queryset.filter(title__icontains=title)
+
     return queryset
 
 
@@ -22,11 +28,12 @@ def get_movie_by_id(movie_id: int) -> Movie:
     return Movie.objects.get(id=movie_id)
 
 
+@transaction.atomic
 def create_movie(
-    movie_title: str,
-    movie_description: str,
-    genres_ids: list = None,
-    actors_ids: list = None,
+        movie_title: str,
+        movie_description: str,
+        genres_ids: Optional[list[int]] = None,
+        actors_ids: Optional[list[int]] = None,
 ) -> Movie:
     movie = Movie.objects.create(
         title=movie_title,
@@ -38,3 +45,5 @@ def create_movie(
         movie.actors.set(actors_ids)
 
     return movie
+
+# get_movies already supports filtering by genres_ids, actors_ids, and title

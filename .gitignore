@@ -6,6 +6,32 @@
 venv/
 .venv/
 .pytest_cache/
-**__pycache__/
+**/__pycache__/
 *.pyc
-**db.sqlite3
+*.sqlite3
+
+# Static files
+staticfiles/
+media/
+
+# Django specific
+*.log
+local_settings.py
+*.sqlite3-journal
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+
+# Translations
+*.mo
+*.pot
+
+# Node.js (if using frontend tools)
+node_modules/
+npm-debug.log*
+
+# OS generated files
+Thumbs.db
