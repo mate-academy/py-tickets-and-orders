@@ -68,7 +68,7 @@ class Order(models.Model):
         ordering = ["-created_at"]
 
     def __str__(self) -> str:
-        return f"{self.created_at}"
+        return f"<Order: {self.created_at}>"
 
 
 class Ticket(models.Model):
@@ -85,10 +85,17 @@ class Ticket(models.Model):
     row = models.IntegerField()
     seat = models.IntegerField()
 
+    class Meta:
+        constraints = [
+            UniqueConstraint(fields=["movie_session", "row", "seat"],
+                             name="unique_ticket_row_seat_per_session",
+                             )
+        ]
+
     def __str__(self) -> str:
-        return (f"{self.movie_session.movie.title} "
+        return (f"<Ticket: {self.movie_session.movie.title} "
                 f"{self.movie_session.show_time} "
-                f"(row: {self.row}, seat: {self.seat})")
+                f"(row: {self.row}, seat: {self.seat})>")
 
     def clean(self) -> None:
         errors = {}
@@ -110,13 +117,6 @@ class Ticket(models.Model):
     def save(self, *args, **kwargs) -> None:
         self.full_clean()
         return super().save(*args, **kwargs)
-
-    class Meta:
-        constraints = [
-            UniqueConstraint(fields=["row", "seat", "movie_session"],
-                             name="unique_ticket_row_seat_per_session",
-                             )
-        ]
 
 
 class User(AbstractUser):

@@ -5,8 +5,13 @@ if TYPE_CHECKING:
     from db.models import User as UserType
 
 
-def create_user(username: str, password: str, email: str = None,
-                first_name: str = None, last_name: str = None) -> "UserType":
+def create_user(
+        username: str,
+        password: str,
+        email: str = None,
+        first_name: str = None,
+        last_name: str = None
+) -> "UserType":
     extras = {}
     if email is not None:
         extras["email"] = email
@@ -24,13 +29,18 @@ def create_user(username: str, password: str, email: str = None,
 
 
 def get_user(user_id: int) -> "UserType":
-    return get_user_model().objects.get(id=user_id)
+    return get_user_model().objects.get(pk=user_id)
 
 
-def update_user(user_id: int, username: str = None, password: str = None,
-                email: str = None, first_name: str = None,
-                last_name: str = None) -> None:
-    user = get_user_model().objects.get(id=user_id)
+def update_user(
+        user_id: int,
+        username: str = None,
+        password: str = None,
+        email: str = None,
+        first_name: str = None,
+        last_name: str = None
+) -> None:
+    user = get_user(user_id)
     if username:
         user.username = username
     if password:
