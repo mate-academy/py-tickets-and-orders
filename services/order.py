@@ -1,4 +1,5 @@
 from django.db import transaction
+from datetime import datetime
 from db.models import Ticket, Order
 from django.contrib.auth import get_user_model
 from django.db.models import QuerySet
@@ -14,10 +15,11 @@ def create_order(
 ) -> Order:
     user = get_user_model().objects.get(username=username)
     order = Order.objects.create(user=user)
-    if date:
-        order.created_at = parse_datetime(
-            date).strptime(date, "%Y-%m-%d %H:%M")
-        order.save(update_fields=["created_at"])
+    if date is not None:
+        parsed = (parse_datetime(date)
+                  or datetime.strptime(date, "%Y-%m-%d %H:%M"))
+        Order.objects.filter(pk=order.pk).update(created_at=parsed)
+
     for ticket in tickets:
         Ticket.objects.create(
             order=order,
