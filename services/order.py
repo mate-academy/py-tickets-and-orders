@@ -13,10 +13,13 @@ def create_order(
     username: str,
     date: datetime = None
 ) -> Order:
-    user, _ = get_user_model().objects.get_or_create(
+    user, _ = get_user_model().objects.get(
         username=username
     )
-    order = Order.objects.create(created_at=date, user=user)
+    if date:
+        order = Order.objects.create(user=user, created_at=date)
+    else:
+        order = Order.objects.create(user=user)
 
     for ticket in tickets:
         row = int(ticket["row"])
@@ -37,8 +40,5 @@ def get_orders(
         username: str=None
 ) -> QuerySet[Order]:
     if username:
-        user = get_user_model().objects.get(username=username)
-        orders = user.orders.all()
-    else:
-        orders = Order.objects.all()
-    return orders
+        return Order.objects.filter(user__username=username)
+    return Order.objects.all()

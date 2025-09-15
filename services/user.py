@@ -8,19 +8,23 @@ def create_user(
         first_name: str = None,
         last_name: str = None,
 ) -> "User":
+    fields = {}
+    if email:
+        fields["email"] = email
+    if first_name:
+        fields["first_name"] = first_name
+    if last_name:
+        fields["last_name"] = last_name
 
+    new_user = get_user_model().objects.create_user(
+        username=username,
+        password=password,
+        **fields
+    )
     new_user = get_user_model().objects.create_user(
         username=username,
         password=password
     )
-    if email:
-        new_user.email=email
-    if first_name:
-        new_user.first_name=first_name
-    if last_name:
-        new_user.last_name=last_name
-
-    new_user.save()
     return new_user
 
 
@@ -37,16 +41,16 @@ def update_user(
         last_name: str = None,
 ) -> "User":
 
-    user = get_user_model().objects.get(id=user_id)
-    if username:
+    user = get_user(user_id)
+    if username is not None:
         user.username = username
-    if password:
+    if password is not None:
         user.set_password(password)
-    if email:
+    if email is not None:
         user.email = email
-    if first_name:
+    if first_name is not None:
         user.first_name = first_name
-    if last_name:
+    if last_name is not None:
         user.last_name = last_name
     user.save()
     return user

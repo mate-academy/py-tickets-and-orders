@@ -1,9 +1,8 @@
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import UniqueConstraint
-
-import settings
 
 
 class Genre(models.Model):
@@ -99,13 +98,11 @@ class Ticket(models.Model):
         errors = {}
         if not (1 <= self.row <= max_rows):
             errors["row"] = (
-                f"row number must be in available range: "
-                f"(1, rows): (1, {max_rows})"
+                f"row number must be in range 1..{max_rows}"
             )
         if not (1 <= self.seat <= max_seats):
             errors["seat"] = (
-                f"seat number must be in available range: "
-                f"(1, seats_in_row): (1, {max_seats})"
+                f"seat number must be in range 1..{max_seats}"
             )
         if errors:
             raise ValidationError(errors)
