@@ -17,7 +17,8 @@ def create_order(tickets: list[dict],
     order = Order.objects.create(user=user)
     if date:
         order.created_at = date
-        order.save()
+        order.save(update_fields=["created_at"])
+
     for ticket in tickets:
         movie_session = MovieSession.objects.get(pk=ticket["movie_session"])
         order.tickets.create(row=ticket["row"],
