@@ -1,4 +1,7 @@
+from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import Index, UniqueConstraint
 
 
 class Genre(models.Model):
@@ -25,6 +28,9 @@ class Movie(models.Model):
     def __str__(self) -> str:
         return self.title
 
+    class Meta:
+        indexes = [Index(fields=["title"])]
+
 
 class CinemaHall(models.Model):
     name = models.CharField(max_length=255)
@@ -50,3 +56,63 @@ class MovieSession(models.Model):
 
     def __str__(self) -> str:
         return f"{self.movie.title} {str(self.show_time)}"
+
+
+class Order(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(to=Actor, on_delete=models.CASCADE,
+                             related_name="orders")
+
+    def __str__(self) -> str:
+        return f"Order: {self.created_at}"
+
+    class Meta:
+        ordering = ["created_at"]
+
+
+class Ticket(models.Model):
+    movie_session = models.ForeignKey(to=MovieSession,
+                                      on_delete=models.CASCADE,
+                                      related_name="tickets")
+    order = models.ForeignKey(to=Order, on_delete=models.CASCADE,
+                              related_name="tickets")
+    row = models.IntegerField()
+    seat = models.IntegerField()
+
+    def __str__(self) -> str:
+        return (f"Ticket: Speed {self.movie_session.show_time} "
+                f"(row: {self.row}, seat: {self.seat})")
+
+    def clean(self) -> None:
+        cinema_hall = self.movie_session.cinema_hall
+
+        if self.row <= 0 or self.seat <= 0:
+            raise ValidationError("{'row': ['row number must be in available range: (1, rows): (1, 10)'}")
+
+        if self.row > cinema_hall.rows:
+            raise ValidationError({
+            "row": f"row number must be in available range: (1, rows): (1, {cinema_hall.rows})"
+        })
+
+        if self.seat > cinema_hall.seats_in_row:
+            raise ValidationError({
+            'seat': ['seat number must be in available range: (1, seats_in_row): (1, 12)']})
+
+
+def save(self, *args, **kwargs) -> None:
+    self.full_clean()
+    super().save(*args, **kwargs)
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(fields=[
+                "movie_session", "row", "seat"],
+                name="unique_ticket_per_seat")]
+
+
+class User(AbstractUser):
+    phone_number = models.CharField(max_length=20, blank=True, null=True)
+    date_of_birth = models.DateField(blank=True, null=True)
+
+    def __str__(self) -> str:
+        return self.username
