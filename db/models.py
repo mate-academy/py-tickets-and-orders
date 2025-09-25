@@ -62,7 +62,8 @@ class MovieSession(models.Model):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
+    user = models.ForeignKey(to=settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE,
                              related_name="orders")
 
     def __str__(self) -> str:
@@ -91,12 +92,14 @@ class Ticket(models.Model):
 
         if self.row <= 0 or self.row > cinema_hall.rows:
             errors["row"] = [
-                f"row number must be in available range: (1, rows): (1, {cinema_hall.rows})"
+                f"row number must be in available range: (1, "
+                f"rows): (1, {cinema_hall.rows})"
             ]
 
         if self.seat <= 0 or self.seat > cinema_hall.seats_in_row:
             errors["seat"] = [
-                f"seat number must be in available range: (1, seats_in_row): (1, {cinema_hall.seats_in_row})"
+                f"seat number must be in available range: "
+                f"(1, seats_in_row): (1, {cinema_hall.seats_in_row})"
             ]
 
         if errors:
