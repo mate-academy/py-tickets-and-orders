@@ -87,27 +87,31 @@ class Ticket(models.Model):
         cinema_hall = self.movie_session.cinema_hall
 
         if self.row <= 0 or self.seat <= 0:
-            raise ValidationError("{'row': ['row number must be in available range: (1, rows): (1, 10)'}")
+            raise ValidationError("{'row': ['row number must be "
+                                  "in available range: (1, rows): (1, 10)'}")
 
         if self.row > cinema_hall.rows:
             raise ValidationError({
-            "row": f"row number must be in available range: (1, rows): (1, {cinema_hall.rows})"
-        })
+                "row": (
+                    f"row number must be in available range: "
+                    f"(1, rows): (1, {cinema_hall.rows})"
+                )
+            })
 
         if self.seat > cinema_hall.seats_in_row:
-            raise ValidationError({
-            'seat': ['seat number must be in available range: (1, seats_in_row): (1, 12)']})
+            raise ValidationError({"seat": ["seat number must be in available "
+                                            "range: (1, seats_in_row):"
+                                            " (1, 12)"]})
 
+    def save(self, *args, **kwargs) -> None:
+        self.full_clean()
+        super().save(*args, **kwargs)
 
-def save(self, *args, **kwargs) -> None:
-    self.full_clean()
-    super().save(*args, **kwargs)
-
-    class Meta:
-        constraints = [
-            UniqueConstraint(fields=[
-                "movie_session", "row", "seat"],
-                name="unique_ticket_per_seat")]
+        class Meta:
+            constraints = [
+                UniqueConstraint(fields=[
+                    "movie_session", "row", "seat"],
+                    name="unique_ticket_per_seat")]
 
 
 class User(AbstractUser):

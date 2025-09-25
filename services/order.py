@@ -7,7 +7,7 @@ from db.models import Ticket, User, Order
 
 
 @transaction.atomic
-def create_order(tickets: int, username: str, date: list[str]=None) -> Order:
+def create_order(tickets: int, username: str, date: list[str] = None) -> Order:
     try:
         user = User.objects.get(username=username)
     except ObjectDoesNotExist:
@@ -34,7 +34,7 @@ def create_order(tickets: int, username: str, date: list[str]=None) -> Order:
     return order
 
 
-def get_orders(username: list[str]=None) -> QuerySet[Order]:
+def get_orders(username: list[str] = None) -> QuerySet[Order]:
     if username:
         try:
             user = User.objects.get(username=username)

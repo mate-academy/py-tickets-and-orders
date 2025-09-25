@@ -3,8 +3,9 @@
 from db.models import User
 
 
-def create_user(username: str, password: str, email: list[str]=None,
-                first_name: list[str]=None, last_name: list[str]=None) -> None:
+def create_user(username: str, password: str, email: list[str] = None,
+                first_name: list[str] = None,
+                last_name: list[str] = None) -> None:
     user = User.objects.create_user(username=username, password=password)
     if email:
         user.email = email
@@ -22,8 +23,9 @@ def get_user(user_id: int) -> User:
 
 
 def update_user(user_id: int, username: str,
-                password: str, email: list=None,
-                first_name: list[str]=None, last_name: list[str]=None) -> None:
+                password: str, email: list = None,
+                first_name: list[str] = None,
+                last_name: list[str] = None) -> None:
     user = User.objects.get(id=user_id)
 
     if username:
