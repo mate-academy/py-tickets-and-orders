@@ -1,0 +1,21 @@
+mateacademy-ai-mentor suggested changes 1 minute ago
+mateacademy-ai-mentor left a comment
+Review Summary
+I’m requesting changes because several critical requirements are not met and will likely cause the checker/tests to fail.
+Critical blockers to fix:
+•
+Movie.title index is missing (db/models.py). The task requires an index on Movie.title. Add db_index=True (or a Meta index) and include the generated migration. See db/migrations/0002... (lines 13–34 update related_name only; no index migration exists).
+•
+Order.str format is incorrect (db/models.py). It must return exactly <Order: YYYY-MM-DD HH:MM:SS>. Currently it returns only the datetime string; wrap it like return f"<Order: {self.created_at.strftime('%Y-%m-%d %H:%M:%S')}>".
+•
+Ticket.str format is incorrect (db/models.py). It must return exactly <Ticket: {title} {showtime} (row: X, seat: Y)>. Wrap the current string accordingly.
+•
+Custom User migration is wrong (db/migrations/0003_user.py). The requirement is a custom User inheriting from AbstractUser. The migration currently duplicates default auth fields and does not reflect inheritance. Update db/models.py to class User(AbstractUser): (if not already), then regenerate migrations so the CreateModel reflects AbstractUser inheritance instead of redefining all fields.
+Important but non-blocking improvements:
+•
+Ticket fields: spec says IntegerField; you used PositiveIntegerField (db/migrations/0005_ticket.py lines 18–19). If tests are strict, switch to IntegerField and create an AlterField migration.
+•
+services/movie.get_movies: use if title is not None: instead of if title: to match the “provided (not None)” requirement.
+•
+services/user.update_user: reuse the existing get_user(user_id) helper instead of User.objects.get(id=...) for better maintainability.
+You’ve done solid work on transactions, validations, and unique constraints. Address the blockers above (especially the Movie.title index and the two str formats, plus regenerating the User migration) and this should pass.
