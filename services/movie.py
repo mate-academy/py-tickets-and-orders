@@ -1,3 +1,5 @@
+from typing import Optional
+
 from django.db import transaction
 from django.db.models import QuerySet
 
@@ -7,18 +9,18 @@ from db.models import Movie
 def get_movies(
     genres_ids: list[int] = None,
     actors_ids: list[int] = None,
-    title: list[str] = None,
+    title: Optional[str] = None,
 ) -> QuerySet:
     queryset = Movie.objects.all()
 
     if genres_ids:
-        queryset = queryset.filter(genres__id__in=genres_ids)
+        queryset = queryset.filter(genres__id__in=genres_ids).distinct()
 
     if actors_ids:
-        queryset = queryset.filter(actors__id__in=actors_ids)
+        queryset = queryset.filter(actors__id__in=actors_ids).distinct()
 
     if title:
-        queryset = queryset.filter(title__in=title)
+        queryset = queryset.filter(title__contains=title)
 
     return queryset
 
