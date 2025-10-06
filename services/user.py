@@ -47,7 +47,7 @@ def update_user(
         user.last_name = last_name
 
     if password:
-        user.password = user.set_password(password)
+        user.set_password(password)
 
     user.save()
     return user
