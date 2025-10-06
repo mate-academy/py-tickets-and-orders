@@ -20,7 +20,7 @@ def create_user(
 
 
 def get_user(user_id: int) -> User:
-    user = User.objects.get(user__id=user_id)
+    user = User.objects.get(id=user_id)
     return user
 
 
