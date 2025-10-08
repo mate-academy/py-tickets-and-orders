@@ -22,7 +22,7 @@ def create_order(tickets: list[dict], username: str, date: datetime = None) -> N
     #     ]
     # )
     for ticket in tickets:
-        Ticket.objects.create(order=order, movie_session_id=ticket['movie_session'], row=ticket['row'], seat=ticket['seat'])
+        Ticket.objects.create(order=order, movie_session_id=ticket["movie_session"], row=ticket["row"], seat=ticket["seat"])
 
 
 def get_orders(username: str = None) -> QuerySet:
