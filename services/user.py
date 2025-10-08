@@ -1,5 +1,10 @@
+from typing import TYPE_CHECKING
+
 from django.contrib.auth import get_user_model
-from db.models import User
+
+
+if TYPE_CHECKING:
+    from db.models import User
 
 
 def create_user(
@@ -8,7 +13,7 @@ def create_user(
         email: str = None,
         first_name: str = None,
         last_name: str = None,
-) -> User:
+) -> "User":
     user = get_user_model().objects.create_user(
         username=username,
         password=password,
@@ -25,7 +30,7 @@ def create_user(
     return user
 
 
-def get_user(user_id: int) -> User:
+def get_user(user_id: int) -> "User":
     return get_user_model().objects.get(pk=user_id)
 
 
@@ -36,7 +41,7 @@ def update_user(
         email: str = None,
         first_name: str = None,
         last_name: str = None,
-) -> User:
+) -> "User":
     user = get_user(user_id)
     if username:
         user.username = username
