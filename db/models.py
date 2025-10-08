@@ -2,7 +2,13 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
-import settings
+from django.conf import settings
+
+
+class User(AbstractUser):
+    """
+    Addon to User validation
+    """
 
 
 class Genre(models.Model):
@@ -58,7 +64,7 @@ class MovieSession(models.Model):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="orders")
 
     class Meta:
         ordering = ["-created_at"]
@@ -105,9 +111,3 @@ class Ticket(models.Model):
         return (f"{self.movie_session.movie.title} "
                 f"{self.order.created_at.strftime('%Y-%m-%d %H:%M:%S')} "
                 f"(row: {self.row}, seat: {self.seat})")
-
-
-class User(AbstractUser):
-    """
-    Addon to User validation
-    """

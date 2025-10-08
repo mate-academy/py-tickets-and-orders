@@ -2,13 +2,13 @@ from django.db import transaction
 import datetime
 
 from django.db.models import QuerySet
-
-from db.models import Order, Ticket, User
+from django.contrib.auth import get_user_model
+from db.models import Order, Ticket
 
 
 @transaction.atomic
 def create_order(tickets: list[dict], username: str, date: datetime = None) -> None:
-    user = User.objects.get(username=username)
+    user = get_user_model().objects.get(username=username)
     order = Order.objects.create(created_at=date, user=user) if date else Order.objects.create(user=user)
     # Ticket.objects.bulk_create(
     #     [
