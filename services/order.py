@@ -1,5 +1,5 @@
 from django.db import transaction
-import datetime
+from datetime import datetime
 
 from django.db.models import QuerySet
 from django.contrib.auth import get_user_model
@@ -25,5 +25,5 @@ def create_order(tickets: list[dict], username: str, date: datetime = None) -> N
         Ticket.objects.create(order=order, movie_session_id=ticket["movie_session"], row=ticket["row"], seat=ticket["seat"])
 
 
-def get_orders(username: str = None) -> QuerySet:
+def get_orders(username: str = None) -> QuerySet[Order]:
     return Order.objects.filter(user__username=username) if username else Order.objects.all()
