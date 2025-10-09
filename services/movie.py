@@ -11,7 +11,7 @@ def get_movies(
 ) -> QuerySet[Movie]:
     queryset = Movie.objects.all()
 
-    if title:
+    if title is not None:
         queryset = queryset.filter(title__icontains=title)
 
     if genres_ids:

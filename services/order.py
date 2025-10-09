@@ -14,13 +14,13 @@ def create_order(
         date: str = None
 ) -> Order:
     if isinstance(date, str):
-        date = datetime.datetime.strptime(date, "%Y-%m-%d %H:%M")
+        movie_date = datetime.datetime.strptime(date, "%Y-%m-%d %H:%M")
 
     user = get_user_model().objects.get(username=username)
     if date is not None:
         order = Order.objects.create(
             user=user,
-            created_at=date,
+            created_at=movie_date,
         )
     else:
         order = Order.objects.create(user=user)
