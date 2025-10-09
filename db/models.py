@@ -1,5 +1,5 @@
 import datetime
-
+from typing import cast
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
@@ -63,7 +63,7 @@ class MovieSession(models.Model):
 
 
 class Order(models.Model):
-    created_at = models.DateTimeField(default=datetime.datetime.now)
+    created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -71,7 +71,8 @@ class Order(models.Model):
     )
 
     def __str__(self) -> str:
-        return f"{self.created_at}"
+        created_at = cast(datetime.datetime, self.created_at)
+        return f"{created_at.strftime("%Y-%m-%d %H:%M:%S")}"
 
     class Meta:
         ordering = ["-created_at"]

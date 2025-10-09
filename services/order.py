@@ -15,26 +15,26 @@ def create_order(
 ) -> Order:
 
     user = get_user_model().objects.get(username=username)
+    order = Order.objects.create(user=user)
+
     if date:
         if isinstance(date, str):
-            created_at = datetime.datetime.strptime(date, "%Y-%m-%d %H:%M")
+            new_created_at = datetime.datetime.strptime(date, "%Y-%m-%d %H:%M")
         else:
-            created_at = date
-    else:
-        created_at = datetime.datetime.now()
+            new_created_at = date
+        Order.objects.filter(id=order.id).update(created_at=new_created_at)
+        order.refresh_from_db()
 
-    order = Order(user=user, created_at=created_at)
-    order.full_clean()
-    order.save()
-
-    for tt in tickets:
-        movie_session = MovieSession.objects.get(id=tt["movie_session"])
+    for ticket_data in tickets:
+        movie_session = MovieSession.objects.get(
+            id=ticket_data["movie_session"]
+        )
 
         ticket = Ticket(
             order=order,
             movie_session=movie_session,
-            row=tt["row"],
-            seat=tt["seat"]
+            row=ticket_data["row"],
+            seat=ticket_data["seat"]
         )
         ticket.full_clean()
         ticket.save()
