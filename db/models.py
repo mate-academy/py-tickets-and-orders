@@ -68,7 +68,10 @@ class Order(models.Model):
     )
 
     def __str__(self) -> str:
-        return self.created_at
+        return f"<Order: {self.created_at.strftime("%Y-%m-%d %H:%M:%S")}>"
+
+    class Meta:
+        ordering = ["-created_at"]
 
 
 class Ticket(models.Model):
@@ -90,21 +93,30 @@ class Ticket(models.Model):
         ]
 
     def __str__(self) -> str:
-        return f"{self.movie_session} (row: {self.row}, seat: {self.seat})"
+        return (
+            f"<Ticket: {self.movie_session.movie.title} "
+            f"{self.movie_session.show_time.strftime("%Y-%m-%d %H:%M:%S")} "
+            f"(row: {self.row}, seat: {self.seat})>"
+        )
 
     def clean(self) -> None:
         cinema_hall = self.movie_session.cinema_hall
 
         if self.row < 1 or self.row > cinema_hall.rows:
-            raise ValidationError({"row": f"A fileira {self.row} "
-                                   f"é inválida. A sala possui"
-                                   f" {cinema_hall.rows} fileiras."})
+            raise ValidationError({
+                "row": [
+                    f"row number must be in available range:"
+                    f" (1, rows): (1, {cinema_hall.rows})"
+                ]
+            })
 
         if self.seat < 1 or self.seat > cinema_hall.seats_in_row:
-            raise ValidationError({"seat": f"O assento "
-                                   f"{self.seat} é inválido. Cada "
-                                   f"fileira possui "
-                                   f"{cinema_hall.seats_in_row} assentos."})
+            raise ValidationError({
+                "seat": [
+                    f"seat number must be in available range:"
+                    f" (1, seats_in_row): (1, {cinema_hall.seats_in_row})"
+                ]
+            })
 
     def save(self, *args, **kwargs) -> None:
         self.full_clean()
