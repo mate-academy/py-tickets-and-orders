@@ -61,7 +61,7 @@ class Order(models.Model):
     )
 
     def __str__(self) -> str:
-        return f"<Order: {self.created_at.strftime("%Y-%m-%d %H:%M:%S")}>"
+        return f"<Order: {self.created_at.strftime('%Y-%m-%d %H:%M:%S')}>"
 
     class Meta:
         ordering = ["-created_at"]
@@ -87,10 +87,10 @@ class Ticket(models.Model):
     def clean(self) -> None:
         cinema_hall_rows = self.movie_session.cinema_hall.rows
         cinema_hall_seats = self.movie_session.cinema_hall.seats_in_row
-        if self.row < 1 or cinema_hall_rows:
-            raise ValidationError("Row number is out of range.")
+        if self.row < 1 or self.row > cinema_hall_rows:
+            raise ValidationError({"row": f"row number must be in available range: (1, {self.row}): (1, {cinema_hall_rows})"})
         if self.seat < 1 or self.seat > cinema_hall_seats:
-            raise ValidationError("Seat number is out of range.")
+            raise ValidationError({"seat": f"seat number must be in available range: (1, {self.seat}): (1, {cinema_hall_seats})"})
 
     def save(self, *args, **kwargs) -> None:
         self.full_clean()
@@ -98,7 +98,7 @@ class Ticket(models.Model):
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=["movie_session", "row", "seat"])
+            models.UniqueConstraint(fields=["movie_session", "row", "seat"], name="unique_ticket_session_row_seat")
         ]
 
 

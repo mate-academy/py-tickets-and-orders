@@ -1,4 +1,5 @@
 from db.models import Order, Ticket, MovieSession
+from django.db.models import QuerySet
 from django.db import transaction
 from django.contrib.auth import get_user_model
 
@@ -13,10 +14,10 @@ def create_order(
     date: str | None = None
 ) -> Order:
     user = User.objects.get(username=username)
-    order = Order.objects.create(user=user)
     if date:
-        order.created_at = date
-        order.save(update_fields=["created_at"])
+        order = Order.objects.create(user=user, created_at=date)
+    else:
+        order = Order.objects.create(user=user)
 
     for ticket in tickets:
         ticket_created = Ticket(
@@ -32,7 +33,7 @@ def create_order(
     return order
 
 
-def get_orders(username: str = None) -> list[Order]:
+def get_orders(username: str = None) -> QuerySet[Order]:
     if username:
         filter_order = Order.objects.filter(user__username=username)
         return filter_order.prefetch_related("tickets")

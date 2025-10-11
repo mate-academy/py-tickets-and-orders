@@ -7,8 +7,8 @@ from django.db import transaction
 def get_movies(
     genres_ids: list[int] = None,
     actors_ids: list[int] = None,
-    title: str = None,
-) -> QuerySet:
+    title: str | None = None,
+) -> QuerySet[Movie]:
     queryset = Movie.objects.all()
 
     if genres_ids:
