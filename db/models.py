@@ -57,11 +57,14 @@ class MovieSession(models.Model):
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(
-        to="users.User", on_delete=models.CASCADE, related_name="orders"
+        to="db.User", on_delete=models.CASCADE, related_name="orders"
     )
 
     def __str__(self) -> str:
         return f"<Order: {self.created_at.strftime("%Y-%m-%d %H:%M:%S")}>"
+
+    class Meta:
+        ordering = ["-created_at"]
 
 
 class Ticket(models.Model):
@@ -75,20 +78,28 @@ class Ticket(models.Model):
     seat = models.IntegerField()
 
     def __str__(self) -> str:
-        return f"<Ticket: {self.movie_session} row {self.row} seat {self.seat}>"
-    
-    def clean(self):
-        if self.row < 1 or self.row > self.movie_session.cinema_hall.rows:
+        movie_title = self.movie_session.movie.title
+        time = self.movie_session.show_time
+        ticket = f"<Ticket: {movie_title} {time.strftime('%Y-%m-%d %H:%M:%S')}"
+        row_seat = f" (row: {self.row}, seat: {self.seat})>"
+        return ticket + row_seat
+
+    def clean(self) -> None:
+        cinema_hall_rows = self.movie_session.cinema_hall.rows
+        cinema_hall_seats = self.movie_session.cinema_hall.seats_in_row
+        if self.row < 1 or cinema_hall_rows:
             raise ValidationError("Row number is out of range.")
-        if self.seat < 1 or self.seat > self.movie_session.cinema_hall.seats_in_row:
+        if self.seat < 1 or self.seat > cinema_hall_seats:
             raise ValidationError("Seat number is out of range.")
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         self.full_clean()
         super().save(*args, **kwargs)
-    
+
     class Meta:
-        unique_together = ("movie_session", "row", "seat")
+        constraints = [
+            models.UniqueConstraint(fields=["movie_session", "row", "seat"])
+        ]
 
 
 class User(AbstractUser):
