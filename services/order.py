@@ -17,7 +17,6 @@ def create_order(
     if date:
         from datetime import datetime
         order.created_at = datetime.strptime(date, "%Y-%m-%d %H:%M")
-        order.save()
 
     for ticket_data in tickets:
         Ticket.objects.create(
@@ -27,6 +26,7 @@ def create_order(
             seat=ticket_data["seat"],
         )
 
+    order.save()
     return order
 
 

@@ -4,7 +4,6 @@ from django.core.exceptions import ValidationError
 
 
 class User(AbstractUser):
-    # Custom user, inherits everything from AbstractUser
     pass
 
 
@@ -69,7 +68,7 @@ class Order(models.Model):
         ordering = ["-created_at"]
 
     def __str__(self) -> str:
-        return str(self.created_at)
+        return str(self.created_at.strftime("%Y-%m-%d %H:%M:%S"))
 
 
 class Ticket(models.Model):
