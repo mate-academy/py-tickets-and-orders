@@ -59,7 +59,7 @@ class MovieSession(models.Model):
 
 
 class Order(models.Model):
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField()
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -67,7 +67,7 @@ class Order(models.Model):
     )
 
     def __str__(self) -> str:
-        return self.created_at.strftime("%Y-%m-%d %H:%M:%S")
+        return str(self.created_at)
 
     class Meta:
         ordering = ("-created_at",)

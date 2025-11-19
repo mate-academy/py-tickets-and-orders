@@ -12,19 +12,20 @@ def create_user(
     first_name: Optional[str] = None,
     last_name: Optional[str] = None,
 ) -> User:
+    extra_fields: dict[str, str] = {}
+
+    if email is not None:
+        extra_fields["email"] = email
+    if first_name is not None:
+        extra_fields["first_name"] = first_name
+    if last_name is not None:
+        extra_fields["last_name"] = last_name
+
     user = User.objects.create_user(
         username=username,
         password=password,
+        **extra_fields,
     )
-
-    if email is not None:
-        user.email = email
-    if first_name is not None:
-        user.first_name = first_name
-    if last_name is not None:
-        user.last_name = last_name
-
-    user.save()
     return user
 
 

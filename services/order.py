@@ -1,4 +1,4 @@
-from datetime import datetime, date
+from datetime import datetime
 from typing import Optional
 
 from django.db.models import QuerySet
@@ -14,15 +14,19 @@ User = get_user_model()
 def create_order(
     tickets: list[dict],
     username: str,
-    date: Optional[date | datetime] = None,
+    date: Optional[str] = None,
 ) -> Order:
     user = User.objects.get(username=username)
 
-    order = Order.objects.create(user=user)
-
     if date is not None:
-        order.created_at = date
-        order.save(update_fields=["created_at"])
+        created_at = datetime.strptime(date, "%Y-%m-%d %H:%M")
+    else:
+        created_at = datetime.now()
+
+    order = Order.objects.create(
+        user=user,
+        created_at=created_at,
+    )
 
     for ticket_data in tickets:
         movie_session = ticket_data["movie_session"]
