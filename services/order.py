@@ -10,6 +10,7 @@ from db.models import Order, Ticket, MovieSession
 User = get_user_model()
 
 
+@transaction.atomic
 def create_order(
     tickets: list[dict],
     username: str,
@@ -17,25 +18,24 @@ def create_order(
 ) -> Order:
     user = User.objects.get(username=username)
 
-    with transaction.atomic():
-        order = Order.objects.create(user=user)
+    order = Order.objects.create(user=user)
 
-        if date is not None:
-            order.created_at = date
-            order.save(update_fields=["created_at"])
+    if date is not None:
+        order.created_at = date
+        order.save(update_fields=["created_at"])
 
-        for ticket_data in tickets:
-            movie_session = ticket_data["movie_session"]
+    for ticket_data in tickets:
+        movie_session = ticket_data["movie_session"]
 
-            if isinstance(movie_session, int):
-                movie_session = MovieSession.objects.get(id=movie_session)
+        if isinstance(movie_session, int):
+            movie_session = MovieSession.objects.get(id=movie_session)
 
-            Ticket.objects.create(
-                movie_session=movie_session,
-                order=order,
-                row=ticket_data["row"],
-                seat=ticket_data["seat"],
-            )
+        Ticket.objects.create(
+            movie_session=movie_session,
+            order=order,
+            row=ticket_data["row"],
+            seat=ticket_data["seat"],
+        )
 
     return order
 
