@@ -9,7 +9,7 @@ def create_user(
         email: str | None = None,
         first_name: str | None = None,
         last_name: str | None = None,
-) -> UserModel:
+) -> UserModel | None:
     extra = {}
     if first_name:
         extra["first_name"] = first_name
