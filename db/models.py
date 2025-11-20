@@ -71,7 +71,7 @@ class Order(models.Model):
         ordering = ["-created_at"]
 
     def __str__(self) -> str:
-        return str(self.created_at)
+        return f"<Order: {str(self.created_at)}>"
 
 
 class Ticket(models.Model):
@@ -86,8 +86,8 @@ class Ticket(models.Model):
 
     def __str__(self) -> str:
         return (
-            f"{self.movie_session.movie.title} {self.movie_session.show_time}"
-            f" (row: {self.row}, seat: {self.seat})"
+            f"<Ticket: {self.movie_session.movie.title} {self.movie_session.show_time}"
+            f" (row: {self.row}, seat: {self.seat})>"
         )
 
     def clean(self) -> None:
