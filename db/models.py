@@ -1,4 +1,7 @@
+from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models.constraints import UniqueConstraint
 
 
 class Genre(models.Model):
@@ -17,7 +20,7 @@ class Actor(models.Model):
 
 
 class Movie(models.Model):
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=255, db_index=True)
     description = models.TextField()
     actors = models.ManyToManyField(to=Actor, related_name="movies")
     genres = models.ManyToManyField(to=Genre, related_name="movies")
@@ -50,3 +53,36 @@ class MovieSession(models.Model):
 
     def __str__(self) -> str:
         return f"{self.movie.title} {str(self.show_time)}"
+
+
+class Order(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, related_name="orders", on_delete=models.CASCADE)
+
+    def __str__(self) -> str:
+        return f"<Order: {self.created_at}>"
+    class Meta:
+        ordering = ['-created_at']
+
+
+class Ticket(models.Model):
+    movie_session = models.ForeignKey(MovieSession, related_name="tickets", on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, related_name="tickets", on_delete=models.CASCADE)
+    row = models.IntegerField()
+    seat = models.IntegerField()
+    def __str__(self) -> str:
+        return f"<Ticket: {self.movie_session.title} {self.order.created_at} (row: {self.row}, seat: {self.seat})>"
+
+    def clean(self):
+        if (not (1 <= self.row <= self.movie_session.cinema_hall.rows)) or (not (1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row)):
+            raise ValidationError
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        return super().save(*args, **kwargs)
+
+    class Meta:
+        constraints = [UniqueConstraint(fields=["seat", "row", "movie_session"])]
+
+class User(AbstractUser):
+    pass
