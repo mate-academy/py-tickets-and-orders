@@ -61,7 +61,7 @@ class Order(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="orders", on_delete=models.CASCADE)
 
     def __str__(self) -> str:
-        return f"<Order: {self.created_at}>"
+        return f"<Order: {self.created_at.strftime('%Y-%m-%d %H:%M:%S')}>"
     class Meta:
         ordering = ['-created_at']
 
