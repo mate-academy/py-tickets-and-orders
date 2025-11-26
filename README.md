@@ -67,7 +67,9 @@ ticket = Ticket.objects.create(
 ticket.clean()
 # django.core.exceptions.ValidationError: {'seat': ['seat number must be in available range: (1, seats_in_row): (1, 24)']}
 ```
-4. Custom model `User`, that model should inherit from `AbstractUser`. To replace
+
+4. **_Custom model_** `User`, that model should inherit from `AbstractUser`. To replace
+
 the default user model with custom, edit `settings.py`, inside `INSTALLED_APPS`, 
 add there two apps: `"django.contrib.auth"` and `"django.contrib.contenttypes"`, also
 add `AUTH_USER_MODEL` equals to `"db.User"`.
