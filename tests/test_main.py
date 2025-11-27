@@ -154,6 +154,7 @@ def test_ticket_str(tickets_data):
     ) == "Matrix 2019-08-19 20:30:00 (row: 7, seat: 10)"
 
 
+
 def test_ticket_unique_constraint(tickets_data):
     Ticket.objects.create(order_id=1, movie_session_id=1, row=9, seat=9)
     with pytest.raises(ValidationError):
