@@ -1,4 +1,10 @@
+from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import UniqueConstraint
+
+
+import settings
 
 
 class Genre(models.Model):
@@ -17,10 +23,13 @@ class Actor(models.Model):
 
 
 class Movie(models.Model):
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=255, unique=True)
     description = models.TextField()
     actors = models.ManyToManyField(to=Actor, related_name="movies")
     genres = models.ManyToManyField(to=Genre, related_name="movies")
+
+    class Meta:
+        indexes = [models.Index(fields=["title"])]
 
     def __str__(self) -> str:
         return self.title
@@ -28,8 +37,8 @@ class Movie(models.Model):
 
 class CinemaHall(models.Model):
     name = models.CharField(max_length=255)
-    rows = models.IntegerField()
-    seats_in_row = models.IntegerField()
+    rows = models.PositiveIntegerField()
+    seats_in_row = models.PositiveIntegerField()
 
     @property
     def capacity(self) -> int:
@@ -50,3 +59,70 @@ class MovieSession(models.Model):
 
     def __str__(self) -> str:
         return f"{self.movie.title} {str(self.show_time)}"
+
+
+class Order(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(
+        to=settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="orders"
+    )
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self) -> str:
+        return f"{self.created_at}"
+
+
+class Ticket(models.Model):
+    movie_session = models.ForeignKey(
+        to="MovieSession",
+        on_delete=models.CASCADE,
+        related_name="tickets"
+    )
+    order = models.ForeignKey(
+        to="Order",
+        on_delete=models.CASCADE,
+        related_name="tickets"
+    )
+    row = models.PositiveIntegerField()
+    seat = models.PositiveIntegerField()
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                fields=["movie_session", "row", "seat"],
+                name="unique_row_seat_session"
+            )
+        ]
+
+    def __str__(self) -> str:
+        return (
+            f"{self.movie_session} "
+            f"(row: {self.row}, seat: {self.seat})"
+        )
+
+    def clean(self) -> None:
+        hall = self.movie_session.cinema_hall
+        if failed_validations := {
+            field_name: [
+                f"{field_name} number must be in available range: "
+                f"(1, {max_field_name}): (1, {max_value})"
+            ]
+            for field_name, value, max_field_name, max_value in (
+                ("row", self.row, "rows", hall.rows),
+                ("seat", self.seat, "seats_in_row", hall.seats_in_row)
+            )
+            if not 1 <= value <= max_value
+        }:
+            raise ValidationError(failed_validations)
+
+    def save(self, *args, **kwargs) -> None:
+        self.full_clean()
+        return super().save(*args, **kwargs)
+
+
+class User(AbstractUser):
+    pass
