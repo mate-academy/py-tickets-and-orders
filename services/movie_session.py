@@ -4,7 +4,9 @@ from db.models import MovieSession
 
 
 def create_movie_session(
-    movie_show_time: str, movie_id: int, cinema_hall_id: int
+    movie_show_time: str,
+    movie_id: int,
+    cinema_hall_id: int
 ) -> MovieSession:
     return MovieSession.objects.create(
         show_time=movie_show_time,
@@ -13,7 +15,7 @@ def create_movie_session(
     )
 
 
-def get_movies_sessions(session_date: str = None) -> QuerySet:
+def get_movies_sessions(session_date: str = None) -> QuerySet[MovieSession]:
     queryset = MovieSession.objects.all()
     if session_date:
         queryset = queryset.filter(show_time__date=session_date)
@@ -42,3 +44,12 @@ def update_movie_session(
 
 def delete_movie_session_by_id(session_id: int) -> None:
     MovieSession.objects.get(id=session_id).delete()
+
+
+def get_taken_seats(movie_session_id: int) -> list[dict]:
+    session = MovieSession.objects.filter(id=movie_session_id).first()
+    if session is None:
+        return []
+    return list(
+        session.tickets.values("row", "seat").order_by("row", "seat")
+    )
