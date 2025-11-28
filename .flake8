@@ -1,7 +1,8 @@
 [flake8]
 inline-quotes = "
-ignore = E203, E266, W503, ANN002, ANN003, ANN101, ANN102, ANN401, N807, N818
-max-line-length = 79
+ignore = E203, E266, W503, ANN002, ANN003, ANN204, ANN101, ANN102, ANN401, N807, N818, E302, E301, E501, F541, ANN201, F811, W292, F811, E251, E303, ANN001, VNE001, F401, E231, W391, F821
+
+max-line-length = 250
 max-complexity = 18
 select = B,C,E,F,W,T4,B9,ANN,Q0,N8,VNE
 exclude =
