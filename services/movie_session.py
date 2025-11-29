@@ -13,7 +13,7 @@ def create_movie_session(
     )
 
 
-def get_movies_sessions(session_date: str = None) -> QuerySet:
+def get_movies_sessions(session_date: str = None) -> QuerySet[MovieSession]:
     queryset = MovieSession.objects.all()
     if session_date:
         queryset = queryset.filter(show_time__date=session_date)
@@ -22,6 +22,16 @@ def get_movies_sessions(session_date: str = None) -> QuerySet:
 
 def get_movie_session_by_id(movie_session_id: int) -> MovieSession:
     return MovieSession.objects.get(id=movie_session_id)
+
+
+def get_taken_seats(session_id: int) -> list:
+    try:
+        session = get_movie_session_by_id(session_id)
+    except MovieSession.DoesNotExist:
+        return []
+
+    taken_seats = session.tickets.values("row", "seat").distinct()
+    return list(taken_seats)
 
 
 def update_movie_session(
