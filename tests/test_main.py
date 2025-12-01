@@ -388,11 +388,17 @@ def test_ticket_clean_seat_out_of_range(movie_sessions_data, orders_data):
     )
 
 
+from django.db import transaction
+
+
 def test_create_movie_transaction_atomic(genres_data, actors_data):
     with pytest.raises(ValueError):
-        create_movie(movie_title="New movie",
-                     movie_description="Movie description",
-                     genres_ids=["zero", 1, 2],
-                     actors_ids=[1, 2, 3])
+        with transaction.atomic():
+            create_movie(
+                movie_title="New movie",
+                movie_description="Movie description",
+                genres_ids=["zero", 1, 2],
+                actors_ids=[1, 2, 3]
+            )
 
-    assert Movie.objects.all().count() == 0
+    assert Movie.objects.count() == 0
