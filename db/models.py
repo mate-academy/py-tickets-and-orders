@@ -1,8 +1,15 @@
+from django.conf import settings
+from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import UniqueConstraint
 
 
 class Genre(models.Model):
-    name = models.CharField(max_length=255, unique=True)
+    name = models.CharField(
+        max_length=255,
+        unique=True,
+    )
 
     def __str__(self) -> str:
         return self.name
@@ -19,8 +26,19 @@ class Actor(models.Model):
 class Movie(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
-    actors = models.ManyToManyField(to=Actor, related_name="movies")
-    genres = models.ManyToManyField(to=Genre, related_name="movies")
+    actors = models.ManyToManyField(
+        to="Actor",
+        related_name="movies",
+    )
+    genres = models.ManyToManyField(
+        to="Genre",
+        related_name="movies",
+    )
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["title"]),
+        ]
 
     def __str__(self) -> str:
         return self.title
@@ -42,11 +60,94 @@ class CinemaHall(models.Model):
 class MovieSession(models.Model):
     show_time = models.DateTimeField()
     cinema_hall = models.ForeignKey(
-        to=CinemaHall, on_delete=models.CASCADE, related_name="movie_sessions"
+        to=CinemaHall,
+        on_delete=models.CASCADE,
+        related_name="movie_sessions",
     )
     movie = models.ForeignKey(
-        to=Movie, on_delete=models.CASCADE, related_name="movie_sessions"
+        to=Movie,
+        on_delete=models.CASCADE,
+        related_name="movie_sessions",
     )
 
     def __str__(self) -> str:
-        return f"{self.movie.title} {str(self.show_time)}"
+        return f"{self.movie.title} {self.show_time}"
+
+
+class Order(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="orders",
+    )
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self) -> str:
+        # Тести очікують тільки дату-час без "<Order: ...>"
+        return self.created_at.strftime("%Y-%m-%d %H:%M:%S")
+
+
+class Ticket(models.Model):
+    movie_session = models.ForeignKey(
+        "MovieSession",
+        on_delete=models.CASCADE,
+        related_name="tickets",
+    )
+    order = models.ForeignKey(
+        "Order",
+        on_delete=models.CASCADE,
+        related_name="tickets",
+    )
+    row = models.IntegerField()
+    seat = models.IntegerField()
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                fields=["movie_session", "row", "seat"],
+                name="unique_place_on_movie_session",
+            ),
+        ]
+
+    def __str__(self) -> str:
+        # Тести очікують: "Matrix 2019-08-19 20:30:00 (row: 7, seat: 10)"
+        return (
+            f"{self.movie_session.movie.title} "
+            f"{self.movie_session.show_time.strftime('%Y-%m-%d %H:%M:%S')} "
+            f"(row: {self.row}, seat: {self.seat})"
+        )
+
+    def clean(self) -> None:
+        hall = self.movie_session.cinema_hall
+
+        if not (1 <= self.row <= hall.rows):
+            raise ValidationError({
+                "row": [
+                    (
+                        "row number must be in available range: "
+                        f"(1, rows): (1, {hall.rows})"
+                    )
+                ]
+            })
+
+        if not (1 <= self.seat <= hall.seats_in_row):
+            raise ValidationError({
+                "seat": [
+                    (
+                        "seat number must be in available range: "
+                        f"(1, seats_in_row): (1, {hall.seats_in_row})"
+                    )
+                ]
+            })
+
+    def save(self, *args, **kwargs) -> None:
+        self.full_clean()
+        super().save(*args, **kwargs)
+
+
+class User(AbstractUser):
+    class Meta:
+        db_table = "db_user"
