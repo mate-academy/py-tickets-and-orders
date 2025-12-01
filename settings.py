@@ -1,5 +1,6 @@
 import os
 
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -19,10 +20,14 @@ LANGUAGE_CODE = "en-us"
 
 TIME_ZONE = "Europe/Kiev"
 
-USE_I18N = True
+USE_I18N = False
 
 USE_TZ = False
 
 INSTALLED_APPS = [
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
     "db",
 ]
+
+AUTH_USER_MODEL = "db.User"
