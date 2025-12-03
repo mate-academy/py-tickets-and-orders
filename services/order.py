@@ -33,7 +33,7 @@ def create_order(
                 )
             except MovieSession.DoesNotExist:
                 raise ObjectDoesNotExist(
-                    f"MovieSession with id {ticket_data["movie_session"]} "
+                    f'MovieSession with id {ticket_data["movie_session"]} '
                     f"does not exist"
                 )
 

@@ -8,7 +8,7 @@ SECRET_KEY = "6few3nci_q_o@l1dlbk81%wcxe!*6r29yu629&d97!hiqat9fa"
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
-AUTH_USER_MODEL = 'db.User'
+AUTH_USER_MODEL = "db.User"
 
 DATABASES = {
     "default": {
