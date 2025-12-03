@@ -12,15 +12,13 @@ def get_movies(
     queryset = Movie.objects.all()
 
     if title:
-        queryset.filter(title__icontains=title)
+        queryset = queryset.filter(title__icontains=title)
 
     if genres_ids:
-        for genre_id in genres_ids:
-            queryset = queryset.filter(genres__id=genre_id)
+        queryset = queryset.filter(genres__id__in=genres_ids)
 
     if actors_ids:
-        for actor_id in actors_ids:
-            queryset = queryset.filter(actors__id=actor_id)
+        queryset = queryset.filter(actors__id__in=actors_ids)
 
     return queryset
 

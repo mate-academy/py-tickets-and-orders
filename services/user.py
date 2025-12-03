@@ -1,3 +1,4 @@
+from django.contrib.auth.hashers import make_password
 from django.core.exceptions import ObjectDoesNotExist
 
 from db.models import User
@@ -7,15 +8,15 @@ def create_user(
     username: str,
     password: str,
     email: str = None,
-    first_name: str = "",
+    first_name: str = None,
     last_name: str = None,
 ) -> None:
     User.objects.create(
         username=username,
-        email=email,
-        password=password,
-        first_name=first_name if first_name is not None else "",
-        last_name=last_name,
+        email=email if email else "",
+        password=make_password(password),
+        first_name=first_name if first_name else "",
+        last_name=last_name if last_name else ""
     )
 
 
@@ -40,14 +41,14 @@ def update_user(
         if username is not None:
             user.username = username
         if password is not None:
-            user.set_password(password)
+            user.password = make_password(password)
         if email is not None:
             user.email = email
         if first_name is not None:
             user.first_name = first_name
         if last_name is not None:
             user.last_name = last_name
-        
+
         user.save()
 
     except ObjectDoesNotExist:
