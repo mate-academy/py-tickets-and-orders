@@ -27,7 +27,6 @@ def create_order(
     if date:
         created_at = datetime.strptime(date, "%Y-%m-%d %H:%M")
         Order.objects.filter(id=order.id).update(created_at=created_at)
-        # оновлюємо об’єкт у пам’яті
         order.refresh_from_db()
 
     for ticket_data in tickets:
