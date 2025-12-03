@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
-from django.utils import timezone
 
 
 class User(AbstractUser):
@@ -60,19 +59,25 @@ class MovieSession(models.Model):
 
 
 class Order(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(default=timezone.now)
+    user = models.ForeignKey(User,
+                             on_delete=models.CASCADE,
+                             related_name="orders")
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:
-        return str(self.created_at)
+        return self.created_at.strftime("%Y-%m-%d %H:%M:%S")
 
     class Meta:
         ordering = ["-created_at"]
 
 
 class Ticket(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    movie_session = models.ForeignKey(MovieSession, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order,
+                              on_delete=models.CASCADE,
+                              related_name="tickets")
+    movie_session = models.ForeignKey(
+        MovieSession, on_delete=models.CASCADE, related_name="tickets"
+    )
     row = models.IntegerField()
     seat = models.IntegerField()
 
@@ -114,7 +119,7 @@ class Ticket(models.Model):
 
     def __str__(self) -> str:
         movie_title = self.movie_session.movie.title
-        show_time = self.movie_session.show_time
+        show_time = self.movie_session.show_time.strftime("%Y-%m-%d %H:%M:%S")
         return (
             f"{movie_title} {show_time} "
             f"(row: {self.row}, seat: {self.seat})"
