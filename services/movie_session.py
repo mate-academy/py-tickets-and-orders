@@ -17,7 +17,9 @@ def create_movie_session(
     )
 
 
-def get_movies_sessions(session_date: str | date = None) -> QuerySet:
+def get_movies_sessions(
+        session_date: str | date = None
+) -> QuerySet[MovieSession]:
     queryset = MovieSession.objects.all()
     if session_date:
         if isinstance(session_date, str):

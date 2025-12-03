@@ -8,7 +8,7 @@ from db.models import Ticket, Order, MovieSession
 
 
 def create_order(
-        tickets: Ticket,
+        tickets: list[dict],
         username: str,
         date: datetime | None = None
 ) -> Order:
