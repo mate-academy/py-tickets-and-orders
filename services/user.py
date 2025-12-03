@@ -11,10 +11,11 @@ def create_user(
         first_name: Optional[str] = None,
         last_name: Optional[str] = None
 ) -> None:
-    new_user = get_user_model().objects.create_user(
+    new_user = get_user_model()(
         username=username,
-        password=password,
     )
+
+    new_user.set_password(password)
 
     if email is not None:
         new_user.email = email
