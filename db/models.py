@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
+from django.utils import timezone
 
 
 class Genre(models.Model):
@@ -59,7 +60,7 @@ class User(AbstractUser):
 
 
 class Order(models.Model):
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=False, default=timezone.now)
     user = models.ForeignKey(
         User,
         related_name="orders",
@@ -89,7 +90,7 @@ class Ticket(models.Model):
 
     def __str__(self) -> str:
         return (
-            f"{self.movie_session.movie} {self.movie_session.show_time} "
+            f"{self.movie_session.movie.title} {self.movie_session.show_time} "
             f"(row: {self.row}, seat: {self.seat})"
         )
 
