@@ -4,7 +4,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.utils.dateparse import parse_datetime
 from django.contrib.auth import get_user_model
 
-from db.models import User, Order, Ticket, MovieSession
+from db.models import Order, Ticket, MovieSession
 
 
 @transaction.atomic
@@ -15,7 +15,7 @@ def create_order(
 ) -> None:
     try:
         user = get_user_model().objects.get(username=username)
-    except User.DoesNotExist:
+    except get_user_model().DoesNotExist:
         raise ObjectDoesNotExist(
             f"User with username {username} does not exist"
         )

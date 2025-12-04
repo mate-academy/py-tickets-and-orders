@@ -1,7 +1,7 @@
+from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
-from django.utils import timezone
 
 
 class Genre(models.Model):
@@ -60,7 +60,7 @@ class User(AbstractUser):
 
 
 class Order(models.Model):
-    created_at = models.DateTimeField(auto_now_add=False, default=timezone.now)
+    created_at = models.DateTimeField(default=timezone.now)
     user = models.ForeignKey(
         User,
         related_name="orders",
