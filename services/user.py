@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
+
 def create_user(
         username: str,
         password: str,
@@ -18,7 +19,6 @@ def create_user(
     if last_name:
         user_data["last_name"] = last_name
     User.objects.create_user(**user_data)
-
 
 
 def get_user(user_id: int) -> User:
