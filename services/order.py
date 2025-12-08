@@ -20,8 +20,8 @@ def create_order(
         try:
             (Order.objects.filter(id=order.id)
              .update(created_at=datetime.strptime(date, "%Y-%m-%d %H:%M")))
-        except:
-            raise ValueError("Invalid date, must be YYYY-MM-DD")
+        except ValueError:
+            raise ValueError("Invalid date, expected '%Y-%m-%d %H:%M'.")
     for ticket in tickets:
         session = MovieSession.objects.get(id=ticket["movie_session"])
         Ticket.objects.create(
