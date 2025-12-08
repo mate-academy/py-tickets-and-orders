@@ -17,8 +17,11 @@ def create_order(
     order = Order(user=user)
     order.save()
     if date:
-        (Order.objects.filter(id=order.id)
-         .update(created_at=datetime.strptime(date, "%Y-%m-%d %H:%M")))
+        try:
+            (Order.objects.filter(id=order.id)
+             .update(created_at=datetime.strptime(date, "%Y-%m-%d %H:%M")))
+        except:
+            raise ValueError("Invalid date, must be YYYY-MM-DD")
     for ticket in tickets:
         session = MovieSession.objects.get(id=ticket["movie_session"])
         Ticket.objects.create(
