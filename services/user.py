@@ -1,6 +1,9 @@
 from django.shortcuts import get_object_or_404
 
-from db.models import User
+from django.contrib.auth import get_user_model
+
+
+User = get_user_model()
 
 
 def create_user(
@@ -8,13 +11,14 @@ def create_user(
         password: str,
         email: str = None,
         first_name: str = None,
-        last_name: str = None) -> User:
-    return User.objects.create_user_with_optional(
+        last_name: str = None)\
+        -> User:
+    return User.objects.create(
         username=username,
         password=password,
-        email=email,
-        first_name=first_name,
-        last_name=last_name,
+        email=email if email else None,
+        first_name=first_name if first_name else None,
+        last_name=last_name if last_name else None,
     )
 
 
@@ -45,7 +49,6 @@ def update_user(
         user.last_name = last_name
 
     if password is not None:
-        # важливо! Пароль потрібно хешувати
         user.set_password(password)
 
     user.save()

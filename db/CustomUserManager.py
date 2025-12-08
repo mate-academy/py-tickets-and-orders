@@ -18,10 +18,8 @@ class CustomUserManager(UserManager):
         first_name: str = None,
         last_name: str = None,
     ) -> "User":
-        # Використовуємо базовий create_user — він хешує пароль
         user = self.create_user(username=username, password=password)
 
-        # Додаємо опціональні поля, якщо вони надані
         if email is not None:
             user.email = email
 

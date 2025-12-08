@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -62,15 +63,15 @@ class User(AbstractUser):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(to=User,
+    user = models.ForeignKey(to=settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE,
                              related_name="orders")
 
     class Meta:
-        ordering = ["-created_at"]  # newest first
+        ordering = ["-created_at"]
 
     def __str__(self) -> str:
-        return f"{self.created_at}"
+        return f"Order: {self.created_at}"
 
 
 class Ticket(models.Model):
@@ -84,15 +85,22 @@ class Ticket(models.Model):
     seat = models.IntegerField()
 
     def __str__(self) -> str:
-        # <Ticket: Speed 2020-11-11 09:30:00 (row: 6, seat: 12)>
         return (
-            f"{self.movie_session.movie.title} "
+            f"Ticket: {self.movie_session.movie.title} "
             f"{self.movie_session.show_time} "
             f"(row: {self.row}, seat: {self.seat})"
         )
 
     def clean(self) -> None:
         hall = self.movie_session.cinema_hall
+
+        class Meta:
+            constraints = [
+                models.UniqueConstraint(
+                    fields=["movie_session", "row", "seat"],
+                    name="unique_ticket_in_session"
+                )
+            ]
 
         errors = {}
 
@@ -111,14 +119,6 @@ class Ticket(models.Model):
         if errors:
             raise ValidationError(errors)
 
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=["movie_session", "row", "seat"],
-                name="unique_ticket_in_session"
-            )
-        ]
-
     def save(self, *args, **kwargs) -> None:
-        self.full_clean()  # ensures clean() is called
+        self.full_clean()
         return super().save(*args, **kwargs)
