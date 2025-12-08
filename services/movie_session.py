@@ -50,4 +50,3 @@ def get_taken_seats(movie_session_id: int) -> list[dict]:
     for ticket in tickets:
         taken_seats.append({"row": ticket.row, "seat": ticket.seat})
     return taken_seats
-

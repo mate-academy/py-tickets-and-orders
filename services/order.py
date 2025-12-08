@@ -16,7 +16,8 @@ def create_order(
     order = Order(user=user)
     order.save()
     if date:
-        Order.objects.filter(id=order.id).update(created_at=datetime.strptime(date, "%Y-%m-%d %H:%M"))
+        (Order.objects.filter(id=order.id)
+         .update(created_at=datetime.strptime(date, "%Y-%m-%d %H:%M")))
     for ticket in tickets:
         session = MovieSession.objects.get(id=ticket["movie_session"])
         Ticket.objects.create(
