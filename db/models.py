@@ -59,11 +59,11 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey("User", on_delete=CASCADE, related_name="orders")
 
-    def __str__(self) -> str:
-        return f"{self.created_at}"
-
     class Meta:
         ordering = ["-created_at"]
+
+    def __str__(self) -> str:
+        return f"{self.created_at}"
 
 
 class Ticket(models.Model):
@@ -79,6 +79,14 @@ class Ticket(models.Model):
     )
     row = models.IntegerField()
     seat = models.IntegerField()
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                fields=["row", "seat", "movie_session"],
+                name="unique_row_seat_movie_session"
+            )
+        ]
 
     def clean(self) -> None:
         try:
@@ -108,14 +116,6 @@ class Ticket(models.Model):
             f"{self.movie_session.show_time} "
             f"(row: {self.row}, seat: {self.seat})"
         )
-
-    class Meta:
-        constraints = [
-            UniqueConstraint(
-                fields=["row", "seat", "movie_session"],
-                name="unique_row_seat_movie_session"
-            )
-        ]
 
 
 class User(AbstractUser):
