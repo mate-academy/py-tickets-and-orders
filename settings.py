@@ -3,10 +3,14 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
+ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
+
 # SECURITY WARNING: Modify this secret key if using in production!
 SECRET_KEY = "6few3nci_q_o@l1dlbk81%wcxe!*6r29yu629&d97!hiqat9fa"
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
+
+ROOT_URLCONF = "urls"
 
 DATABASES = {
     "default": {
@@ -14,6 +18,8 @@ DATABASES = {
         "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
     }
 }
+
+AUTH_USER_MODEL = "db.User"
 
 LANGUAGE_CODE = "en-us"
 
@@ -25,4 +31,11 @@ USE_TZ = False
 
 INSTALLED_APPS = [
     "db",
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+
 ]
