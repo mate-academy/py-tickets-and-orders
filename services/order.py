@@ -28,11 +28,14 @@ def create_order(
 
         if tickets:
             for ticket in tickets:
+                # Розбиваємо отримання ID на частини для дотримання PEP 8
+                session_id = (
+                    ticket.get("movie_session_id")
+                    or ticket.get("movie_session")
+                )
                 Ticket.objects.create(
                     order=order,
-                    movie_session_id=(
-                        ticket.get("movie_session_id") or ticket.get("movie_session")
-                    ),
+                    movie_session_id=session_id,
                     row=ticket["row"],
                     seat=ticket["seat"],
                 )

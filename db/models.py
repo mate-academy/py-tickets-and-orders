@@ -103,19 +103,27 @@ class Ticket(models.Model):
     def __str__(self) -> str:
         session = self.movie_session
         show_time = session.show_time.strftime("%Y-%m-%d %H:%M:%S")
-        return f"{session.movie.title} {show_time} (row: {self.row}, seat: {self.seat})"
+        return (
+            f"{session.movie.title} {show_time} "
+            f"(row: {self.row}, seat: {self.seat})"
+        )
 
     def clean(self) -> None:
         cinema_hall = self.movie_session.cinema_hall
-
         if not (1 <= self.row <= cinema_hall.rows):
             raise ValidationError({
-                "row": [f"row number must be in available range: (1, {cinema_hall.rows})"]
+                "row": (
+                    f"row number must be in available range (inclusive): "
+                    f"(1, {cinema_hall.rows})"
+                )
             })
 
         if not (1 <= self.seat <= cinema_hall.seats_in_row):
             raise ValidationError({
-                "seat": [f"seat number must be in available range: (1, {cinema_hall.seats_in_row})"]
+                "seat": (
+                    f"seat number must be in available range (inclusive): "
+                    f"(1, {cinema_hall.seats_in_row})"
+                )
             })
 
     def save(self, *args, **kwargs) -> None:
