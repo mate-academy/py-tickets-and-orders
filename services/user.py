@@ -1,16 +1,16 @@
-from db.models import User
+from django.contrib.auth import get_user_model
 
 
-def create_user(**kwargs) -> User:
-    return User.objects.create_user(**kwargs)
+def create_user(**kwargs) -> get_user_model():
+    return get_user_model().objects.create_user(**kwargs)
 
 
-def get_user(user_id: int) -> User:
-    return User.objects.get(id=user_id)
+def get_user(user_id: int) -> get_user_model():
+    return get_user_model().objects.get(id=user_id)
 
 
-def update_user(user_id: int, **kwargs) -> User:
-    user = User.objects.get(id=user_id)
+def update_user(user_id: int, **kwargs) -> get_user_model():
+    user = get_user_model().objects.get(id=user_id)
     if "password" in kwargs:
         user.set_password(kwargs.pop("password"))
     for field, value in kwargs.items():

@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
@@ -66,7 +67,7 @@ class MovieSession(models.Model):
 class Order(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     user = models.ForeignKey(
-        to=User,
+        to=settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="orders",
     )
@@ -75,7 +76,8 @@ class Order(models.Model):
         ordering = ["-created_at"]
 
     def __str__(self) -> str:
-        return self.created_at.strftime("%Y-%m-%d %H:%M:%S")
+        dt = self.created_at.strftime("%Y-%m-%d %H:%M:%S")
+        return f"<Order: {dt}>"
 
 
 class Ticket(models.Model):
@@ -101,28 +103,28 @@ class Ticket(models.Model):
         ]
 
     def __str__(self) -> str:
-        session = self.movie_session
-        show_time = session.show_time.strftime("%Y-%m-%d %H:%M:%S")
+        m_title = self.movie_session.movie.title
+        s_time = self.movie_session.show_time.strftime("%Y-%m-%d %H:%M:%S")
         return (
-            f"{session.movie.title} {show_time} "
-            f"(row: {self.row}, seat: {self.seat})"
+            f"<Ticket: {m_title} {s_time} "
+            f"(row: {self.row}, seat: {self.seat})>"
         )
 
     def clean(self) -> None:
-        cinema_hall = self.movie_session.cinema_hall
-        if not (1 <= self.row <= cinema_hall.rows):
+        hall = self.movie_session.cinema_hall
+        if not (1 <= self.row <= hall.rows):
             raise ValidationError({
                 "row": (
                     f"row number must be in available range: "
-                    f"(1, rows): (1, {cinema_hall.rows})"
+                    f"(1, rows): (1, {hall.rows})"
                 )
             })
 
-        if not (1 <= self.seat <= cinema_hall.seats_in_row):
+        if not (1 <= self.seat <= hall.seats_in_row):
             raise ValidationError({
                 "seat": (
                     f"seat number must be in available range: "
-                    f"(1, seats_in_row): (1, {cinema_hall.seats_in_row})"
+                    f"(1, seats_in_row): (1, {hall.seats_in_row})"
                 )
             })
 
