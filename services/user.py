@@ -1,13 +1,8 @@
 from db.models import User
 
 
-def create_user(username: str, password: str, email: str = "") -> User:
-    user = User.objects.create_user(
-        username=username,
-        password=password,
-        email=email,
-    )
-    return user
+def create_user(**kwargs) -> User:
+    return User.objects.create_user(**kwargs)
 
 
 def get_user(user_id: int) -> User:
@@ -16,6 +11,8 @@ def get_user(user_id: int) -> User:
 
 def update_user(user_id: int, **kwargs) -> User:
     user = User.objects.get(id=user_id)
+    if "password" in kwargs:
+        user.set_password(kwargs.pop("password"))
     for field, value in kwargs.items():
         setattr(user, field, value)
     user.save()

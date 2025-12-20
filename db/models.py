@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
+from django.utils import timezone
 
 
 class User(AbstractUser):
@@ -63,7 +64,7 @@ class MovieSession(models.Model):
 
 
 class Order(models.Model):
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(default=timezone.now)
     user = models.ForeignKey(
         to=User,
         on_delete=models.CASCADE,
@@ -74,8 +75,7 @@ class Order(models.Model):
         ordering = ["-created_at"]
 
     def __str__(self) -> str:
-        created = self.created_at.strftime("%Y-%m-%d %H:%M:%S")
-        return f"<Order: {created}>"
+        return self.created_at.strftime("%Y-%m-%d %H:%M:%S")
 
 
 class Ticket(models.Model):
@@ -103,29 +103,22 @@ class Ticket(models.Model):
     def __str__(self) -> str:
         session = self.movie_session
         show_time = session.show_time.strftime("%Y-%m-%d %H:%M:%S")
-        return (
-            f"<Ticket: {session.movie.title} "
-            f"{show_time} "
-            f"(row: {self.row}, seat: {self.seat})>"
-        )
+        return f"{session.movie.title} {show_time} (row: {self.row}, seat: {self.seat})"
 
     def clean(self) -> None:
         cinema_hall = self.movie_session.cinema_hall
 
+        # Перевірка ряду (прибрано зайві дужки списку в ValidationError)
         if not (1 <= self.row <= cinema_hall.rows):
-            msg = (
-                "row number must be in available range: "
-                f"(1, rows): (1, {cinema_hall.rows})"
-            )
-            raise ValidationError({"row": [msg]})
+            raise ValidationError({
+                "row": f"row number must be in available range (inclusive): (1, {cinema_hall.rows})"
+            })
 
+        # Перевірка місця (прибрано зайві дужки списку в ValidationError)
         if not (1 <= self.seat <= cinema_hall.seats_in_row):
-            msg = (
-                "seat number must be in available range: "
-                "(1, seats_in_row): "
-                f"(1, {cinema_hall.seats_in_row})"
-            )
-            raise ValidationError({"seat": [msg]})
+            raise ValidationError({
+                "seat": f"seat number must be in available range (inclusive): (1, {cinema_hall.seats_in_row})"
+            })
 
     def save(self, *args, **kwargs) -> None:
         self.full_clean()
