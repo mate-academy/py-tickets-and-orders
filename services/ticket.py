@@ -3,7 +3,10 @@ from db.models import Ticket
 
 
 def create_ticket(
-    order_id: int, movie_session_id: int, row: int, seat: int
+    order_id: int,
+    movie_session_id: int,
+    row: int,
+    seat: int,
 ) -> Ticket:
     return Ticket.objects.create(
         order_id=order_id,
@@ -13,5 +16,5 @@ def create_ticket(
     )
 
 
-def get_tickets(order_id: int) -> QuerySet:
+def get_tickets(order_id: int) -> QuerySet[Ticket]:
     return Ticket.objects.filter(order_id=order_id)

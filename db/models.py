@@ -108,16 +108,14 @@ class Ticket(models.Model):
     def clean(self) -> None:
         cinema_hall = self.movie_session.cinema_hall
 
-        # Перевірка ряду (прибрано зайві дужки списку в ValidationError)
         if not (1 <= self.row <= cinema_hall.rows):
             raise ValidationError({
-                "row": f"row number must be in available range (inclusive): (1, {cinema_hall.rows})"
+                "row": [f"row number must be in available range: (1, {cinema_hall.rows})"]
             })
 
-        # Перевірка місця (прибрано зайві дужки списку в ValidationError)
         if not (1 <= self.seat <= cinema_hall.seats_in_row):
             raise ValidationError({
-                "seat": f"seat number must be in available range (inclusive): (1, {cinema_hall.seats_in_row})"
+                "seat": [f"seat number must be in available range: (1, {cinema_hall.seats_in_row})"]
             })
 
     def save(self, *args, **kwargs) -> None:
