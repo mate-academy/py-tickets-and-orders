@@ -113,16 +113,16 @@ class Ticket(models.Model):
         if not (1 <= self.row <= cinema_hall.rows):
             raise ValidationError({
                 "row": (
-                    f"row number must be in available range (inclusive): "
-                    f"(1, {cinema_hall.rows})"
+                    f"row number must be in available range: "
+                    f"(1, rows): (1, {cinema_hall.rows})"
                 )
             })
 
         if not (1 <= self.seat <= cinema_hall.seats_in_row):
             raise ValidationError({
                 "seat": (
-                    f"seat number must be in available range (inclusive): "
-                    f"(1, {cinema_hall.seats_in_row})"
+                    f"seat number must be in available range: "
+                    f"(1, seats_in_row): (1, {cinema_hall.seats_in_row})"
                 )
             })
 
