@@ -1,6 +1,7 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import QuerySet
 
-from db.models import MovieSession
+from db.models import MovieSession, Ticket
 
 
 def create_movie_session(
@@ -41,4 +42,13 @@ def update_movie_session(
 
 
 def delete_movie_session_by_id(session_id: int) -> None:
-    MovieSession.objects.get(id=session_id).delete()
+    try:
+        movie_session = MovieSession.objects.get(id=session_id)
+        movie_session.delete()
+    except ObjectDoesNotExist:
+        return {"error": f"Movie session with ID {session_id} does not exist."}
+
+
+def get_taken_seats(movie_session_id: int) -> list[dict]:
+    tickets = Ticket.objects.filter(movie_session_id=movie_session_id)
+    return [{"row": ticket.row, "seat": ticket.seat} for ticket in tickets]
