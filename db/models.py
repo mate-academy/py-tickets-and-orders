@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
+from django.conf import settings
 from django.db import models
 
 
@@ -73,13 +74,13 @@ class MovieSession(models.Model):
     )
 
     def __str__(self) -> str:
-        return f"{self.movie.title} {self.show_time}"
+        return f"{self.movie.title} {self.show_time:%Y-%m-%d %H:%M:%S}"
 
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(
-        User,
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="orders",
     )
@@ -88,7 +89,7 @@ class Order(models.Model):
         ordering = ["-created_at"]
 
     def __str__(self) -> str:
-        return str(self.created_at)
+        return f"<Order: {self.created_at:%Y-%m-%d %H:%M:%S}>"
 
 
 class Ticket(models.Model):
@@ -115,9 +116,9 @@ class Ticket(models.Model):
 
     def __str__(self) -> str:
         return (
-            f"{self.movie_session.movie.title} "
-            f"{self.movie_session.show_time} "
-            f"(row: {self.row}, seat: {self.seat})"
+            f"<Ticket: {self.movie_session.movie.title} "
+            f"{self.movie_session.show_time:%Y-%m-%d %H:%M:%S} "
+            f"(row: {self.row}, seat: {self.seat})>"
         )
 
     def clean(self) -> None:

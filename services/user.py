@@ -13,18 +13,24 @@ def create_user(
 ) -> User:
     """
     Create a new user with encrypted password.
-    Optional fields (email, first_name, last_name) are set if provided.
+    Only saves again if optional fields are provided.
     """
     user = User.objects.create_user(username=username, password=password)
 
+    changed = False
     if email:
         user.email = email
+        changed = True
     if first_name:
         user.first_name = first_name
+        changed = True
     if last_name:
         user.last_name = last_name
+        changed = True
 
-    user.save()
+    if changed:
+        user.save()
+
     return user
 
 
@@ -47,7 +53,7 @@ def update_user(
     Update user fields if provided.
     Password is set properly with set_password().
     """
-    user = User.objects.get(id=user_id)
+    user = get_user(user_id)
 
     if username:
         user.username = username
