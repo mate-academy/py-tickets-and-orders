@@ -1,3 +1,5 @@
+from typing import Optional
+
 from django.db.models import QuerySet
 
 from db.models import MovieSession
@@ -24,11 +26,19 @@ def get_movie_session_by_id(movie_session_id: int) -> MovieSession:
     return MovieSession.objects.get(id=movie_session_id)
 
 
+def get_taken_seats(movie_session_id: int) -> list[dict]:
+    return list(
+        MovieSession.objects.get(
+            id=movie_session_id
+        ).tickets.values("row", "seat")
+    )
+
+
 def update_movie_session(
     session_id: int,
-    show_time: str = None,
-    movie_id: int = None,
-    cinema_hall_id: int = None,
+    show_time: Optional[str] = None,
+    movie_id: Optional[int] = None,
+    cinema_hall_id: Optional[int] = None,
 ) -> None:
     movie_session = MovieSession.objects.get(id=session_id)
     if show_time:
