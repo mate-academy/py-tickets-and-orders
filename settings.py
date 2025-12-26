@@ -24,5 +24,14 @@ USE_I18N = True
 USE_TZ = False
 
 INSTALLED_APPS = [
+    # Django system apps required for auth and content types
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+
+    # Your project apps
     "db",
+    "services",
 ]
+
+# Custom user model
+AUTH_USER_MODEL = "db.User"
