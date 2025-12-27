@@ -1,4 +1,7 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
+from django.conf import settings
+from django.core.exceptions import ValidationError
 
 
 class Genre(models.Model):
@@ -21,6 +24,11 @@ class Movie(models.Model):
     description = models.TextField()
     actors = models.ManyToManyField(to=Actor, related_name="movies")
     genres = models.ManyToManyField(to=Genre, related_name="movies")
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["title"]),
+        ]
 
     def __str__(self) -> str:
         return self.title
@@ -50,3 +58,63 @@ class MovieSession(models.Model):
 
     def __str__(self) -> str:
         return f"{self.movie.title} {str(self.show_time)}"
+
+
+class User(AbstractUser):
+    pass
+
+
+class Order(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(
+        to=settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="orders"
+    )
+
+    def __str__(self) -> str:
+        return self.created_at.strftime("%Y-%m-%d %H:%M:%S")
+    
+    class Meta:
+        ordering = ["-created_at"]
+
+
+class Ticket(models.Model):
+    movie_session = models.ForeignKey(
+        to=MovieSession, on_delete=models.CASCADE, related_name="tickets"
+    )
+    order = models.ForeignKey(
+        to=Order, on_delete=models.CASCADE, related_name="tickets"
+    )
+    row = models.IntegerField()
+    seat = models.IntegerField()
+    
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["movie_session", "row", "seat"],
+                name="unique_seat_per_movie_session"
+            )]
+        ordering = ["movie_session__show_time"]
+
+    def __str__(self) -> str:
+        return (
+            f"{self.movie_session} {self.movie_session.show_time} "
+            f"(row: {self.row}, seat: {self.seat})"
+        )
+    
+    def clean(self):
+        errors = {}
+
+        if self.row > self.movie_session.cinema_hall.rows or self.row < 1:
+            errors["row"] = ["Invalid row number"]
+
+        if self.seat > self.movie_session.cinema_hall.seats_in_row or self.seat < 1:
+            errors["seat"] = ["Invalid seat number"]
+
+        if errors:
+            raise ValidationError(errors)
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)

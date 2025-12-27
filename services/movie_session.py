@@ -42,3 +42,9 @@ def update_movie_session(
 
 def delete_movie_session_by_id(session_id: int) -> None:
     MovieSession.objects.get(id=session_id).delete()
+
+
+def get_taken_seats(movie_session_id: int) -> QuerySet[MovieSession]:
+    movie_session = MovieSession.objects.get(id=movie_session_id)
+    taken_seats = movie_session.tickets.values_list("row", "seat")
+    return taken_seats
