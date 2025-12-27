@@ -77,7 +77,7 @@ Use the following command to load prepared data from fixture to test and debug y
 `python manage.py loaddata cinema_db_data.json`.
 
 - After loading data from fixture you can use following superuser (or create another one by yourself):
-  - Login: `admin.user`
+  - Login: `admin.user28`
   - Password: `1qazcde3`
 
 In `services` you already have services you created earlier. Now
@@ -86,6 +86,10 @@ you have to create or edit such services:
    - `get_movies`, add optional argument `title`, if `title` is not `None`,
 function returns result as earlier, but also filter movies with title 
 that contains `title`.
+
+
+
+
 2. Create `user.py`, add such functions:
    - `create_user`, takes `username`, `password`, optional parameters 
 `email`, `first_name`, `last_name`. The method should save user properly (password 
