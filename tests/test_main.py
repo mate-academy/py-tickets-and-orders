@@ -168,7 +168,8 @@ def test_movie_service_get_movies_with_title(movies_data):
         ("Harry Kasparov: Documentary",),
     ]
 
-    assert list(get_movies(title="harry potter").values_list("title")) == [
+    assert list(get_movies(
+        title="harry potter").values_list("title")) == [
         ("Harry Potter 1",),
         ("Harry Potter 2",),
         ("Harry Potter 3",),
