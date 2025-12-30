@@ -1,40 +1,35 @@
-from django.db.models import QuerySet
-
 from db.models import Movie
+from typing import List
+from django.db.models.query import QuerySet
+from django.db import transaction
 
 
 def get_movies(
-    genres_ids: list[int] = None,
-    actors_ids: list[int] = None,
-) -> QuerySet:
+        title: str = None,
+        actors_ids: List[int] = None,
+        genres_ids: List[int] = None
+) -> QuerySet[Movie]:
     queryset = Movie.objects.all()
-
-    if genres_ids:
-        queryset = queryset.filter(genres__id__in=genres_ids)
-
+    if title:
+        queryset = queryset.filter(title__icontains=title)
     if actors_ids:
         queryset = queryset.filter(actors__id__in=actors_ids)
-
+    if genres_ids:
+        queryset = queryset.filter(genres__id__in=genres_ids)
     return queryset
 
 
-def get_movie_by_id(movie_id: int) -> Movie:
-    return Movie.objects.get(id=movie_id)
-
-
+@transaction.atomic
 def create_movie(
     movie_title: str,
     movie_description: str,
-    genres_ids: list = None,
-    actors_ids: list = None,
+    actors_ids: List[int],
+    genres_ids: List[int],
 ) -> Movie:
     movie = Movie.objects.create(
         title=movie_title,
-        description=movie_description,
+        description=movie_description
     )
-    if genres_ids:
-        movie.genres.set(genres_ids)
-    if actors_ids:
-        movie.actors.set(actors_ids)
-
+    movie.actors.set(actors_ids)
+    movie.genres.set(genres_ids)
     return movie
