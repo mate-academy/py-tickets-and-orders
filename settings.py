@@ -23,6 +23,15 @@ USE_I18N = True
 
 USE_TZ = False
 
+AUTH_USER_MODEL = "db.User"
+
 INSTALLED_APPS = [
+    "django.contrib.contenttypes",
+    "django.contrib.auth",
     "db",
 ]
+
+REST_FRAMEWORK = {
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 2,
+}
