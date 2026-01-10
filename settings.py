@@ -23,6 +23,16 @@ USE_I18N = True
 
 USE_TZ = False
 
+# ↓↓↓ ADICIONE ESTAS CONFIGURAÇÕES AO SEU INSTALLED_APPS ↓↓↓
 INSTALLED_APPS = [
-    "db",
+    "django.contrib.admin",
+    "django.contrib.auth",           # ← ADICIONE
+    "django.contrib.contenttypes",   # ← ADICIONE
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "db",                            # ← JÁ ESTAVA AQUI
 ]
+
+# ↓↓↓ ADICIONE ESTA LINHA NO FINAL DO ARQUIVO ↓↓↓
+AUTH_USER_MODEL = "db.User"
