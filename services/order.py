@@ -1,17 +1,26 @@
 # db/services/order.py
 from django.db import transaction
 from django.contrib.auth import get_user_model
+from django.db.models import QuerySet
 from db.models import Order, Ticket
 from datetime import datetime
+from typing import Optional
 
 
 @transaction.atomic
-def create_order(tickets: list, username: str, date: str = None):
+def create_order(
+    tickets: list,
+    username: str,
+    date: str = None
+) -> Order:
     user = get_user_model().objects.get(username=username)
-    order = Order.objects.create(user=user)
+    
+    order_data = {"user": user}
     if date:
-        order.created_at = datetime.strptime(date, "%Y-%m-%d %H:%M")
-        order.save()
+        order_data["created_at"] = datetime.strptime(date, "%Y-%m-%d %H:%M")
+    
+    order = Order.objects.create(**order_data)
+    
     for ticket_data in tickets:
         Ticket.objects.create(
             movie_session_id=ticket_data["movie_session"],
@@ -22,7 +31,7 @@ def create_order(tickets: list, username: str, date: str = None):
     return order
 
 
-def get_orders(username: str = None):
+def get_orders(username: str = None) -> QuerySet:
     orders = Order.objects.all()
     if username:
         orders = orders.filter(user__username=username)
