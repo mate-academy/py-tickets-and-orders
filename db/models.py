@@ -114,6 +114,6 @@ class Ticket(models.Model):
                          "than seats in a row in cinema hall."}
             )
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         self.full_clean()
         super().save(*args, **kwargs)

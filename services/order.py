@@ -1,4 +1,5 @@
 from django.db import transaction
+from django.db.models import QuerySet
 from django.utils.dateparse import parse_datetime
 from db.models import User, Order, Ticket, MovieSession
 
@@ -35,7 +36,7 @@ def create_order(
     return order
 
 
-def get_orders(username: str = None):
+def get_orders(username: str = None) -> QuerySet[Order]:
     queryset = Order.objects.all().order_by("-created_at")
     if username:
         queryset = queryset.filter(user__username=username)
