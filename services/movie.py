@@ -1,9 +1,10 @@
 # db/services/movie.py
 from django.db import transaction
+from django.db.models import QuerySet
 from db.models import Movie
 
 
-def get_movies(title: str = None):
+def get_movies(title: str = None) -> QuerySet:
     movies = Movie.objects.all()
     if title:
         movies = movies.filter(title__icontains=title)
@@ -11,7 +12,7 @@ def get_movies(title: str = None):
 
 
 @transaction.atomic
-def create_movie(title: str, description: str, duration: int):
+def create_movie(title: str, description: str, duration: int) -> Movie:
     movie = Movie.objects.create(
         title=title, description=description, duration=duration
     )
