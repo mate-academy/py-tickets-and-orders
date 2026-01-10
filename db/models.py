@@ -47,23 +47,37 @@ class MovieSession(models.Model):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="orders"
+    )
 
     def __str__(self):
-        return str(self.created_at)
+        return f"{self.created_at}"
 
     class Meta:
         ordering = ["-created_at"]
 
 
 class Ticket(models.Model):
-    movie_session = models.ForeignKey(MovieSession, on_delete=models.CASCADE)
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    movie_session = models.ForeignKey(
+        MovieSession,
+        on_delete=models.CASCADE,
+        related_name="tickets"
+    )
+    order = models.ForeignKey(
+        Order,
+        on_delete=models.CASCADE,
+        related_name="tickets"
+    )
     row = models.IntegerField()
     seat = models.IntegerField()
 
     def __str__(self):
-        return f"{self.movie_session.movie.title} {self.movie_session.show_time} (row: {self.row}, seat: {self.seat})"
+        return (f"{self.movie_session.movie.title} "
+                f"{self.movie_session.show_time} "
+                f"(row: {self.row}, seat: {self.seat})")
 
     def clean(self):
         cinema_hall = self.movie_session.cinema_hall
@@ -71,7 +85,8 @@ class Ticket(models.Model):
             raise ValidationError(
                 {
                     "row": [
-                        f"row number must be in available range: (1, rows): (1, {cinema_hall.rows})"
+                        f"row number must be in available range: "
+                        f"(1, rows): (1, {cinema_hall.rows})"
                     ]
                 }
             )
@@ -79,7 +94,8 @@ class Ticket(models.Model):
             raise ValidationError(
                 {
                     "seat": [
-                        f"seat number must be in available range: (1, seats_in_row): (1, {cinema_hall.seats_in_row})"
+                        f"seat number must be in available range: "
+                        f"(1, seats_in_row): (1, {cinema_hall.seats_in_row})"
                     ]
                 }
             )
@@ -91,6 +107,7 @@ class Ticket(models.Model):
     class Meta:
         constraints = [
             UniqueConstraint(
-                fields=["row", "seat", "movie_session"], name="unique_seat_per_session"
+                fields=["row", "seat", "movie_session"],
+                name="unique_seat_per_session"
             )
         ]
