@@ -10,9 +10,9 @@ def get_movies(title: str = None):
     return movies
 
 
+@transaction.atomic
 def create_movie(title: str, description: str, duration: int):
-    with transaction.atomic():
-        movie = Movie.objects.create(
-            title=title, description=description, duration=duration
-        )
-        return movie
+    movie = Movie.objects.create(
+        title=title, description=description, duration=duration
+    )
+    return movie
