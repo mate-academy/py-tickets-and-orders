@@ -85,7 +85,7 @@ you have to create or edit such services:
 1. Edit `movie.py`, edit function:
    - `get_movies`, add optional argument `title`, if `title` is not `None`,
 function returns result as earlier, but also filter movies with title 
-that contains `title`.
+that contains `title`..\venv\Scripts\activate
 2. Create `user.py`, add such functions:
    - `create_user`, takes `username`, `password`, optional parameters 
 `email`, `first_name`, `last_name`. The method should save user properly (password 
