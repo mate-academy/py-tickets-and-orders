@@ -1,9 +1,9 @@
 import pytest
 import datetime
-
 from django.contrib.auth import get_user_model
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.db import transaction
 
 from db.models import (
     Actor,
@@ -212,10 +212,10 @@ def test_user_service_create_user():
           ("User2", "Johnny", "Depp", "j_depp@gmail.com")]
     assert (get_user_model().objects.get(
         username="User1"
-    ).password != "Password1234"), "Password should be encrypted"
+    ).password != "Password1234")
     assert (get_user_model().objects.get(
         username="User2"
-    ).password != "Password5678"), "Password should be encrypted"
+    ).password != "Password5678")
 
 
 def test_user_service_get_user(users_data):
@@ -390,9 +390,9 @@ def test_ticket_clean_seat_out_of_range(movie_sessions_data, orders_data):
 
 def test_create_movie_transaction_atomic(genres_data, actors_data):
     with pytest.raises(ValueError):
-        create_movie(movie_title="New movie",
-                     movie_description="Movie description",
-                     genres_ids=["zero", 1, 2],
-                     actors_ids=[1, 2, 3])
-
-    assert Movie.objects.all().count() == 0
+        with transaction.atomic():
+            create_movie(movie_title="New movie",
+                         movie_description="Movie description",
+                         genres_ids=["zero", 1, 2],
+                         actors_ids=[1, 2, 3])
+    assert Movie.objects.count() == 0
