@@ -1,4 +1,10 @@
 from django.db import models
+from django.forms import ValidationError
+from django.contrib.auth.models import AbstractUser
+
+
+class User(AbstractUser):
+    pass
 
 
 class Genre(models.Model):
@@ -17,7 +23,7 @@ class Actor(models.Model):
 
 
 class Movie(models.Model):
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=255, db_index=True)
     description = models.TextField()
     actors = models.ManyToManyField(to=Actor, related_name="movies")
     genres = models.ManyToManyField(to=Genre, related_name="movies")
@@ -50,3 +56,43 @@ class MovieSession(models.Model):
 
     def __str__(self) -> str:
         return f"{self.movie.title} {str(self.show_time)}"
+
+
+class Order(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self) -> str:
+        return f"Order: {self.created_at}"
+
+
+class Ticket(models.Model):
+    movie_session = models.ForeignKey(MovieSession, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    row = models.IntegerField()
+    seat = models.IntegerField()
+
+    def __str__(self) -> str:
+        return (f"Ticket: {self.movie_session.movie.title}"
+                f"{self.order.created_at} (row: {self.row} seat: {self.seat})")
+
+    def clean(self) -> None:
+        if self.row > self.movie_session.cinema_hall.rows:
+            raise ValidationError(
+                {"row":
+                 f"['row number must be in available range:"
+                 "(1, rows): "
+                 f"{self.movie_session.cinema_hall.rows}']"})
+        if self.seat > self.movie_session.cinema_hall.seats_in_row:
+            raise ValidationError(
+                {"seat":
+                 f"['seat number must be in available range:"
+                 "(1, seats_in_row): "
+                 f"{self.movie_session.cinema_hall.seats_in_row}']"})
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["movie_session", "row", "seat"],
+                name="unique_ticket")
+        ]
