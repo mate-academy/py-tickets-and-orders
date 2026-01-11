@@ -1,4 +1,5 @@
 from django.db.models import QuerySet
+from django.shortcuts import get_object_or_404
 
 from db.models import MovieSession
 
@@ -21,7 +22,16 @@ def get_movies_sessions(session_date: str = None) -> QuerySet:
 
 
 def get_movie_session_by_id(movie_session_id: int) -> MovieSession:
-    return MovieSession.objects.get(id=movie_session_id)
+    return get_object_or_404(MovieSession, movie_session_id)
+
+
+def get_taken_seats(movie_session_id: int) -> list[dict]:
+    session = get_object_or_404(MovieSession, pk=movie_session_id)
+
+    return [
+        {"row": ticket.row, "seat": ticket.seat}
+        for ticket in session.tickets.all()
+    ]
 
 
 def update_movie_session(
