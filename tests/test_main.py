@@ -135,9 +135,9 @@ def test_auth_user_models():
 
 def test_order_str(orders_data):
     order = Order.objects.get(id=1)
-    assert str(order) == str(order.created_at)
+    assert str(order) == f"Order: {order.created_at}"
     order = Order.objects.get(id=2)
-    assert str(order) == str(order.created_at)
+    assert str(order) == f"Order: {order.created_at}"
 
 
 def test_order_ordering(orders_data):
@@ -149,9 +149,13 @@ def test_order_ordering(orders_data):
 
 
 def test_ticket_str(tickets_data):
-    assert str(
-        Ticket.objects.first()
-    ) == "Matrix 2019-08-19 20:30:00 (row: 7, seat: 10)"
+    ticket = Ticket.objects.first()
+    expected_str = (
+        f"Ticket: {ticket.movie_session.movie.title} "
+        f"{ticket.movie_session.show_time} "
+        f"(row: {ticket.row}, seat: {ticket.seat})"
+    )
+    assert str(ticket) == expected_str
 
 
 def test_ticket_unique_constraint(tickets_data):
