@@ -1,6 +1,6 @@
 # Tickets and orders
 
-Read [the guideline](https://github.com/mate-academy/py-task-guideline/blob/main/README.md) before starting.
+Read [git checkout -b develop guideline](https://github.com/mate-academy/py-task-guideline/blob/main/README.md) before starting.
 
 In `db/models.py` you already have tables you created earlier. Now
 you have to create or edit tables:
