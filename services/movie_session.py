@@ -1,6 +1,7 @@
 from django.db.models import QuerySet
+from django.http import Http404
 
-from db.models import MovieSession
+from db.models import MovieSession, Ticket
 
 
 def create_movie_session(
@@ -41,4 +42,13 @@ def update_movie_session(
 
 
 def delete_movie_session_by_id(session_id: int) -> None:
-    MovieSession.objects.get(id=session_id).delete()
+    try:
+        movie_session = MovieSession.objects.get(id=session_id)
+        movie_session.delete()
+    except MovieSession.DoesNotExist:
+        raise Http404(f"Movie session with id {session_id} does not exist.")
+
+
+def get_taken_seats(movie_session_id: int) -> list[dict]:
+    tickets = Ticket.objects.filter(movie_session_id=movie_session_id).values("row", "seat")
+    return list(tickets)
