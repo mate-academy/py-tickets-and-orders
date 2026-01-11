@@ -390,7 +390,7 @@ def test_ticket_clean_seat_out_of_range(movie_sessions_data, orders_data):
 
 def test_create_movie_transaction_atomic(genres_data, actors_data):
     with pytest.raises(ValueError):
-        create_movie(movie_title="New movie",
+        create_movie(title="New movie",
                      movie_description="Movie description",
                      genres_ids=["zero", 1, 2],
                      actors_ids=[1, 2, 3])
