@@ -15,6 +15,10 @@ DATABASES = {
     }
 }
 
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "your-domain.com"]
+
+AUTH_USER_MODEL = "db.User"
+
 LANGUAGE_CODE = "en-us"
 
 TIME_ZONE = "Europe/Kiev"
@@ -24,5 +28,7 @@ USE_I18N = True
 USE_TZ = False
 
 INSTALLED_APPS = [
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
     "db",
 ]
