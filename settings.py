@@ -11,7 +11,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+        "NAME": os.path.abspath("./db.sqlite3"),
     }
 }
 
@@ -24,5 +24,29 @@ USE_I18N = True
 USE_TZ = False
 
 INSTALLED_APPS = [
-    "db",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "db"
+]
+
+AUTH_USER_MODEL = "db.User"
+
+
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        "NAME": "django.contrib.auth."
+                "password_validation.UserAttributeSimilarityValidator",
+    },
+    {
+        "NAME": "django.contrib.auth."
+                "password_validation.MinimumLengthValidator",
+    },
+    {
+        "NAME": "django.contrib.auth."
+                "password_validation.CommonPasswordValidator",
+    },
+    {
+        "NAME": "django.contrib.auth."
+                "password_validation.NumericPasswordValidator",
+    }
 ]
