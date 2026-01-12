@@ -16,7 +16,7 @@ def create_order(
         user=user
     )
     if date:
-        order.created_at = date
+        Order.objects.filter(id=order.id).update(created_at=date)
 
     for ticket in tickets:
         Ticket.objects.create(row=ticket["row"],
