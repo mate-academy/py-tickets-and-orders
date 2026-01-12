@@ -19,7 +19,7 @@ from services.movie_session import (
     get_taken_seats,
 )
 from services.user import create_user, get_user, update_user
-from services.order import create_order, get_orders
+from services.orders import create_order, get_orders
 
 
 pytestmark = pytest.mark.django_db
