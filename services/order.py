@@ -19,16 +19,17 @@ def create_order(
     except get_user_model().DoesNotExist:
         raise ValidationError(f"User with name {username} does not exists")
 
+    order = Order.objects.create(user=user)
+
     if date:
         try:
             date_time = datetime.strptime(date, "%Y-%m-%d %H:%M")
-            order = Order.objects.create(user=user, created_at=date_time)
+            order.created_at = date_time
+            order.save(update_fields=["created_at"])
         except ValueError:
             raise ValidationError(
                 "wrong date format, should be YYYY-MM-DD HH:MM"
             )
-    else:
-        order = Order.objects.create(user=user)
 
     movie_sessions = MovieSession.objects.filter(
         id__in=[ticket["movie_session"]
