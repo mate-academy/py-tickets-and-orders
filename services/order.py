@@ -37,16 +37,13 @@ def create_order(
 
     dict_movie_sessions = {session.id: session for session in movie_sessions}
 
-    list_tickets = [
-        Ticket(
+    for ticket in tickets:
+        Ticket.objects.create(
             movie_session=dict_movie_sessions[ticket["movie_session"]],
             order=order,
             row=ticket["row"],
             seat=ticket["seat"]
         )
-        for ticket in tickets
-    ]
-    Ticket.objects.bulk_create(list_tickets)
 
     return order
 

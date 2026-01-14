@@ -1,9 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
-from django.db.models import CASCADE, UniqueConstraint
-
 from django.db import models
-from django.utils import timezone
+from django.db.models import CASCADE, UniqueConstraint
 
 import settings
 
@@ -60,7 +58,7 @@ class MovieSession(models.Model):
 
 
 class Order(models.Model):
-    created_at = models.DateTimeField(default=timezone.now)
+    created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=CASCADE,
@@ -71,7 +69,7 @@ class Order(models.Model):
         ordering = ["-created_at"]
 
     def __str__(self) -> str:
-        return str(self.created_at)
+        return f"<Order: {self.created_at.strftime('%Y-%m-%d %H:%M:%S')}>"
 
 
 class Ticket(models.Model):
