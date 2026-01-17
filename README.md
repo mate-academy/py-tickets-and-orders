@@ -41,7 +41,7 @@ Also fields `row`, `seat`, `movie_session` should be unique together.
 Use `UniqueConstraint`, [constraints](https://medium.com/@timmerop/how-to-add-a-uniqueconstraint-concurrently-in-django-2043c4752ee6).
 ```python
 import datetime
-
+    
 cinema_hall = CinemaHall.objects.create(name="Blue", rows=18, seats_in_row=24)
 movie_session = MovieSession.objects.create(
     show_time=datetime.datetime(2022, 3, 20, 19, 30),
