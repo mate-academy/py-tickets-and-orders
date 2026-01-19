@@ -246,8 +246,8 @@ def test_user_service_update_user_with_email(users_data):
         .objects.filter(id=1)
         .values_list("username", "first_name", "last_name", "email")
     ) == [
-        ("user1", "", "", "user1@gmail.com"),
-    ]
+               ("user1", "", "", "user1@gmail.com"),
+           ]
     assert get_user_model().objects.get(id=1).password == user1_password
 
 
@@ -298,9 +298,9 @@ def test_order_service_get_orders_with_user(orders_data):
     assert list(get_orders(username="user1").values_list(
         "user__username"
     )) == [
-        ("user1",),
-        ("user1",),
-    ]
+               ("user1",),
+               ("user1",),
+           ]
 
 
 @pytest.fixture()
@@ -372,8 +372,8 @@ def test_ticket_clean_row_out_of_range(movie_sessions_data, orders_data):
     with pytest.raises(ValidationError) as e_info:
         Ticket.objects.create(movie_session_id=1, order_id=1, row=11, seat=5)
     assert (
-        str(e_info.value) == "{'row': ['row number must be in available "
-        "range: (1, rows): (1, 10)']}"
+            str(e_info.value) == "{'row': ['row number must be in available "
+                                 "range: (1, rows): (1, 10)']}"
     )
 
 
