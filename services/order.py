@@ -1,7 +1,10 @@
-from db.models import Order, Ticket, User
-from django.db import transaction
 from datetime import datetime
+
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth import get_user_model
+
+from db.models import Order, Ticket
+from django.db import transaction
 
 
 def str_to_date(date: str) -> datetime:
@@ -13,30 +16,30 @@ def str_to_date(date: str) -> datetime:
     return datetime(*year_month_day, *hour_minutes)
 
 
+@transaction.atomic()
 def create_order(
         tickets: list[dict],
         username: str,
         date: str = None) -> Order:
-    with transaction.atomic():
-        try:
-            user = User.objects.get(username=username)
-        except ObjectDoesNotExist:
-            raise
+    try:
+        user = get_user_model().objects.get(username=username)
+    except ObjectDoesNotExist:
+        raise
 
-        order = Order.objects.create(user=user)
-        if date:
-            date = str_to_date(date)
-            print(date)
-            order.created_at = date
-            order.save()
+    order = Order.objects.create(user=user)
+    if date:
+        date = str_to_date(date)
+        print(date)
+        order.created_at = date
+        order.save()
 
-        for ticket in tickets:
-            Ticket(movie_session_id=ticket["movie_session"],
-                   order=order,
-                   row=ticket["row"],
-                   seat=ticket["seat"]).save()
+    for ticket in tickets:
+        Ticket(movie_session_id=ticket["movie_session"],
+               order=order,
+               row=ticket["row"],
+               seat=ticket["seat"]).save()
 
-        return order
+    return order
 
 
 def get_orders(username: str = None) -> Order:
