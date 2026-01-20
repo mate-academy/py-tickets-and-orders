@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 
 from db.models import Order, Ticket
 from django.db import transaction
+from django.db.models import QuerySet
 
 
 def str_to_date(date: str) -> datetime:
@@ -20,7 +21,7 @@ def str_to_date(date: str) -> datetime:
 def create_order(
         tickets: list[dict],
         username: str,
-        date: str = None) -> Order:
+        date: str = None) -> QuerySet[Order]:
     try:
         user = get_user_model().objects.get(username=username)
     except ObjectDoesNotExist:
