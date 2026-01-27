@@ -19,10 +19,15 @@ LANGUAGE_CODE = "en-us"
 
 TIME_ZONE = "Europe/Kiev"
 
+
 USE_I18N = True
 
 USE_TZ = False
 
 INSTALLED_APPS = [
     "db",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
 ]
+
+AUTH_USER_MODEL = "db.User"
