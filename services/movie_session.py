@@ -3,6 +3,14 @@ from django.db.models import QuerySet
 from db.models import MovieSession
 
 
+def get_taken_seats(movie_session_id: int) -> list:
+    return list(
+        MovieSession.objects.get(id=movie_session_id).tickets.values(
+            "row", "seat"
+        )
+    )
+
+
 def create_movie_session(
     movie_show_time: str, movie_id: int, cinema_hall_id: int
 ) -> MovieSession:
