@@ -22,7 +22,7 @@ def update_user(
     password: str = None,
     **kwargs
 ) -> None:
-    user = User.objects.get(user_id)
+    user = User.objects.get(pk=user_id)
 
     if password:
         user.set_password(password)
@@ -30,4 +30,4 @@ def update_user(
     if kwargs:
         for name, value in kwargs.items():
             user.__dict__[name] = value
-        user.save()
+    user.save()
