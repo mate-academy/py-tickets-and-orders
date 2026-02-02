@@ -99,6 +99,7 @@ class Ticket(models.Model):
                 }
             )
         if self.seat not in range(
+            1,
             self.movie_session.cinema_hall.seats_in_row + 1
         ):
             seats = self.movie_session.cinema_hall.seats_in_row
@@ -116,7 +117,12 @@ class Ticket(models.Model):
         super().save(*args, **kwargs)
 
     class Meta:
-        unique_together = ["row", "seat", "movie_session"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["movie_session", "row", "seat"],
+                name="unique ticket"
+            )
+        ]
 
     def __str__(self) -> str:
         return (
