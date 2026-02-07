@@ -13,12 +13,12 @@ User = get_user_model()
 def create_order(tickets: list, username: str, date: str = None) -> Order:
     user = User.objects.get(username=username)
 
-    order = Order(user=user)
+    order = Order.objects.create(user=user)
 
     if date is not None:
-        order.created_at = datetime.strptime(date, "%Y-%m-%d %H:%M")
-
-    order.save()
+        created_at = datetime.strptime(date, "%Y-%m-%d %H:%M")
+        Order.objects.filter(pk=order.pk).update(created_at=created_at)
+        order.created_at = created_at
 
     for ticket in tickets:
         Ticket.objects.create(
