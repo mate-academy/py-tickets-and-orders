@@ -67,7 +67,7 @@ class Order(models.Model):
         ordering = ["-created_at"]
 
     def __str__(self) -> str:
-        return f"<Order: {self.created_at.strftime('%Y-%m-%d %H:%M:%S')}>"
+        return str(self.created_at)
 
 
 class Ticket(models.Model):
@@ -86,11 +86,8 @@ class Ticket(models.Model):
 
     def __str__(self) -> str:
         title = self.movie_session.movie.title
-        show_time = self.movie_session.show_time.strftime("%Y-%m-%d %H:%M:%S")
-        return (
-            f"<Ticket: {title} {show_time} "
-            f"(row: {self.row}, seat: {self.seat})>"
-        )
+        show_time = str(self.movie_session.show_time)
+        return f"{title} {show_time} (row: {self.row}, seat: {self.seat})"
 
     class Meta:
         constraints = [
