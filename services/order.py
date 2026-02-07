@@ -13,16 +13,17 @@ User = get_user_model()
 def create_order(tickets: list, username: str, date: str = None) -> Order:
     user = User.objects.get(username=username)
 
-    order = Order.objects.create(user=user)
+    order = Order(user=user)
 
     if date is not None:
         order.created_at = datetime.strptime(date, "%Y-%m-%d %H:%M")
-        order.save(update_fields=["created_at"])
+
+    order.save()
 
     for ticket in tickets:
         Ticket.objects.create(
-            movie_session_id=ticket["movie_session"],
             order=order,
+            movie_session_id=ticket["movie_session"],
             row=ticket["row"],
             seat=ticket["seat"],
         )
@@ -30,7 +31,7 @@ def create_order(tickets: list, username: str, date: str = None) -> Order:
     return order
 
 
-def get_orders(username: str = None) -> QuerySet:
+def get_orders(username: str = None) -> QuerySet[Order]:
     queryset = Order.objects.all()
 
     if username is not None:
