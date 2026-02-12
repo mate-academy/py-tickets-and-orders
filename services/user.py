@@ -9,11 +9,10 @@ def create_user(
         first_name: str = None,
         last_name: str = None
 ) -> models.Model:
-    new_user = get_user_model().objects.create_user(
-        username=username,
-        password=password
+    new_user = get_user_model()(
+        username=username
     )
-
+    new_user.set_password(password)
     if email:
         new_user.email = email
     if first_name:
