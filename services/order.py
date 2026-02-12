@@ -16,7 +16,6 @@ def create_order(
     new_order = Order.objects.create(
         user=get_user_model().objects.get(username=username)
     )
-
     if date:
         new_order.created_at = (
             datetime.datetime.strptime(date, "%Y-%m-%d %H:%M"))
