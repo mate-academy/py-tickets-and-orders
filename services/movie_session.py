@@ -1,19 +1,25 @@
+from datetime import datetime
+
 from django.db.models import QuerySet
 
-from db.models import MovieSession
+from db.models import MovieSession, Movie, CinemaHall, Ticket
 
 
 def create_movie_session(
     movie_show_time: str, movie_id: int, cinema_hall_id: int
 ) -> MovieSession:
+    parsed_show_time = datetime.strptime(movie_show_time, "%Y-%m-%d %H:%M")
+    movie_obj = Movie.objects.get(id=movie_id)
+    cinema_hall_obj = CinemaHall.objects.get(id=cinema_hall_id)
+
     return MovieSession.objects.create(
-        show_time=movie_show_time,
-        movie_id=movie_id,
-        cinema_hall_id=cinema_hall_id,
+        show_time=parsed_show_time,
+        movie=movie_obj,
+        cinema_hall=cinema_hall_obj,
     )
 
 
-def get_movies_sessions(session_date: str = None) -> QuerySet:
+def get_movies_sessions(session_date: str = None) -> QuerySet[MovieSession]:
     queryset = MovieSession.objects.all()
     if session_date:
         queryset = queryset.filter(show_time__date=session_date)
@@ -32,13 +38,23 @@ def update_movie_session(
 ) -> None:
     movie_session = MovieSession.objects.get(id=session_id)
     if show_time:
-        movie_session.show_time = show_time
+        movie_session.show_time = datetime.strptime(
+            show_time, "%Y-%m-%d %H:%M")
     if movie_id:
         movie_session.movie_id = movie_id
+        movie_session.movie_id = Movie.objects.get(id=movie_id)
     if cinema_hall_id:
         movie_session.cinema_hall_id = cinema_hall_id
+        movie_session.cinema_hall_id = CinemaHall.objects.get(
+            id=cinema_hall_id)
     movie_session.save()
 
 
 def delete_movie_session_by_id(session_id: int) -> None:
     MovieSession.objects.get(id=session_id).delete()
+
+
+def get_taken_seats(movie_session_id: int) -> QuerySet:
+    taken_tickets = Ticket.objects.filter(
+        movie_session_id=movie_session_id).values("row", "seat")
+    return taken_tickets

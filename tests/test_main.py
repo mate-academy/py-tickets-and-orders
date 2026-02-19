@@ -26,14 +26,14 @@ pytestmark = pytest.mark.django_db
 
 
 @pytest.fixture()
-def genres_data():
+def genres_data(db):
     Genre.objects.create(name="Action")
     Genre.objects.create(name="Drama")
     Genre.objects.create(name="Western")
 
 
 @pytest.fixture()
-def actors_data():
+def actors_data(db):
     Actor.objects.create(first_name="Keanu", last_name="Reeves")
     Actor.objects.create(first_name="Scarlett", last_name="Johansson")
     Actor.objects.create(first_name="George", last_name="Clooney")
@@ -185,11 +185,11 @@ def test_movie_service_get_movies_with_full_data(movies_data):
 
 
 def test_movie_session_service_get_taken_seats(tickets_data):
-    assert get_taken_seats(movie_session_id=1) == [
+    assert list(get_taken_seats(movie_session_id=1)) == [
         {"row": 7, "seat": 10},
         {"row": 7, "seat": 11},
     ]
-    assert get_taken_seats(movie_session_id=2) == [
+    assert list(get_taken_seats(movie_session_id=2)) == [
         {"row": 9, "seat": 5},
         {"row": 9, "seat": 6},
     ]
