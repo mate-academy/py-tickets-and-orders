@@ -1,6 +1,5 @@
 import datetime
-from django.utils import timezone
-from datetime import datetime
+from datetime import datetime # noqa: F-401
 from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.db.models import QuerySet
@@ -33,7 +32,6 @@ def create_order(
         )
 
     return new_order
-
 
 
 def get_orders(username: str = None) -> QuerySet[Order]:
