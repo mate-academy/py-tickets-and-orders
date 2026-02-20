@@ -96,7 +96,7 @@ set fields if appropriate optional values are provided.
 `email`, 
 `first_name`, `last_name`. Update user with
 provided id and set fields if appropriate values are provided. To save password
-properly use the method `.set_password()`.
+properly use the method `.password`.
 3. Edit `movie_session.py`, add such functions:
    - `get_taken_seats`, takes `movie_session_id` - the id of the
 movie session, list of dicts with rows and seats of the tickets of the 
