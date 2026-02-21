@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import ForeignKey
 
-import settings
+from django.conf import settings
 
 
 class Genre(models.Model):
@@ -65,11 +65,13 @@ class Order(models.Model):
         related_name="orders"
     )
 
-    def __str__(self) -> None:
-        return self.created_at.strftime("%Y-%m-%d %H:%M:%S")
-
     class Meta:
         ordering = ["-created_at"]
+
+    def __str__(self) -> str:
+        timestamp = self.created_at.strftime("%Y-%m-%d %H:%M:%S")
+        return f"<Order: {timestamp}>"
+
 
 
 class User(AbstractUser):
@@ -90,16 +92,24 @@ class Ticket(models.Model):
     row = models.IntegerField()
     seat = models.IntegerField()
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["row", "seat", "movie_session"],
+                name="unique_ticket_row_and_set_in_cinema_hall"
+            )
+        ]
+
     def __str__(self) -> str:
-        return f"{self.movie_session.movie.title} {self.order} (row: {self.row}, seat: {self.seat}"  # noqa: E501
+        return f"{self.movie_session.movie.title} {self.movie_session.show_time} (row: {self.row}, seat: {self.seat})"  # noqa: E501
 
     def clean(self) -> None:
-        if self.movie_session.cinema_hall.rows > self.row > 0:
+        if self.movie_session.cinema_hall.rows < self.row or self.row <= 0:
             raise ValidationError(
                 f"""row: Row must be greater than 0
                 and less than {self.movie_session.cinema_hall.rows}"""
             )
-        if self.movie_session.cinema_hall.seats_in_row > self.seat > 0:
+        if self.movie_session.cinema_hall.seats_in_row < self.seat or self.seat <= 0:
             raise ValidationError(
                 f"""seat: Seat must be greater than 0
                 and less than {self.movie_session.cinema_hall.seats_in_row}""")
@@ -111,11 +121,3 @@ class Ticket(models.Model):
     ) -> None:
         self.full_clean()
         return super().save(*args, **kwargs)
-
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=["row", "seat", "movie_session"],
-                name="unique_ticket_row_and_set_in_cinema_hall"
-            )
-        ]
