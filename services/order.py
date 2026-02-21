@@ -18,7 +18,7 @@ def create_order(
     # Create Order
     order = Order(user=user)
     if date:
-        order.date = datetime.strptime(date, "%Y-%m-%d %H:%M")
+        order.created_at = datetime.strptime(date, "%Y-%m-%d %H:%M")
     order.save()
     # Create tickets
     for ticket in tickets:

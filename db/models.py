@@ -101,18 +101,13 @@ class Ticket(models.Model):
         ]
 
     def __str__(self) -> str:
-        return f"{self.movie_session.movie.title} {self.movie_session.show_time} (row: {self.row}, seat: {self.seat})"  # noqa: E501
+        return f"<Ticket: {self.movie_session.movie.title} {self.movie_session.show_time} (row: {self.row}, seat: {self.seat})>"  # noqa: E501
 
     def clean(self) -> None:
         if self.movie_session.cinema_hall.rows < self.row or self.row <= 0:
-            raise ValidationError(
-                f"""row: Row must be greater than 0
-                and less than {self.movie_session.cinema_hall.rows}"""
-            )
+            raise ValidationError({"row": [f"row must be greater than 0 and less than {self.movie_session.cinema_hall.rows}"]})
         if self.movie_session.cinema_hall.seats_in_row < self.seat or self.seat <= 0:
-            raise ValidationError(
-                f"""seat: Seat must be greater than 0
-                and less than {self.movie_session.cinema_hall.seats_in_row}""")
+            raise ValidationError({"seat": [f"seat must be greater than 0 and less than {self.movie_session.cinema_hall.seats_in_row}"]})
 
     def save(
             self,
