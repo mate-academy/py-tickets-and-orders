@@ -25,4 +25,12 @@ USE_TZ = False
 
 INSTALLED_APPS = [
     "db",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
 ]
+
+AUTH_USER_MODEL = "db.User"
+
+ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
+
+DEBUG = True
