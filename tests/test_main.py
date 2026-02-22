@@ -4,6 +4,11 @@ import datetime
 from django.contrib.auth import get_user_model
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.utils.timezone import make_aware
+
+
+
+
 
 from db.models import (
     Actor,
@@ -12,7 +17,7 @@ from db.models import (
     MovieSession,
     CinemaHall,
     Order,
-    Ticket
+    Ticket,
 )
 from services.movie import get_movies, create_movie
 from services.movie_session import (
@@ -41,35 +46,36 @@ def actors_data():
 
 @pytest.fixture()
 def movies_data(genres_data, actors_data):
-    matrix = Movie.objects.create(title="Matrix", description="Matrix movie")
+    matrix = Movie.objects.create(title="Matrix", description="Matrix movie", duration=136)
     matrix.actors.add(1)
     matrix.actors.add(2)
     matrix.genres.add(1)
 
     matrix2 = Movie.objects.create(title="Matrix 2",
-                                   description="Matrix 2 movie")
+                                   description="Matrix 2 movie", duration=138)
     matrix2.genres.add(1)
     matrix2.actors.add(2)
 
     batman = Movie.objects.create(title="Batman",
-                                  description="Batman movie")
+                                  description="Batman movie", duration=130)
     batman.genres.add(2)
     batman.actors.add(3)
 
     titanic = Movie.objects.create(title="Titanic",
-                                   description="Titanic movie")
+                                   description="Titanic movie",  duration=195)
     titanic.genres.add(1, 2)
 
     good_bad = Movie.objects.create(
         title="The Good, the Bad and the Ugly",
         description="The Good, the Bad and the Ugly movie",
+        duration=161,
     )
     good_bad.genres.add(3)
 
-    Movie.objects.create(title="Harry Potter 1")
-    Movie.objects.create(title="Harry Potter 2")
-    Movie.objects.create(title="Harry Potter 3")
-    Movie.objects.create(title="Harry Kasparov: Documentary")
+    Movie.objects.create(title="Harry Potter 1", duration=152)
+    Movie.objects.create(title="Harry Potter 2", duration=161)
+    Movie.objects.create(title="Harry Potter 3", duration=142)
+    Movie.objects.create(title="Harry Kasparov: Documentary", duration=90)
 
 
 @pytest.fixture()
@@ -135,9 +141,9 @@ def test_auth_user_models():
 
 def test_order_str(orders_data):
     order = Order.objects.get(id=1)
-    assert str(order) == str(order.created_at)
+    assert str(order) == order.created_at.isoformat(sep=' ', timespec='seconds')
     order = Order.objects.get(id=2)
-    assert str(order) == str(order.created_at)
+    assert str(order) == order.created_at.isoformat(sep=' ', timespec='seconds')
 
 
 def test_order_ordering(orders_data):
@@ -149,9 +155,9 @@ def test_order_ordering(orders_data):
 
 
 def test_ticket_str(tickets_data):
-    assert str(
-        Ticket.objects.first()
-    ) == "Matrix 2019-08-19 20:30:00 (row: 7, seat: 10)"
+    first_ticket = Ticket.objects.first()
+    expected_str = "Matrix 2019-08-19 20:30:00 (row: 7, seat: 10)"
+    assert str(first_ticket) == expected_str
 
 
 def test_ticket_unique_constraint(tickets_data):
@@ -321,7 +327,7 @@ def incorrect_tickets():
 
 @pytest.fixture()
 def create_order_data():
-    movie = Movie.objects.create(title="Speed", description="Description")
+    movie = Movie.objects.create(title="Speed", description="Description", duration=120)
     cinema_hall = CinemaHall.objects.create(name="Blue",
                                             rows=14,
                                             seats_in_row=12)
@@ -355,8 +361,8 @@ def test_order_service_create_order_with_date(create_order_data, tickets):
             "row", "seat", "movie_session"
         )
     ) == [(10, 8, 1), (10, 9, 1)]
-    assert Order.objects.first().created_at == datetime.datetime(
-        2020, 11, 10, 14, 40
+    assert Order.objects.first().created_at == make_aware(datetime.datetime(
+        2020, 11, 10, 14, 40)
     )
 
 
@@ -392,6 +398,7 @@ def test_create_movie_transaction_atomic(genres_data, actors_data):
     with pytest.raises(ValueError):
         create_movie(movie_title="New movie",
                      movie_description="Movie description",
+                     movie_duration=120,
                      genres_ids=["zero", 1, 2],
                      actors_ids=[1, 2, 3])
 
