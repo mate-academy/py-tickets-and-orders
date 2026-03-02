@@ -7,10 +7,12 @@ from db.models import Order, Ticket
 @transaction.atomic
 def create_order(tickets: list[dict], username: str, date: str = None) -> None:
     user = get_user_model().objects.get(username=username)
+
     order = Order.objects.create(user=user)
+
     if date:
-        order.created_at = date
-        order.save()
+        Order.objects.filter(id=order.id).update(created_at=date)
+        order.refresh_from_db()
 
     for ticket_data in tickets:
         Ticket.objects.create(
