@@ -66,7 +66,10 @@ class Order(models.Model):
         ]
 
     def __str__(self) -> str:
-        return f"{self.created_at}"
+        return self.created_at.strftime("%Y-%m-%d %H:%M:%S")
+
+    def __repr__(self) -> str:
+        return f"<Order: {self.__str__()}>"
 
 
 class User(AbstractUser):
@@ -95,6 +98,9 @@ class Ticket(models.Model):
         return (f"{self.movie_session.movie.title}"
                 f" {self.movie_session.show_time} "
                 f"(row: {self.row}, seat: {self.seat})")
+
+    def __repr__(self) -> str:
+        return f"<Ticket: {self.__str__()}>"
 
     def clean(self) -> None:
         if not self.movie_session:
