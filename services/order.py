@@ -1,8 +1,8 @@
 from django.db import transaction
 from django.db.models import QuerySet
-
 from db.models import Ticket, Order, User
 from datetime import datetime
+
 
 @transaction.atomic
 def create_order(tickets: list[dict],
@@ -23,6 +23,7 @@ def create_order(tickets: list[dict],
         new_order.created_at = date
     new_order.save()
     return new_order
+
 
 def get_orders(username: str = None) -> Order | QuerySet[Order]:
     if username:
