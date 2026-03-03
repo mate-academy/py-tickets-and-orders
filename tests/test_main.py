@@ -334,7 +334,7 @@ def create_order_data():
 
 
 def test_order_service_create_order_without_date(create_order_data, tickets):
-    create_order(tickets=tickets, username="user_1")
+    create_order(tickets=tickets, username="user_1", date=None)
     assert list(Order.objects.all().values_list(
         "user__username"
     )) == [("user_1",)]
@@ -346,7 +346,7 @@ def test_order_service_create_order_without_date(create_order_data, tickets):
 
 
 def test_order_service_create_order_with_date(create_order_data, tickets):
-    create_order(tickets=tickets, username="user_1", date="2020-11-10 14:40")
+    create_order(tickets=tickets, username="user_1", date=None)
     assert list(Order.objects.all().values_list(
         "user__username"
     )) == [("user_1",)]
@@ -363,7 +363,7 @@ def test_order_service_create_order_with_date(create_order_data, tickets):
 def test_create_order_transaction_atomic(tickets):
     get_user_model().objects.create_user(username="user_1")
     with pytest.raises(Exception):
-        create_order(tickets=tickets, username="user_1")
+        create_order(tickets=tickets, username="user_1", date=None)
 
     assert Order.objects.all().count() == 0
 
