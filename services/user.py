@@ -1,5 +1,4 @@
 from django.contrib.auth import get_user_model
-from db.models import User
 
 
 def create_user(username: str,
@@ -20,7 +19,7 @@ def create_user(username: str,
 
 
 def get_user(user_id: int) -> User:
-    return User.objects.get(id=user_id)
+    return get_user_model(id=user_id)
 
 
 def update_user(user_id: int,
