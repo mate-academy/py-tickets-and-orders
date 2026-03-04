@@ -1,11 +1,12 @@
 from django.db import transaction
-from db.models import MovieSession, Order, Ticket, User
+from db.models import MovieSession, Order, Ticket
 from django.contrib.auth import get_user_model
+
 
 @transaction.atomic
 def create_order(tickets: list, username: str, date: str = None) -> None:
-    User = get_user_model()
-    user = User.objects.get(username=username)
+    user_model = get_user_model()
+    user = user_model.objects.get(username=username)
 
     order = Order.objects.create(user=user)
     if date:
@@ -22,8 +23,8 @@ def create_order(tickets: list, username: str, date: str = None) -> None:
 
 def get_orders(username: str = None) -> list:
     if username:
-        User = get_user_model()
-        user = User.objects.get(username=username)
+        user_model = get_user_model()
+        user = user_model.objects.get(username=username)
         return Order.objects.filter(user=user)
     else:
         return Order.objects.all()

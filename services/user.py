@@ -1,13 +1,14 @@
 from django.contrib.auth import get_user_model
 from db.models import User
 
+
 def create_user(username: str,
                 password: str,
                 email: str = None,
                 first_name: str = None,
                 last_name: str = None) -> User:
-    UserModel = get_user_model()
-    user = UserModel.objects.create_user(username=username, password=password)
+    usermodel = get_user_model()
+    user = usermodel.objects.create_user(username=username, password=password)
     if email:
         user.email = email
     if first_name:

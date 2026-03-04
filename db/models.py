@@ -75,7 +75,8 @@ class Ticket(models.Model):
     movie_session = models.ForeignKey(MovieSession,
                                       on_delete=models.CASCADE,
                                       related_name="tickets")
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="orders")
+    order = models.ForeignKey(Order, on_delete=models.CASCADE,
+                              related_name="orders")
     row = models.IntegerField()
     seat = models.IntegerField()
 
