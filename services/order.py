@@ -33,7 +33,5 @@ def get_orders(username: None | str = None) -> QuerySet[Order]:
     qs = Order.objects.all()
     if username:
         qs = qs.filter(user__username=username).select_related("user")
-    
-    qs = qs.filter(user__username=username)
 
     return qs

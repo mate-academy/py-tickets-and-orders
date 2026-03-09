@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from typing import Optional
+from db.models import User
 
 
 def create_user(username: str,
@@ -26,7 +27,7 @@ def get_user(user_id: int) -> User | None:
     return get_user_model().objects.filter(pk=user_id).first()
 
 
-def update_user(user_id: int, **user_data) -> User:
+def update_user(user_id: int, **user_data) -> User | None:
     user = get_user(user_id)
 
     if user is None:
