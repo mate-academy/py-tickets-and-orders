@@ -1,8 +1,6 @@
 from django.contrib.auth import get_user_model
 from typing import Optional
 
-User = get_user_model()
-
 
 def create_user(username: str,
                 password: str,
@@ -20,16 +18,20 @@ def create_user(username: str,
     if last_name is not None:
         kwargs["last_name"] = last_name
 
-    user = User.objects.create_user(**kwargs)
+    user = get_user_model().objects.create_user(**kwargs)
     return user
 
 
 def get_user(user_id: int) -> User | None:
-    return User.objects.filter(pk=user_id).first()
+    return get_user_model().objects.filter(pk=user_id).first()
 
 
 def update_user(user_id: int, **user_data) -> User:
     user = get_user(user_id)
+
+    if user is None:
+        return
+
     password = user_data.pop("password", None)
     for field in ("username", "email", "first_name", "last_name"):
         if field in user_data:
