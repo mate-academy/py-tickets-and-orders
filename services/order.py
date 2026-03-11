@@ -1,21 +1,26 @@
 from django.db import transaction
 from django.contrib.auth import get_user_model
 from django.db.models import QuerySet
+from datetime import datetime
 from db.models import Order, Ticket
 
 @transaction.atomic
 def create_order(
-    tickets,
-    username,
-    date=None
+    tickets: list[dict],
+    username: str,
+    date: str = None,
 ) -> Order:
     User = get_user_model()
     user = User.objects.get(username=username)
     
-    order = Order.objects.create(user=user)
     if date:
-        order.created_at = date
-        order.save(update_fields=["created_at"])
+        if isinstance(date, str):
+            date = datetime.strptime(date, "%Y-%m-%d %H:%M")
+        order = Order.objects.create(user=user)
+        Order.objects.filter(id=order.id).update(created_at=date)
+        order.refresh_from_db()
+    else:
+        order = Order.objects.create(user=user)
         
     for ticket_data in tickets:
         Ticket.objects.create(
@@ -27,7 +32,7 @@ def create_order(
     return order
 
 def get_orders(
-    username=None
+    username: str = None,
 ) -> QuerySet[Order]:
     if username:
         return Order.objects.filter(user__username=username)
