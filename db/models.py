@@ -69,7 +69,7 @@ class Order(models.Model):
                              on_delete=models.CASCADE)
 
     def __str__(self) -> str:
-        return f"Order {self.created_at}"
+        return f"<Order {self.created_at}>"
 
     class Meta:
         ordering = ["-created_at"]
@@ -115,7 +115,7 @@ class Ticket(models.Model):
 
     def __str__(self) -> str:
         time = self.movie_session.show_time.strftime("%Y-%m-%d %H:%M:%S")
-        return (f"Ticket: {self.movie_session.movie.title} {time} "
+        return (f"<Ticket: {self.movie_session.movie.title} {time}>"
                 f"(row: {self.row}, seat: {self.seat})")
 
 
