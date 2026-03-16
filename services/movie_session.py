@@ -13,7 +13,12 @@ def create_movie_session(
     )
 
 
-def get_movies_sessions(session_date: str = None) -> QuerySet:
+def get_taken_seats(movie_session_id: int) -> list[dict[str, int]]:
+    movie_session = MovieSession.objects.get(id=movie_session_id)
+    return list(movie_session.tickets.values("row", "seat"))
+
+
+def get_movies_sessions(session_date: str = None) -> QuerySet[MovieSession]:
     queryset = MovieSession.objects.all()
     if session_date:
         queryset = queryset.filter(show_time__date=session_date)
