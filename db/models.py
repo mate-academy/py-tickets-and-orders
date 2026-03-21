@@ -70,7 +70,7 @@ class Order(models.Model):
         ordering = ["-created_at"]
 
     def __str__(self) -> str:
-        return f"""<Order: {self.created_at.strftime("%Y-%m-%d %H:%M:%S")}>"""
+        return f"""{self.created_at.strftime("%Y-%m-%d %H:%M:%S")}"""
 
 
 class Ticket(models.Model):
@@ -82,12 +82,11 @@ class Ticket(models.Model):
     seat = models.IntegerField()
 
     def __str__(self) -> str:
-        return (f"<Ticked: "
-                f"{self.movie_session.movie.title} "
+        return (f"{self.movie_session.movie.title} "
                 f"""{self.movie_session.show_time.strftime(
                     "%Y-%m-%d %H:%M:%S")} """
                 f"(row: {self.row}, "
-                f"seat: {self.seat})>")
+                f"seat: {self.seat})")
 
     def clean(self) -> None:
 
