@@ -24,5 +24,15 @@ USE_I18N = True
 USE_TZ = False
 
 INSTALLED_APPS = [
+    "django.contrib.contenttypes",
+    "django.contrib.auth",
     "db",
 ]
+
+AUTH_USER_MODEL = "db.User"
+
+DEBUG = True
+
+ROOT_URLCONF = "urls"
+
+ALLOWED_HOSTS: list[str] = []
