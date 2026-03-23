@@ -1,39 +1,36 @@
-from datetime import datetime
+from typing import List
 from django.db import transaction
-
-from db.models import Order, Ticket, User
 from django.db.models import QuerySet
+from db.models import Order, Ticket, MovieSession
+from .user import get_user
 
+@transaction.atomic
+def create_order(
+    tickets: List[dict],
+    username: str,
+    date: str | None = None
+) -> Order:
+    """Create an order and tickets for a user."""
+    user = get_user(username=username)  # отримуємо об’єкт User
 
-def create_order(tickets: list, username: str,
-                 date: str | None = None) -> None:
-    with transaction.atomic():
-        user = User.objects.get(username=username)
-
+    if date:
+        order = Order.objects.create(user=user, created_at=date)
+    else:
         order = Order.objects.create(user=user)
 
-        if date:
-            created_time = datetime.strptime(date, "%Y-%m-%d %H:%M")
-            Order.objects.filter(id=order.id).update(created_at=created_time)
-
-            order.refresh_from_db()
-
-        for ticket_data in tickets:
-            Ticket.objects.create(
-                movie_session_id=ticket_data["movie_session"],
-                row=ticket_data["row"],
-                seat=ticket_data["seat"],
-                order=order,
-            )
+    for ticket_data in tickets:
+        Ticket.objects.create(
+            order=order,
+            movie_session=MovieSession.objects.get(id=ticket_data["movie_session"]),
+            row=ticket_data["row"],
+            seat=ticket_data["seat"]
+        )
+    return order
 
 
-def get_orders(username: str = None) -> QuerySet:
-    queryset = Order.objects.all()
+def get_orders(username: str | None = None) -> QuerySet[Order]:
+    """Get orders optionally filtered by username."""
     if username:
-        queryset = queryset.filter(user__username=username)
-
-    return queryset
-
-
-def get_order_by_id(order_id: int) -> Order:
-    return Order.objects.get(id=order_id)
+        user = get_user(username=username)
+        return Order.objects.filter(user=user)
+    return Order.objects.all()
