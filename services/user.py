@@ -3,6 +3,7 @@ from django.db import transaction
 
 User = get_user_model()
 
+
 def get_user(user_id: int = None, username: str = None) -> User:
     """Return user by ID or username."""
     if user_id:

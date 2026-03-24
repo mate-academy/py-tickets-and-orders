@@ -3,7 +3,6 @@ from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import UniqueConstraint
-from django.utils import timezone
 
 
 class User(AbstractUser):
@@ -66,7 +65,7 @@ class MovieSession(models.Model):
 
 
 class Order(models.Model):
-    created_at = models.DateTimeField(default=timezone.now)
+    created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -77,7 +76,7 @@ class Order(models.Model):
         ordering = ["-created_at"]
 
     def __str__(self) -> str:
-        return str(self.created_at)  # Тепер без дужок < >
+        return f"{self.created_at.strftime("%Y-%m-%d %H:%M:%S")}"
 
 
 class Ticket(models.Model):
@@ -102,18 +101,20 @@ class Ticket(models.Model):
             ),
         ]
 
-    def clean(self):
+    def clean(self) -> None:
         errors = {}
         hall = self.movie_session.cinema_hall
 
         if not (1 <= self.row <= hall.rows):
             errors["row"] = [
-                f"row number must be in available range: (1, rows): (1, {hall.rows})"
+                f"row number must be in available range: "
+                f"(1, rows): (1, {hall.rows})"
             ]
 
         if not (1 <= self.seat <= hall.seats_in_row):
             errors["seat"] = [
-                f"seat number must be in available range: (1, seats_in_row): (1, {hall.seats_in_row})"
+                f"seat number must be in available range: "
+                f"(1, seats_in_row): (1, {hall.seats_in_row})"
             ]
 
         if errors:
@@ -124,4 +125,7 @@ class Ticket(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self) -> str:
-        return f"{self.movie_session.movie.title} {self.movie_session.show_time} (row: {self.row}, seat: {self.seat})"
+        return (f"{self.movie_session.movie.title} "
+                f"{self.movie_session.show_time.strftime(
+                    "%Y-%m-%d %H:%M:%S")} "
+                f"(row: {self.row}, seat: {self.seat})")
