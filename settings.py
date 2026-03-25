@@ -1,12 +1,8 @@
 import os
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# SECURITY WARNING: Modify this secret key if using in production!
-SECRET_KEY = "6few3nci_q_o@l1dlbk81%wcxe!*6r29yu629&d97!hiqat9fa"
-
-DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
+SECRET_KEY = "test-secret-key"
 
 DATABASES = {
     "default": {
@@ -15,14 +11,17 @@ DATABASES = {
     }
 }
 
-LANGUAGE_CODE = "en-us"
+INSTALLED_APPS = [
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "db",
+]
 
-TIME_ZONE = "Europe/Kiev"
-
-USE_I18N = True
+AUTH_USER_MODEL = "db.User"
 
 USE_TZ = False
 
-INSTALLED_APPS = [
-    "db",
-]
+# Django 5 does NOT auto-create tables for apps without migrations
+MIGRATION_MODULES = {
+    "db": None,
+}
