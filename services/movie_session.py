@@ -1,15 +1,19 @@
+from typing import List, Dict
+
 from django.db.models import QuerySet
 
-from db.models import MovieSession
+from db.models import MovieSession, CinemaHall
 
 
 def create_movie_session(
-    movie_show_time: str, movie_id: int, cinema_hall_id: int
+        movie_show_time: str,
+        movie_id: int,
+        cinema_hall_id: int
 ) -> MovieSession:
     return MovieSession.objects.create(
         show_time=movie_show_time,
         movie_id=movie_id,
-        cinema_hall_id=cinema_hall_id,
+        cinema_hall=CinemaHall.objects.get(id=cinema_hall_id)
     )
 
 
@@ -42,3 +46,12 @@ def update_movie_session(
 
 def delete_movie_session_by_id(session_id: int) -> None:
     MovieSession.objects.get(id=session_id).delete()
+
+
+def get_taken_seats(movie_session_id: int) -> List[Dict[str, int]]:
+    tickets = MovieSession.objects.get(id=movie_session_id).tickets.all()
+
+    return [
+        {"row": ticket.row, "seat": ticket.seat}
+        for ticket in tickets
+    ]
