@@ -1,4 +1,6 @@
 from django.db import models
+from django.core.exceptions import ValidationError
+from django.contrib.auth.models import AbstractUser
 
 
 class Genre(models.Model):
@@ -17,7 +19,7 @@ class Actor(models.Model):
 
 
 class Movie(models.Model):
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=255, db_index=True)
     description = models.TextField()
     actors = models.ManyToManyField(to=Actor, related_name="movies")
     genres = models.ManyToManyField(to=Genre, related_name="movies")
@@ -50,3 +52,41 @@ class MovieSession(models.Model):
 
     def __str__(self) -> str:
         return f"{self.movie.title} {str(self.show_time)}"
+
+
+class Order(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(to="User", on_delete=models.CASCADE, related_name="users")
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"<Order: {self.created_at}>"
+
+class Ticket(models.Model):
+    movie_session = models.ForeignKey(to=MovieSession, on_delete=models.CASCADE, related_name="movie_sessions")
+    order = models.ForeignKey(to=Order, on_delete=models.CASCADE, related_name="orders")
+    row = models.IntegerField()
+    seat = models.IntegerField()
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["row", "seat", "movie_session"],
+                name="unique_ticket_per_movie_session"   
+            )
+        ]
+    def clean(self, *args, **kwargs):
+        if  self.row > self.movie_session.cinema_hall.rows or self.seat > self.movie_session.cinema_hall.seats_in_row:
+            raise ValidationError("Row or seat exceeds the cinema hall capacity.")
+        
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"<Ticket: {self.movie_session} (row: {self.row}, seat: {self.seat})>"
+
+class User(AbstractUser):
+    pass
