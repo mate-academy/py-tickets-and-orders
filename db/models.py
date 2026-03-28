@@ -1,3 +1,7 @@
+from django.core.exceptions import ValidationError
+
+from django.contrib.auth.models import AbstractUser
+
 from django.db import models
 
 
@@ -25,6 +29,9 @@ class Movie(models.Model):
     def __str__(self) -> str:
         return self.title
 
+    class Meta:
+        indexes = [models.Index(fields=["title"])]
+
 
 class CinemaHall(models.Model):
     name = models.CharField(max_length=255)
@@ -50,3 +57,68 @@ class MovieSession(models.Model):
 
     def __str__(self) -> str:
         return f"{self.movie.title} {str(self.show_time)}"
+
+
+class User(AbstractUser):
+    name = models.CharField(max_length=63)
+
+
+class Order(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="orders"
+    )
+
+    def __str__(self) -> str:
+        return f"{self.created_at}"
+
+    class Meta:
+        ordering = ["-created_at"]
+
+
+class Ticket(models.Model):
+    movie_session = models.ForeignKey(
+        MovieSession, on_delete=models.CASCADE, related_name="tickets"
+    )
+    order = models.ForeignKey(
+        Order, on_delete=models.CASCADE, related_name="tickets"
+    )
+    row = models.IntegerField()
+    seat = models.IntegerField()
+
+    def __str__(self) -> str:
+        return (
+            f"{self.movie_session.movie.title} "
+            f"{self.movie_session.show_time} "
+            f"(row: {self.row}, seat: {self.seat})"
+        )
+
+    def clean(self) -> None:
+        if self.row not in range(1, self.movie_session.cinema_hall.rows + 1):
+            raise ValidationError(
+                {"row": [
+                    "row number must be in available range: (1, rows): "
+                    f"(1, {self.movie_session.cinema_hall.rows})"]}
+            )
+
+        if self.seat not in range(
+                1, self.movie_session.cinema_hall.seats_in_row + 1
+        ):
+            raise ValidationError(
+                {"seat": [
+                    "seat number must be in available range: "
+                    "(1, seats_in_row): "
+                    f"(1, {self.movie_session.cinema_hall.seats_in_row})"]}
+            )
+
+    def save(self, *args, **kwargs) -> None:
+        self.full_clean()
+        return super().save(*args, **kwargs)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["row", "seat", "movie_session"],
+                name="unique_ticket"
+            )
+        ]
