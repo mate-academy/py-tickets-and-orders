@@ -1,4 +1,11 @@
+from django.core.exceptions import ValidationError
 from django.db import models
+from django.contrib.auth.models import AbstractUser
+from django.conf import settings
+
+
+class User(AbstractUser):
+    pass
 
 
 class Genre(models.Model):
@@ -17,13 +24,35 @@ class Actor(models.Model):
 
 
 class Movie(models.Model):
-    title = models.CharField(max_length=255)
+    title = models.CharField(
+        max_length=255,
+        db_index=True
+    )
     description = models.TextField()
-    actors = models.ManyToManyField(to=Actor, related_name="movies")
-    genres = models.ManyToManyField(to=Genre, related_name="movies")
+    actors = models.ManyToManyField(
+        to=Actor,
+        related_name="movies"
+    )
+    genres = models.ManyToManyField(
+        to=Genre,
+        related_name="movies"
+    )
 
     def __str__(self) -> str:
         return self.title
+
+
+class Order(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE,
+                             related_name="orders")
+
+    def __str__(self) -> str:
+        return f"{self.created_at}"
+
+    class Meta:
+        ordering = ["-created_at"]
 
 
 class CinemaHall(models.Model):
@@ -42,11 +71,63 @@ class CinemaHall(models.Model):
 class MovieSession(models.Model):
     show_time = models.DateTimeField()
     cinema_hall = models.ForeignKey(
-        to=CinemaHall, on_delete=models.CASCADE, related_name="movie_sessions"
+        to=CinemaHall,
+        on_delete=models.CASCADE,
+        related_name="movie_sessions"
     )
     movie = models.ForeignKey(
-        to=Movie, on_delete=models.CASCADE, related_name="movie_sessions"
+        to=Movie,
+        on_delete=models.CASCADE,
+        related_name="movie_sessions"
     )
 
     def __str__(self) -> str:
         return f"{self.movie.title} {str(self.show_time)}"
+
+
+class Ticket(models.Model):
+    movie_session = models.ForeignKey(
+        to="MovieSession",
+        related_name="tickets",
+        on_delete=models.CASCADE
+    )
+    order = models.ForeignKey(
+        to=Order,
+        related_name="tickets",
+        on_delete=models.CASCADE
+    )
+    row = models.IntegerField()
+    seat = models.IntegerField()
+
+    def __str__(self) -> str:
+        return (f"{self.movie_session.movie.title} "
+                f"{self.movie_session.show_time} (row: {self.row}, "
+                f"seat: {self.seat})")
+
+    def clean(self) -> None:
+        max_rows = self.movie_session.cinema_hall.rows
+        max_seats = self.movie_session.cinema_hall.seats_in_row
+        errors = {}
+
+        if self.row > max_rows or self.row < 1:
+            errors["row"] = [f"row number must be in "
+                             f"available range: (1, rows): (1, {max_rows})"]
+
+        if self.seat > max_seats or self.seat < 1:
+            errors["seat"] = [f"seat number must be in "
+                              f"available range: (1, seats_in_row): "
+                              f"(1, {max_seats})"]
+        if errors:
+            raise ValidationError(errors)
+
+    def save(self, *args, **kwargs) -> None:
+        self.full_clean()
+        super().save(*args, **kwargs)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["movie_session", "row", "seat"],
+                name="unique_session_row_seat"
+            )
+        ]
