@@ -15,14 +15,23 @@ DATABASES = {
     }
 }
 
+AUTH_USER_MODEL = "db.User"
+
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "Europe/Kiev"
+TIME_ZONE = "UTC"
 
 USE_I18N = True
 
-USE_TZ = False
+USE_TZ = True
 
-INSTALLED_APPS = [
+INSTALLED_APPS = INSTALLED_APPS = [
     "db",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.sites",  # Not always necessary but useful
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    # Your custom apps
 ]
