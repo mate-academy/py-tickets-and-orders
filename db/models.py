@@ -1,3 +1,5 @@
+from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
 from django.db import models
 
 
@@ -50,3 +52,65 @@ class MovieSession(models.Model):
 
     def __str__(self) -> str:
         return f"{self.movie.title} {str(self.show_time)}"
+
+
+class User(AbstractUser):
+    first_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255)
+    email = models.CharField(max_length=255)
+    pass
+
+
+class Order(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(
+        to=User,
+        on_delete=models.CASCADE,
+        related_name="orders")
+
+    def __str__(self) -> str:
+        return f"{str(self.created_at)}"
+
+    class Meta:
+        ordering = ["-created_at"]
+
+
+class Ticket(models.Model):
+    movie_session = models.ForeignKey(
+        to=MovieSession,
+        on_delete=models.CASCADE,
+        related_name="tickets")
+    order = models.ForeignKey(
+        to=Order,
+        on_delete=models.CASCADE,
+        related_name="tickets")
+    row = models.IntegerField()
+    seat = models.IntegerField()
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["movie_session", "row", "seat"],
+                name="unique_ticket")]
+
+    def __str__(self) -> str:
+        return (f"{str(self.movie_session)} "
+                f"(row: {self.row}, seat: {self.seat})")
+
+    def clean(self) -> None:
+        cinema_hall = self.movie_session.cinema_hall
+        if self.row > cinema_hall.rows:
+            raise ValidationError(
+                {"row": ["row number must be in available range: (1, "
+                         f"rows): (1, {cinema_hall.rows})"]})
+        if self.seat > cinema_hall.seats_in_row:
+            raise ValidationError(
+                {"seat": ["seat number must be in available range: (1, "
+                          f"seats_in_row): (1, {cinema_hall.seats_in_row})"]})
+
+    def save(self, *args, **kwargs) -> None:
+        self.full_clean()
+        super().save(*args, **kwargs)
+
+    def get_taken_seat(self) -> {}:
+        return {"row": self.row, "seat": self.seat}
