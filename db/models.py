@@ -1,4 +1,8 @@
+from django.conf import settings
+from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import UniqueConstraint, QuerySet
 
 
 class Genre(models.Model):
@@ -25,6 +29,9 @@ class Movie(models.Model):
     def __str__(self) -> str:
         return self.title
 
+    class Meta:
+        indexes = [models.Index(fields=["title"])]
+
 
 class CinemaHall(models.Model):
     name = models.CharField(max_length=255)
@@ -50,3 +57,61 @@ class MovieSession(models.Model):
 
     def __str__(self) -> str:
         return f"{self.movie.title} {str(self.show_time)}"
+
+
+class Order(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self) -> str:
+        return str(self.created_at)
+
+
+class User(AbstractUser):
+    pass
+
+
+class Ticket(models.Model):
+    movie_session = models.ForeignKey(MovieSession, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    row = models.IntegerField()
+    seat = models.IntegerField()
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(fields=[
+                "row", "seat", "movie_session"
+            ], name="full")
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.movie_session.movie}" \
+               f" {self.movie_session.show_time}" \
+               f" (row: {self.row}, seat: {self.seat})"
+
+    def clean(self) -> None:
+
+        if not (1 <= self.seat
+                <= self.movie_session.cinema_hall.seats_in_row):
+            raise ValidationError({
+                "seat": [
+                    "seat number must be in available "
+                    "range: (1, seats_in_row): (1, 12)"]})
+        if not (1 <= self.row <= self.movie_session.cinema_hall.rows):
+            raise ValidationError({
+                "row": [
+                    "row number must be in available "
+                    "range: (1, rows): (1, 10)"
+                ]})
+
+    def save(self, force_insert: str = False,
+             force_update: str = False, using: str = None,
+             update_fields: str = None) -> QuerySet:
+        self.full_clean()
+        return super(Ticket, self).save(
+            force_insert, force_update, using, update_fields
+        )
