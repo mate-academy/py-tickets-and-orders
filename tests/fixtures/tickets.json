@@ -1,0 +1,12 @@
+[
+  {
+    "model": "db.ticket",
+    "pk": 1,
+    "fields": {
+      "movie_session": 1,
+      "order": 1,
+      "row": 1,
+      "seat": 1
+    }
+  }
+]

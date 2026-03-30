@@ -1,0 +1,10 @@
+[
+  {
+    "model": "db.user",
+    "pk": 1,
+    "fields": {
+      "username": "testuser",
+      "password": "pbkdf2_sha256$260000$test$test"
+    }
+  }
+]

@@ -1,53 +1,51 @@
 from typing import Optional
-from django.contrib.auth import get_user_model
-
-User = get_user_model()
+from db.models import User
 
 
 def create_user(
     username: str,
     password: str,
-    email: Optional[str] = None,
-    first_name: Optional[str] = None,
-    last_name: Optional[str] = None
+    first_name: str = "",
+    last_name: str = "",
+    email: str = "",
 ) -> User:
-    user = User.objects.create_user(username=username, password=password)
+    user = User.objects.create_user(
+        username=username,
+        password=password,
+        first_name=first_name,
+        last_name=last_name,
+        email=email,
+    )
+    return user
 
-    if email:
-        user.email = email
-    if first_name:
-        user.first_name = first_name
-    if last_name:
-        user.last_name = last_name
+
+def get_user(user_id: int) -> Optional[User]:
+    return User.objects.filter(id=user_id).first()
+
+
+def update_user(user_id: int, **kwargs) -> Optional[User]:
+    user = User.objects.filter(id=user_id).first()
+    if not user:
+        return None
+
+    allowed_fields = {
+        "username",
+        "password",
+        "first_name",
+        "last_name",
+        "email"
+    }
+
+    for field, value in kwargs.items():
+        if field in allowed_fields:
+            if field == "password":
+                user.set_password(value)
+            else:
+                setattr(user, field, value)
 
     user.save()
     return user
 
 
-def get_user(user_id: int) -> User:
-    return User.objects.get(id=user_id)
-
-
-def update_user(
-    user_id: int,
-    username: Optional[str] = None,
-    password: Optional[str] = None,
-    email: Optional[str] = None,
-    first_name: Optional[str] = None,
-    last_name: Optional[str] = None
-) -> User:
-    user = get_user(user_id)
-
-    if username:
-        user.username = username
-    if password:
-        user.set_password(password)
-    if email:
-        user.email = email
-    if first_name:
-        user.first_name = first_name
-    if last_name:
-        user.last_name = last_name
-
-    user.save()
-    return user
+def delete_user(user_id: int) -> None:
+    User.objects.filter(id=user_id).delete()

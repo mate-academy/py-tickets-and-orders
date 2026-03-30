@@ -1,17 +1,11 @@
-from typing import List, Dict
-
+from typing import Optional
 from db.models import MovieSession, Ticket
 
 
-def get_movie_session_by_id(session_id: int) -> MovieSession:
-    return MovieSession.objects.get(id=session_id)
+def get_movie_session(movie_session_id: int) -> Optional[MovieSession]:
+    return MovieSession.objects.filter(id=movie_session_id).first()
 
 
-def get_taken_seats(movie_session_id: int) -> List[Dict[str, int]]:
-    session = get_movie_session_by_id(movie_session_id)
-    tickets = Ticket.objects.filter(movie_session=session)
-
-    return [
-        {"row": t.row, "seat": t.seat}
-        for t in tickets
-    ]
+def get_taken_seats(movie_session_id: int) -> list[dict]:
+    tickets = Ticket.objects.filter(movie_session_id=movie_session_id)
+    return list(tickets.values("row", "seat"))

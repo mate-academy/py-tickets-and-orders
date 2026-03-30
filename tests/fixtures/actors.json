@@ -1,0 +1,18 @@
+[
+  {
+    "model": "db.actor",
+    "pk": 1,
+    "fields": {
+      "first_name": "Keanu",
+      "last_name": "Reeves"
+    }
+  },
+  {
+    "model": "db.actor",
+    "pk": 2,
+    "fields": {
+      "first_name": "Carrie-Anne",
+      "last_name": "Moss"
+    }
+  }
+]

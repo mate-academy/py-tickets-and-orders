@@ -1,0 +1,11 @@
+[
+  {
+    "model": "db.cinemahall",
+    "pk": 1,
+    "fields": {
+      "name": "Hall 1",
+      "rows": 10,
+      "seats_in_row": 20
+    }
+  }
+]

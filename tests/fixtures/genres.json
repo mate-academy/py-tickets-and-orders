@@ -1,0 +1,16 @@
+[
+  {
+    "model": "db.genre",
+    "pk": 1,
+    "fields": {
+      "name": "Sci-Fi"
+    }
+  },
+  {
+    "model": "db.genre",
+    "pk": 2,
+    "fields": {
+      "name": "Action"
+    }
+  }
+]
