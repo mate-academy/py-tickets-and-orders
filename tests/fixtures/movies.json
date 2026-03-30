@@ -1,0 +1,22 @@
+[
+  {
+    "model": "db.movie",
+    "pk": 1,
+    "fields": {
+      "title": "Matrix",
+      "description": "First movie",
+      "genres": [1, 2],
+      "actors": [1, 2]
+    }
+  },
+  {
+    "model": "db.movie",
+    "pk": 2,
+    "fields": {
+      "title": "Matrix 2",
+      "description": "Second movie",
+      "genres": [1],
+      "actors": [1]
+    }
+  }
+]
