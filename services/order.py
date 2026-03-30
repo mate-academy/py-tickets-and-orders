@@ -1,40 +1,41 @@
-import datetime
-
+from typing import List, Dict, Optional
 from django.db import transaction
+from django.contrib.auth import get_user_model
+from django.db.models import QuerySet
 
-from db.models import Order, Ticket, MovieSession, User
+from db.models import Order, Ticket, MovieSession
+
+User = get_user_model()
 
 
-@transaction.atomic
 def create_order(
-    tickets: list[dict],
+    tickets: List[Dict[str, int]],
     username: str,
-    date: str | datetime.datetime | None = None,
+    date: Optional[str] = None
 ) -> Order:
-    user = User.objects.get(username=username)
+    with transaction.atomic():
+        user = User.objects.get(username=username)
 
-    if date is not None:
-        if isinstance(date, str):
-            created_at = datetime.datetime.fromisoformat(date)
-        else:
-            created_at = date
-        order = Order.objects.create(user=user, created_at=created_at)
-    else:
         order = Order.objects.create(user=user)
 
-    for ticket_data in tickets:
-        movie_session = MovieSession.objects.get(id=ticket_data["movie_session"])
-        Ticket.objects.create(
-            movie_session=movie_session,
-            order=order,
-            row=ticket_data["row"],
-            seat=ticket_data["seat"],
-        )
+        if date:
+            order.created_at = date
+            order.save()
 
-    return order
+        for ticket_data in tickets:
+            Ticket.objects.create(
+                movie_session=MovieSession.objects.get(
+                    id=ticket_data["movie_session"]
+                ),
+                order=order,
+                row=ticket_data["row"],
+                seat=ticket_data["seat"]
+            )
+
+        return order
 
 
-def get_orders(username: str | None = None):
-    if username is not None:
+def get_orders(username: Optional[str] = None) -> QuerySet[Order]:
+    if username:
         return Order.objects.filter(user__username=username)
     return Order.objects.all()
