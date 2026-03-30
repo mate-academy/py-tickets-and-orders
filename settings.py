@@ -17,6 +17,8 @@ DATABASES = {
 
 LANGUAGE_CODE = "en-us"
 
+AUTH_USER_MODEL = "db.User"
+
 TIME_ZONE = "Europe/Kiev"
 
 USE_I18N = True
@@ -24,5 +26,7 @@ USE_I18N = True
 USE_TZ = False
 
 INSTALLED_APPS = [
-    "db",
+    "db", "django.contrib.auth", "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages", "django.contrib.staticfiles"
 ]

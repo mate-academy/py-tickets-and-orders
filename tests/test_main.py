@@ -161,14 +161,14 @@ def test_ticket_unique_constraint(tickets_data):
 
 
 def test_movie_service_get_movies_with_title(movies_data):
-    assert list(get_movies(title="harry").values_list("title")) == [
+    assert list(get_movies(title_from="harry").values_list("title")) == [
         ("Harry Potter 1",),
         ("Harry Potter 2",),
         ("Harry Potter 3",),
         ("Harry Kasparov: Documentary",),
     ]
 
-    assert list(get_movies(title="harry potter").values_list("title")) == [
+    assert list(get_movies(title_from="harry potter").values_list("title")) == [
         ("Harry Potter 1",),
         ("Harry Potter 2",),
         ("Harry Potter 3",),
@@ -177,10 +177,10 @@ def test_movie_service_get_movies_with_title(movies_data):
 
 def test_movie_service_get_movies_with_full_data(movies_data):
     assert list(get_movies(
-        genres_ids=[1, 2], actors_ids=[2, 3], title="matrix"
+        genres_ids=[1, 2], actors_ids=[2, 3], title_from="matrix"
     ).values_list("title")) == [("Matrix",), ("Matrix 2",)]
     assert list(get_movies(
-        genres_ids=[1, 2], actors_ids=[2, 3], title="batman"
+        genres_ids=[1, 2], actors_ids=[2, 3], title_from="batman"
     ).values_list("title")) == [("Batman",)]
 
 
