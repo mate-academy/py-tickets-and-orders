@@ -362,6 +362,7 @@ def test_order_service_create_order_with_date(create_order_data, tickets):
 
 def test_create_order_transaction_atomic(tickets):
     get_user_model().objects.create_user(username="user_1")
+    # assert MovieSession.objects.filter(id=1).exists()
     with pytest.raises(Exception):
         create_order(tickets=tickets, username="user_1")
 
