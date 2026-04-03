@@ -1,5 +1,7 @@
-from db.models import User
+from django.contrib.auth import get_user_model
 
+
+User = get_user_model()
 
 def create_user(
         username: str,
@@ -15,11 +17,15 @@ def create_user(
 
     if email:
         user.email = email
+        user.save()
+
     if first_name:
         user.first_name = first_name
+        user.save()
+
     if last_name:
         user.last_name = last_name
-    user.save()
+        user.save()
 
     return user
 
