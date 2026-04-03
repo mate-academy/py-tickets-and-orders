@@ -11,20 +11,16 @@ def create_user(
         first_name: str = None,
         last_name: str = None,
 ) -> User:
-    user = User.objects.create_user(
-        username=username,
-        password=password,
-    )
+    args = {}
 
     if email:
-        user.email = email
+        args["email"] = email
     if first_name:
-        user.first_name = first_name
+        args["first_name"] = first_name
     if last_name:
-        user.last_name = last_name
+        args["last_name"] = last_name
 
-    user.save()
-    return user
+    return User.objects.create_user(username=username, password=password, **args)
 
 
 def get_user(user_id: int) -> User:
