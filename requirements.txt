@@ -6,3 +6,5 @@ flake8-variables-names
 pep8-naming
 pytest
 pytest-django
+
+black
