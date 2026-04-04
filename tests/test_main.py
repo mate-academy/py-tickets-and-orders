@@ -396,3 +396,6 @@ def test_create_movie_transaction_atomic(genres_data, actors_data):
                      actors_ids=[1, 2, 3])
 
     assert Movie.objects.all().count() == 0
+
+
+User = get_user_model()
