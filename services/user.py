@@ -9,20 +9,13 @@ def create_user(
     first_name: str = None,
     last_name: str = None,
 ) -> AbstractUser:
-    user = get_user_model().objects.create_user(
+    return get_user_model().objects.create_user(
         username=username,
         password=password,
+        email=email or "",
+        first_name=first_name or "",
+        last_name=last_name or "",
     )
-
-    if email:
-        user.email = email
-    if first_name:
-        user.first_name = first_name
-    if last_name:
-        user.last_name = last_name
-
-    user.save()
-    return user
 
 
 def get_user(user_id: int) -> AbstractUser:
