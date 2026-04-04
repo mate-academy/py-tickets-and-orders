@@ -20,7 +20,10 @@ def create_user(
     if last_name:
         args["last_name"] = last_name
 
-    return User.objects.create_user(username=username, password=password, **args)
+    return User.objects.create_user(
+        username=username,
+        password=password, **args
+    )
 
 
 def get_user(user_id: int) -> User:

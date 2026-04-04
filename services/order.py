@@ -16,7 +16,6 @@ def create_order(
         username: str,
         date: datetime.date = None,
 ) -> Order:
-    tickets_instances = []
     user = User.objects.get(username=username)
 
     order = Order.objects.create(user=user)
@@ -26,16 +25,12 @@ def create_order(
         order.save()
 
     for ticket in tickets:
-        tickets_instances.append(
-            Ticket(
-                movie_session_id=ticket["movie_session"],
-                order=order,
-                row=ticket["row"],
-                seat=ticket["seat"]
-            )
+        Ticket.objects.create(
+            movie_session_id=ticket["movie_session"],
+            order=order,
+            row=ticket["row"],
+            seat=ticket["seat"],
         )
-
-    Ticket.objects.bulk_create(tickets_instances)
     return order
 
 
