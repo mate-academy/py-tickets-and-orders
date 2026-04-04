@@ -1,13 +1,20 @@
-from django.db.models import QuerySet
+from __future__ import annotations
 
+import init_django_orm  # noqa: F401
+from django.db.models import QuerySet
+from django.db.transaction import atomic
 from db.models import Movie
 
 
 def get_movies(
-    genres_ids: list[int] = None,
-    actors_ids: list[int] = None,
+        title: str | None = None,
+        genres_ids: list[int] | None = None,
+        actors_ids: list[int] | None = None,
 ) -> QuerySet:
     queryset = Movie.objects.all()
+
+    if title:
+        queryset = queryset.filter(title__icontains=title)
 
     if genres_ids:
         queryset = queryset.filter(genres__id__in=genres_ids)
@@ -22,11 +29,12 @@ def get_movie_by_id(movie_id: int) -> Movie:
     return Movie.objects.get(id=movie_id)
 
 
+@atomic
 def create_movie(
-    movie_title: str,
-    movie_description: str,
-    genres_ids: list = None,
-    actors_ids: list = None,
+        movie_title: str,
+        movie_description: str,
+        genres_ids: list | None = None,
+        actors_ids: list | None = None,
 ) -> Movie:
     movie = Movie.objects.create(
         title=movie_title,
