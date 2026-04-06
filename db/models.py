@@ -1,4 +1,10 @@
 from django.db import models
+from django.core.exceptions import ValidationError
+from django.contrib.auth.models import AbstractUser
+
+
+class User(AbstractUser):
+    pass
 
 
 class Genre(models.Model):
@@ -16,16 +22,6 @@ class Actor(models.Model):
         return f"{self.first_name} {self.last_name}"
 
 
-class Movie(models.Model):
-    title = models.CharField(max_length=255)
-    description = models.TextField()
-    actors = models.ManyToManyField(to=Actor, related_name="movies")
-    genres = models.ManyToManyField(to=Genre, related_name="movies")
-
-    def __str__(self) -> str:
-        return self.title
-
-
 class CinemaHall(models.Model):
     name = models.CharField(max_length=255)
     rows = models.IntegerField()
@@ -39,6 +35,19 @@ class CinemaHall(models.Model):
         return self.name
 
 
+class Movie(models.Model):
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+    actors = models.ManyToManyField(to=Actor, related_name="movies")
+    genres = models.ManyToManyField(to=Genre, related_name="movies")
+
+    class Meta:
+        indexes = [models.Index(fields=["title"])]
+
+    def __str__(self) -> str:
+        return self.title
+
+
 class MovieSession(models.Model):
     show_time = models.DateTimeField()
     cinema_hall = models.ForeignKey(
@@ -50,3 +59,65 @@ class MovieSession(models.Model):
 
     def __str__(self) -> str:
         return f"{self.movie.title} {str(self.show_time)}"
+
+
+class Order(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="orders"
+    )
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self) -> str:
+        return str(self.created_at)
+
+
+class Ticket(models.Model):
+    movie_session = models.ForeignKey(MovieSession,
+                                      on_delete=models.CASCADE,
+                                      related_name="tickets")
+    order = models.ForeignKey(Order,
+                              on_delete=models.CASCADE,
+                              related_name="tickets")
+    row = models.IntegerField()
+    seat = models.IntegerField()
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["movie_session", "row", "seat"],
+                name="unique_movie_session_row_seat"
+            )
+        ]
+
+    def __str__(self) -> str:
+        return (f"{self.movie_session}"
+                f" (row: {self.row}, seat: {self.seat})")
+
+    def clean(self) -> None:
+        if not (self.row >= 1
+                and self.row <= self.movie_session.cinema_hall.rows):
+            raise (
+                ValidationError({
+                    "row":
+                        f"row number must be in available range:"
+                        f" (1, rows):"
+                        f" (1,"
+                        f" {self.movie_session.cinema_hall.rows}"
+                        f")"}))
+        if (self.seat < 1
+                or self.seat > self.movie_session.cinema_hall.seats_in_row):
+            raise (
+                ValidationError({
+                    "seat":
+                        f"seat number must be in available range:"
+                        f" (1, seats_in_row):"
+                        f" (1, "
+                        f"{self.movie_session.cinema_hall.seats_in_row}"
+                        f")"}))
+
+    def save(self, *args, **kwargs) -> None:
+        self.full_clean()
+        super().save(*args, **kwargs)
