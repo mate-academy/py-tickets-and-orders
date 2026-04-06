@@ -7,7 +7,7 @@ from db.models import Order, Ticket
 
 @transaction.atomic
 def create_order(
-        tickets: list[Ticket],
+        tickets: list[dict],
         username: str,
         date: str = None,
 ) -> Order:
@@ -27,6 +27,7 @@ def create_order(
         new_ticket.full_clean()
         new_tickets.append(new_ticket)
     Ticket.objects.bulk_create(new_tickets)
+    return order
 
 
 def get_orders(username: str = None) -> QuerySet[Order]:
