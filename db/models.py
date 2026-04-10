@@ -1,6 +1,7 @@
 from django.db import models
 
 
+#No solution Test commit
 class Genre(models.Model):
     name = models.CharField(max_length=255, unique=True)
 
