@@ -7,16 +7,21 @@ from db.models import Order, Ticket
 
 @transaction.atomic
 def create_order(
-    tickets: list[dict],
-    username: str,
-    date: str = None,
+        tickets: list[dict],
+        username: str,
+        date: str = None,
 ) -> Order:
     user = get_user_model().objects.get(username=username)
 
-    order = Order.objects.create(user=user)
+    order = Order(user=user)
 
     if date is not None:
-        Order.objects.filter(id=order.id).update(created_at=date)
+        order.created_at = date
+        Order._meta.get_field("created_at").auto_now_add = False
+        order.save()
+        Order._meta.get_field("created_at").auto_now_add = True
+    else:
+        order.save()
 
     for ticket in tickets:
         Ticket.objects.create(
