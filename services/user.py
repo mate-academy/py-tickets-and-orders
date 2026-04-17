@@ -1,6 +1,9 @@
-from django.contrib.auth import get_user_model
 from typing import Any
+
+from django.contrib.auth import get_user_model
+
 from db.models import User
+
 
 def create_user(username: Any,
                 password: Any,
