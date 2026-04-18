@@ -2,14 +2,12 @@ from typing import Any
 
 from django.contrib.auth import get_user_model
 
-from db.models import User
-
 
 def create_user(username: Any,
                 password: Any,
                 email: str = None,
                 first_name: str = None,
-                last_name: str = None) -> User:
+                last_name: str = None) -> Any:
     user = get_user_model().objects.create_user(
         username=username, password=password
     )
@@ -28,8 +26,8 @@ def create_user(username: Any,
     return user
 
 
-def get_user(user_id: int) -> User:
-    return User.objects.get(pk=user_id)
+def get_user(user_id: int) -> Any:
+    return get_user_model().objects.get(pk=user_id)
 
 
 def update_user(user_id: int,
