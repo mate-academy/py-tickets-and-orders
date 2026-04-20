@@ -1,7 +1,6 @@
 from django.db.models import QuerySet
 
 from db.models import MovieSession
-from services.movie_session import get_movie_session_by_id
 
 
 def create_movie_session(
