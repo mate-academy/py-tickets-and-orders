@@ -1,4 +1,4 @@
-from ast import List
+from typing import List
 
 from django.db import transaction
 from django.contrib.auth import get_user_model

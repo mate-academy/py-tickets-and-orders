@@ -1,4 +1,4 @@
-from ast import List, Dict
+from typing import List, Dict
 
 from django.db.models import QuerySet
 
