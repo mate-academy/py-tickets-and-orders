@@ -76,9 +76,9 @@ class Ticket(models.Model):
 
 
     def clean(self):
-        if not self.movie_session.cinema_hall.rows >= self.row <= self.movie_session.cinema_hall.rows:
+        if not 1 <= self.row <= self.movie_session.cinema_hall.rows:
             raise ValidationError({'row': f"row number must be in available range: (1, rows): (1, {self.movie_session.cinema_hall.rows})"})
-        if not self.movie_session.cinema_hall.seats_in_row >= self.seat <= self.movie_session.cinema_hall.seats_in_row:
+        if not 1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row:
             raise ValidationError({'seat': f"seat number must be in available range: (1, seats_in_row): (1, {self.movie_session.cinema_hall.seats_in_row})"})
 
     def save(self, *args, **kwargs):
