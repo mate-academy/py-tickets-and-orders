@@ -56,7 +56,7 @@ class MovieSession(models.Model):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey("User",
+    user = models.ForeignKey(to="User",
                              on_delete=models.CASCADE,
                              related_name="orders")
 
@@ -78,18 +78,24 @@ class Ticket(models.Model):
                                       related_name="tickets")
 
     def __str__(self) -> str:
-        return (f"Matrix {self.movie_session.show_time} "
+        return (f"{self.movie_session.movie.title} "
+                f"{self.movie_session.show_time} "
                 f"(row: {self.row}, seat: {self.seat})")
 
     def clean(self) -> None:
         if not 1 <= self.row <= self.movie_session.cinema_hall.rows:
+            rows_count = (self
+                          .movie_session.cinema_hall
+                          .rows)
             raise ValidationError({"row": f"row number must be in available "
-                                          f"range: (1, rows): (1, "
-                                          f"{self.movie_session.cinema_hall.rows})"})
+                                          f"range: (1, rows): (1,"
+                                          f" {rows_count})"})
         if not 1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row:
+            seats_count = (self.movie_session.
+                           cinema_hall.seats_in_row)
             raise ValidationError({"seat": f"seat number must be in available "
                                            f"range: (1, seats_in_row): (1, "
-                                           f"{self.movie_session.cinema_hall.seats_in_row})"})
+                                           f"{seats_count})"})
 
     def save(self, *args, **kwargs) -> None:
         self.full_clean()
