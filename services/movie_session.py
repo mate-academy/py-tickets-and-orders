@@ -45,4 +45,8 @@ def delete_movie_session_by_id(session_id: int) -> None:
 
 
 def get_taken_seats(movie_session_id: int) -> QuerySet:
-    return list(MovieSession.objects.annotate(row=F("tickets__row"), seat=F("tickets__seat")).filter(tickets__movie_session_id=movie_session_id).values("row", "seat").distinct())
+    return list(MovieSession.objects.annotate(
+        row=F("tickets__row"),
+        seat=F("tickets__seat")).
+        filter(tickets__movie_session_id=movie_session_id).
+        values("row", "seat").distinct())
