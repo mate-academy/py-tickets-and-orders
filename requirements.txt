@@ -1,4 +1,5 @@
 django
+django_extensions
 flake8
 flake8-annotations
 flake8-quotes
