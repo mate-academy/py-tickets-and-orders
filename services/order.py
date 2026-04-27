@@ -40,9 +40,6 @@ def get_orders(username: str = None) -> QuerySet[Order]:
     queryset = Order.objects.all()
 
     if username is not None:
-        user = get_user_model().objects.get(
-            username=username
-        )
-        queryset = queryset.filter(user=user)
+        queryset = queryset.filter(user__username=username)
 
     return queryset
