@@ -63,7 +63,9 @@ class MovieSession(models.Model):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        to=settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE)
 
     def __str__(self) -> str:
         formatted_date = self.created_at.strftime("%Y-%m-%d %H:%M:%S")
@@ -89,10 +91,13 @@ class Ticket(models.Model):
                 fields=["movie_session", "row", "seat"],
                 name="unique_ticket_seat")
         ]
+
     def __str__(self) -> str:
-        return (f"{self.movie_session.movie.title} "
-               f"{self.movie_session.show_time.strftime('%Y-%m-%d %H:%M:%S')} "
-               f"(row: {self.row}, seat: {self.seat})")
+        return (
+            f"{self.movie_session.movie.title} "
+            f"{self.movie_session.show_time.strftime('%Y-%m-%d %H:%M:%S')} "
+            f"(row: {self.row}, seat: {self.seat})"
+        )
 
     def clean(self) -> None:
         cinema_hall = self.movie_session.cinema_hall
@@ -103,7 +108,8 @@ class Ticket(models.Model):
             })
         if not (1 <= self.seat <= cinema_hall.seats_in_row):
             raise ValidationError({
-                "seat": f"seat number must be in available range: (1, seats_in_row): "
+                "seat": f"seat number must be in available range: "
+                        f"(1, seats_in_row): "
                         f"(1, {cinema_hall.seats_in_row})"
             })
 
