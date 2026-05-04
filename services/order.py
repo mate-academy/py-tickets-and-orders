@@ -10,11 +10,7 @@ User = get_user_model()
 @transaction.atomic
 def create_order(tickets: list, username: str, date: str = None) -> None:
     user = User.objects.get(username=username)
-    order = Order.objects.create(user=user)
-
-    if date:
-        order.created_at = date
-        order.save()
+    order = Order.objects.create(user=user, created_at=date)
 
     for ticket_data in tickets:
         Ticket.objects.create(
@@ -25,7 +21,7 @@ def create_order(tickets: list, username: str, date: str = None) -> None:
         )
 
 
-def get_orders(username: str = None) -> QuerySet:
+def get_orders(username: str = None) -> QuerySet[Order]:
     qs = Order.objects.all()
     if username:
         qs = qs.filter(user=User.objects.get(username=username))
