@@ -1,5 +1,7 @@
 from django.contrib.auth import get_user_model
+from django.db.models import QuerySet
 
+from db.models import Order
 
 User = get_user_model()
 
@@ -23,8 +25,8 @@ def update_user(user_id: int,
                 password: str = None,
                 email: str = None,
                 first_name: str = None,
-                last_name: str = None,) -> None:
-    user = User.objects.get(id=user_id)
+                last_name: str = None,) -> QuerySet[Order]:
+    user = get_user(user_id)
     if username:
         user.username = username
     if password:

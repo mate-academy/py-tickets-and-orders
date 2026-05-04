@@ -65,7 +65,8 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(
         to=settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE)
+        on_delete=models.CASCADE,
+        related_name="orders")
 
     def __str__(self) -> str:
         formatted_date = self.created_at.strftime("%Y-%m-%d %H:%M:%S")
