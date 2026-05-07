@@ -1,6 +1,15 @@
+from typing import List, Dict
+
 from django.db.models import QuerySet
 
 from db.models import MovieSession
+
+from db.models import Ticket
+
+
+def get_taken_seats(movie_session_id: int) -> List[Dict]:
+    tickets = Ticket.objects.filter(movie_session_id=movie_session_id)
+    return [{"row": t.row, "seat": t.seat} for t in tickets]
 
 
 def create_movie_session(
