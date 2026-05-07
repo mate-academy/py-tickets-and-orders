@@ -1,0 +1,549 @@
+[
+  {
+    "model": "db.cinemahall",
+    "pk": 1,
+    "fields": {
+      "name": "Ricciotto Canudo",
+      "rows": 25,
+      "seats_in_row": 30
+    }
+  },
+  {
+    "model": "db.cinemahall",
+    "pk": 2,
+    "fields": {
+      "name": "Robin Wood",
+      "rows": 24,
+      "seats_in_row": 18
+    }
+  },
+  {
+    "model": "db.cinemahall",
+    "pk": 3,
+    "fields": {
+      "name": "Peter Wollen",
+      "rows": 30,
+      "seats_in_row": 20
+    }
+  },
+  {
+    "model": "db.cinemahall",
+    "pk": 4,
+    "fields": {
+      "name": "Jean Mitry",
+      "rows": 14,
+      "seats_in_row": 8
+    }
+  },
+  {
+    "model": "db.genre",
+    "pk": 1,
+    "fields": {
+      "name": "Crime"
+    }
+  },
+  {
+    "model": "db.genre",
+    "pk": 2,
+    "fields": {
+      "name": "Drama"
+    }
+  },
+  {
+    "model": "db.genre",
+    "pk": 3,
+    "fields": {
+      "name": "Thriller"
+    }
+  },
+  {
+    "model": "db.genre",
+    "pk": 4,
+    "fields": {
+      "name": "Action"
+    }
+  },
+  {
+    "model": "db.genre",
+    "pk": 5,
+    "fields": {
+      "name": "Adventure"
+    }
+  },
+  {
+    "model": "db.genre",
+    "pk": 6,
+    "fields": {
+      "name": "Sci-Fi"
+    }
+  },
+  {
+    "model": "db.genre",
+    "pk": 7,
+    "fields": {
+      "name": "Mystery"
+    }
+  },
+  {
+    "model": "db.actor",
+    "pk": 1,
+    "fields": {
+      "first_name": "Jack",
+      "last_name": "Nicholson"
+    }
+  },
+  {
+    "model": "db.actor",
+    "pk": 2,
+    "fields": {
+      "first_name": "Leonardo",
+      "last_name": "DiCaprio"
+    }
+  },
+  {
+    "model": "db.actor",
+    "pk": 3,
+    "fields": {
+      "first_name": "Matt",
+      "last_name": "Damon"
+    }
+  },
+  {
+    "model": "db.actor",
+    "pk": 4,
+    "fields": {
+      "first_name": "Joseph",
+      "last_name": "Gordon-Levitt"
+    }
+  },
+  {
+    "model": "db.actor",
+    "pk": 5,
+    "fields": {
+      "first_name": "Elliot",
+      "last_name": "Page"
+    }
+  },
+  {
+    "model": "db.actor",
+    "pk": 6,
+    "fields": {
+      "first_name": "Bruce",
+      "last_name": "Willis"
+    }
+  },
+  {
+    "model": "db.actor",
+    "pk": 7,
+    "fields": {
+      "first_name": "Emily",
+      "last_name": "Blunt"
+    }
+  },
+  {
+    "model": "db.actor",
+    "pk": 8,
+    "fields": {
+      "first_name": "Samuel",
+      "last_name": "Jackson"
+    }
+  },
+  {
+    "model": "db.actor",
+    "pk": 9,
+    "fields": {
+      "first_name": "Robin",
+      "last_name": "Wright"
+    }
+  },
+  {
+    "model": "db.movie",
+    "pk": 1,
+    "fields": {
+      "title": "The Departed",
+      "description": "An undercover cop and a mole in the police attempt to identify each other while infiltrating an Irishgang in South Boston.",
+      "genres": [
+        1,
+        2,
+        3
+      ],
+      "actors": [
+        1,
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "db.movie",
+    "pk": 2,
+    "fields": {
+      "title": "Inception",
+      "description": "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.",
+      "genres": [
+        4,
+        5,
+        6
+      ],
+      "actors": [
+        2,
+        4,
+        5
+      ]
+    }
+  },
+  {
+    "model": "db.movie",
+    "pk": 3,
+    "fields": {
+      "title": "Looper",
+      "description": "In 2074, when the mob wants to get rid of someone, the target is sent into the past, where a hired gun awaits - someone like Joe - who one day learns the mob wants to 'close the loop' by sending back Joe's future self for assassination.",
+      "genres": [
+        2,
+        4,
+        6
+      ],
+      "actors": [
+        4,
+        6,
+        7
+      ]
+    }
+  },
+  {
+    "model": "db.movie",
+    "pk": 4,
+    "fields": {
+      "title": "Unbreakable",
+      "description": "A man learns something extraordinary about himself after a devastating accident.",
+      "genres": [
+        2,
+        6,
+        7
+      ],
+      "actors": [
+        6,
+        8,
+        9
+      ]
+    }
+  },
+  {
+    "model": "db.moviesession",
+    "pk": 1,
+    "fields": {
+      "show_time": "2024-10-08T13:00:00",
+      "movie": 1,
+      "cinema_hall": 1
+    }
+  },
+  {
+    "model": "db.moviesession",
+    "pk": 2,
+    "fields": {
+      "show_time": "2024-10-09T13:00:00",
+      "movie": 2,
+      "cinema_hall": 2
+    }
+  },
+  {
+    "model": "db.moviesession",
+    "pk": 3,
+    "fields": {
+      "show_time": "2024-10-10T13:00:00",
+      "movie": 3,
+      "cinema_hall": 3
+    }
+  },
+  {
+    "model": "db.moviesession",
+    "pk": 4,
+    "fields": {
+      "show_time": "2024-10-11T13:00:00",
+      "movie": 4,
+      "cinema_hall": 4
+    }
+  },
+  {
+    "model": "db.moviesession",
+    "pk": 5,
+    "fields": {
+      "show_time": "2024-10-12T13:00:00",
+      "movie": 4,
+      "cinema_hall": 1
+    }
+  },
+  {
+    "model": "db.moviesession",
+    "pk": 6,
+    "fields": {
+      "show_time": "2024-10-13T13:00:00",
+      "movie": 3,
+      "cinema_hall": 2
+    }
+  },
+  {
+    "model": "db.moviesession",
+    "pk": 7,
+    "fields": {
+      "show_time": "2024-10-14T13:00:00",
+      "movie": 1,
+      "cinema_hall": 3
+    }
+  },
+  {
+    "model": "db.moviesession",
+    "pk": 8,
+    "fields": {
+      "show_time": "2024-10-15T13:00:00",
+      "movie": 2,
+      "cinema_hall": 4
+    }
+  },
+  {
+    "model": "db.order",
+    "pk": 1,
+    "fields": {
+      "created_at": "2022-08-09T09:06:18.876",
+      "user": 1
+    }
+  },
+  {
+    "model": "db.order",
+    "pk": 2,
+    "fields": {
+      "created_at": "2022-08-09T09:06:18.876",
+      "user": 2
+    }
+  },
+  {
+    "model": "db.order",
+    "pk": 3,
+    "fields": {
+      "created_at": "2022-08-09T09:06:18.876",
+      "user": 1
+    }
+  },
+  {
+    "model": "db.order",
+    "pk": 4,
+    "fields": {
+      "created_at": "2022-08-09T09:06:18.876",
+      "user": 3
+    }
+  },
+  {
+    "model": "db.ticket",
+    "pk": 1,
+    "fields": {
+      "movie_session": 1,
+      "order": 1,
+      "row": 1,
+      "seat": 1
+    }
+  },
+  {
+    "model": "db.ticket",
+    "pk": 2,
+    "fields": {
+      "movie_session": 1,
+      "order": 1,
+      "row": 2,
+      "seat": 4
+    }
+  },
+  {
+    "model": "db.ticket",
+    "pk": 3,
+    "fields": {
+      "movie_session": 2,
+      "order": 1,
+      "row": 3,
+      "seat": 3
+    }
+  },
+  {
+    "model": "db.ticket",
+    "pk": 4,
+    "fields": {
+      "movie_session": 2,
+      "order": 1,
+      "row": 4,
+      "seat": 3
+    }
+  },
+  {
+    "model": "db.ticket",
+    "pk": 5,
+    "fields": {
+      "movie_session": 3,
+      "order": 1,
+      "row": 5,
+      "seat": 1
+    }
+  },
+  {
+    "model": "db.ticket",
+    "pk": 6,
+    "fields": {
+      "movie_session": 4,
+      "order": 1,
+      "row": 6,
+      "seat": 2
+    }
+  },
+  {
+    "model": "db.ticket",
+    "pk": 7,
+    "fields": {
+      "movie_session": 5,
+      "order": 1,
+      "row": 7,
+      "seat": 3
+    }
+  },
+  {
+    "model": "db.ticket",
+    "pk": 8,
+    "fields": {
+      "movie_session": 5,
+      "order": 2,
+      "row": 8,
+      "seat": 4
+    }
+  },
+  {
+    "model": "db.ticket",
+    "pk": 9,
+    "fields": {
+      "movie_session": 5,
+      "order": 2,
+      "row": 1,
+      "seat": 5
+    }
+  },
+  {
+    "model": "db.ticket",
+    "pk": 10,
+    "fields": {
+      "movie_session": 6,
+      "order": 2,
+      "row": 1,
+      "seat": 6
+    }
+  },
+  {
+    "model": "db.ticket",
+    "pk": 11,
+    "fields": {
+      "movie_session": 7,
+      "order": 3,
+      "row": 4,
+      "seat": 7
+    }
+  },
+  {
+    "model": "db.ticket",
+    "pk": 12,
+    "fields": {
+      "movie_session": 8,
+      "order": 3,
+      "row": 3,
+      "seat": 7
+    }
+  },
+  {
+    "model": "db.ticket",
+    "pk": 13,
+    "fields": {
+      "movie_session": 8,
+      "order": 3,
+      "row": 5,
+      "seat": 4
+    }
+  },
+  {
+    "model": "db.ticket",
+    "pk": 14,
+    "fields": {
+      "movie_session": 8,
+      "order": 4,
+      "row": 4,
+      "seat": 4
+    }
+  },
+  {
+    "model": "db.ticket",
+    "pk": 15,
+    "fields": {
+      "movie_session": 1,
+      "order": 4,
+      "row": 2,
+      "seat": 3
+    }
+  },
+  {
+    "model": "db.ticket",
+    "pk": 16,
+    "fields": {
+      "movie_session": 2,
+      "order": 4,
+      "row": 5,
+      "seat": 3
+    }
+  },
+  {
+    "model": "db.user",
+    "pk": 1,
+    "fields": {
+      "password": "pbkdf2_sha256$320000$oZqdjfUqKC500V7kk3kMmb$TBVlOMhfJxWrxbUnNpWZK0+rYM242g7do/YM5tkhn+M=",
+      "last_login": null,
+      "is_superuser": true,
+      "username": "admin.user",
+      "first_name": "Admin",
+      "last_name": "User",
+      "email": "admin.user@cinema.com",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2022-08-09T09:06:18.876",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "db.user",
+    "pk": 2,
+    "fields": {
+      "password": "pbkdf2_sha256$320000$73Z1Y57bcoscZ37s9rE9v0$4SEQ0TtXwJKzO5/CRdFSrTifatiPjkZ38gM2H8Kqsdg=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "ivan.khripko",
+      "first_name": "Ivan",
+      "last_name": "Khripko",
+      "email": "ivan.khripko@cinema.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2022-08-09T09:06:18.876",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "db.user",
+    "pk": 3,
+    "fields": {
+      "password": "pbkdf2_sha256$320000$QtPol3T7x9quBj4BnbnVwW$UwT4kihkRfSvQEWEeuqVKwMgis2ikKVZfJDBcQMvOKY=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "mykola.hmara",
+      "first_name": "Mykola",
+      "last_name": "Hmara",
+      "email": "mykola.hmara@cinema.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2022-08-09T09:06:18.876",
+      "groups": [],
+      "user_permissions": []
+    }
+  }
+]
