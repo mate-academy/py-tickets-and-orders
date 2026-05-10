@@ -73,8 +73,11 @@ class MovieSession(models.Model):
     def __str__(self) -> str:
         return f"{self.movie.title} {str(self.show_time)}"
 
+
 class Ticket(models.Model):
-    movie_session = models.ForeignKey(to=MovieSession, on_delete=models.CASCADE)
+    movie_session = models.ForeignKey(
+        to=MovieSession, on_delete=models.CASCADE
+    )
     order = models.ForeignKey(to=Order, on_delete=models.CASCADE)
     row = models.IntegerField()
     seat = models.IntegerField()
