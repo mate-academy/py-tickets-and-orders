@@ -1,6 +1,5 @@
 from django.db import transaction
 from django.db.models import QuerySet
-
 from db.models import Movie
 
 
@@ -8,7 +7,7 @@ def get_movies(
     genres_ids: list[int] = None,
     actors_ids: list[int] = None,
     title: str = None,
-) -> QuerySet:
+) -> QuerySet[Movie]:
     queryset = Movie.objects.all()
 
     if genres_ids:
