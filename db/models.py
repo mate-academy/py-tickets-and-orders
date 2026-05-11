@@ -36,7 +36,7 @@ class Movie(models.Model):
 
     class Meta:
         indexes = [
-            models.Index(fields=["title"])
+            models.Index(fields=["title"]),
         ]
 
     def __str__(self) -> str:
@@ -111,14 +111,16 @@ class Ticket(models.Model):
         if self.row < 1 or self.row > cinema_hall.rows:
             raise ValidationError({
                 "row": [
-                    f"row number must be in available range: (1, rows): (1, {cinema_hall.rows})"
+                    f"row number must be in available range: "
+                    f"(1, rows): (1, {cinema_hall.rows})"
                 ]
             })
 
         if self.seat < 1 or self.seat > cinema_hall.seats_in_row:
             raise ValidationError({
                 "seat": [
-                    f"seat number must be in available range: (1, seats_in_row): (1, {cinema_hall.seats_in_row})"
+                    f"seat number must be in available range: "
+                    f"(1, seats_in_row): (1, {cinema_hall.seats_in_row})"
                 ]
             })
 
