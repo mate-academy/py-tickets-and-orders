@@ -1,6 +1,8 @@
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.conf import settings
+from django.utils import timezone
 
 
 class Genre(models.Model):
@@ -59,9 +61,9 @@ class User(AbstractUser):
 
 
 class Order(models.Model):
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(default=timezone.now)
     user = models.ForeignKey(
-        User,
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="orders"
     )
@@ -102,7 +104,7 @@ class Ticket(models.Model):
             f"(row: {self.row}, seat: {self.seat})"
         )
 
-    def clean(self) -> str:
+    def clean(self) -> None:
         errors = {}
 
         if self.row > self.movie_session.cinema_hall.rows or self.row < 1:

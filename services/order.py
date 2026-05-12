@@ -16,14 +16,16 @@ def create_order(
     date: str = None,
 ) -> Order:
     user = User.objects.get(username=username)
-    order = Order.objects.create(user=user)
+
+    created_at = None
 
     if date is not None:
-        order.created_at = datetime.datetime.strptime(
-            date,
-            "%Y-%m-%d %H:%M"
-        )
-        order.save(update_fields=["created_at"])
+        created_at = datetime.datetime.strptime(date, "%Y-%m-%d %H:%M")
+
+    if created_at is not None:
+        order = Order.objects.create(user=user, created_at=created_at)
+    else:
+        order = Order.objects.create(user=user)
 
     for ticket in tickets:
         Ticket.objects.create(
