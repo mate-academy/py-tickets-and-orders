@@ -29,7 +29,6 @@ class Movie(models.Model):
     class Meta:
         indexes = [models.Index(fields=["title"])]
 
-
     def __str__(self) -> str:
         return self.title
 
@@ -64,13 +63,12 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(
         to=settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name="orders",
     )
-
 
     class Meta:
         ordering = ["-created_at"]
-
 
     def __str__(self) -> str:
         return f"<Order: {self.created_at}>"
@@ -84,7 +82,6 @@ class Ticket(models.Model):
     row = IntegerField()
     seat = IntegerField()
 
-
     class Meta:
         constraints = [
             models.UniqueConstraint(
@@ -93,17 +90,19 @@ class Ticket(models.Model):
             )
         ]
 
-    def clean(self):
+    def clean(self) -> None:
         if self.row < 1 or self.row > self.movie_session.cinema_hall.rows:
             raise ValidationError("Row number is invalid")
 
-        if self.seat < 1 or self.seat > self.movie_session.cinema_hall.seats_in_row:
+        if (
+                self.seat < 1
+                or self.seat > self.movie_session.cinema_hall.seats_in_row
+        ):
             raise ValidationError("Seat number is invalid")
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         self.full_clean()
         super().save(*args, **kwargs)
-
 
     def __str__(self) -> str:
         return (

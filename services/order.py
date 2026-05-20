@@ -2,11 +2,10 @@ from datetime import datetime
 
 from django.db import transaction
 from django.db.models import QuerySet
+from django.contrib.auth import get_user_model
+from db.models import Order, Ticket
 
-from db.models import Order, User, Ticket
-from services import user
-from tests.test_main import tickets
-
+User = get_user_model()
 
 def create_order(
         tickets: list[dict],
