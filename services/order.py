@@ -40,8 +40,6 @@ def create_order(
 
 def get_orders(username: str = None) -> QuerySet[Order]:
     if username:
-        user = User.objects.get(username=username)
-        orders = Order.objects.filter(user=user)
-        return orders
+        return Order.objects.filter(user__username=username)
     else:
         return Order.objects.all()
