@@ -4,37 +4,40 @@ from typing import List
 from django.contrib.auth import get_user_model
 from django.db import transaction
 
-from db.models import Order, Ticket
+from db.models import Order, Ticket, MovieSession
 
 
 def create_order(
-        tickets: List[dict],
-        username: str,
-        date: datetime | None = None,
+    tickets: List[dict],
+    username: str,
+    date: datetime | None = None,
 ) -> None:
     user = get_user_model().objects.get(username=username)
 
     with transaction.atomic():
-        result_tickets = []
-        list_of_orders = []
+        order = Order.objects.create(user=user)
+
+        if date is not None:
+            Order.objects.filter(id=order.id).update(created_at=date)
+            order.created_at = date
+
+        tickets_to_create = []
+
         for ticket in tickets:
-            order = Order(
-                user=user,
+            movie_session = MovieSession.objects.get(
+                id=ticket.get("movie_session")
             )
-            if date:
-                order.date = date
-            list_of_orders.append(order)
-            new_ticket = Ticket(
-                row=ticket.get("row"),
-                seat=ticket.get("seat"),
-                movie_session_id=ticket.get("movie_session"),
-                order=order
+
+            tickets_to_create.append(
+                Ticket(
+                    row=ticket.get("row"),
+                    seat=ticket.get("seat"),
+                    movie_session=movie_session,
+                    order=order,
+                )
             )
-            result_tickets.append(new_ticket)
 
-        Ticket.objects.bulk_create(result_tickets)
-        Order.objects.bulk_create(list_of_orders)
-
+        Ticket.objects.bulk_create(tickets_to_create)
 
 def get_orders(
         username: str = None,
