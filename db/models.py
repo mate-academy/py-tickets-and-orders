@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User, AbstractUser
+from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
 
@@ -59,6 +59,7 @@ class MovieSession(models.Model):
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE)
+
     def __str__(self) -> str:
         return str(self.created_at)
 
@@ -76,27 +77,40 @@ class Ticket(models.Model):
         return (f"{self.movie_session.__str__()}"
                 f" (row: {self.row}, seat: {self.seat})")
 
-    def clean(self):
-        if not 1 <= self.row <= self.movie_session.cinema_hall.rows:
+    def clean(self) -> None:
+        rows = self.movie_session.cinema_hall.rows
+        seats_in_row = self.movie_session.cinema_hall.seats_in_row
+
+        if not 1 <= self.row <= rows:
             raise ValidationError(
-                    {'row': [f"row number must be in available range:"
-                             f" (1, rows): (1, {self.movie_session.cinema_hall.rows})"]}
-                )
+                {
+                    "row": [
+                        "row number must be in available range: "
+                        f"(1, rows): (1, {rows})"
+                    ]
+                }
+            )
 
-        if not 1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row:
+        if not 1 <= self.seat <= seats_in_row:
             raise ValidationError(
-                    {'seat': [f"seat number must be in available range:"
-                              f" (1, seats_in_row): (1, {self.movie_session.cinema_hall.seats_in_row})"]}
-                )
+                {
+                    "seat": [
+                        "seat number must be in available range: "
+                        f"(1, seats_in_row): (1, {seats_in_row})"
+                    ]
+                }
+            )
 
-
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         self.full_clean()
         super().save(*args, **kwargs)
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=["movie_session", "row", "seat"], name="unique_cinema_hall")
+            models.UniqueConstraint(
+                fields=["movie_session", "row", "seat"],
+                name="unique_cinema_hall"
+            )
         ]
 
 

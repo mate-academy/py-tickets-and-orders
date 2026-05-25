@@ -21,7 +21,6 @@ def create_user(
     if last_name:
         new_user.last_name = last_name
 
-
     new_user.save()
     return new_user
 
