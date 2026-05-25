@@ -1,6 +1,7 @@
 from datetime import datetime
 from typing import List
 
+from django.contrib.auth import get_user_model
 from django.db import transaction
 
 from db.models import Order, Ticket
@@ -11,12 +12,14 @@ def create_order(
         username: str,
         date: datetime | None = None,
 ) -> None:
+    user = get_user_model().objects.get(username=username)
+
     with transaction.atomic():
         result_tickets = []
         list_of_orders = []
         for ticket in tickets:
             order = Order(
-                username=username,
+                user=user,
             )
             if date:
                 order.date = date

@@ -60,7 +60,10 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE)
     def __str__(self) -> str:
-        return f"Order: {self.created_at}"
+        return str(self.created_at)
+
+    class Meta:
+        ordering = ["-created_at"]
 
 
 class Ticket(models.Model):
@@ -70,7 +73,7 @@ class Ticket(models.Model):
     seat = models.IntegerField()
 
     def __str__(self) -> str:
-        return (f"Ticket: {self.movie_session.__str__()}"
+        return (f"{self.movie_session.__str__()}"
                 f" (row: {self.row}, seat: {self.seat})")
 
     def clean(self):
