@@ -1,14 +1,18 @@
-from db.models import User
+from typing import Any
+
+from django.contrib.auth import get_user_model
+from django.db import transaction
 
 
+@transaction.atomic
 def create_user(
         username: str,
         password: str,
         email: str = None,
         first_name: str = None,
         last_name: str = None,
-) -> User:
-    new_user = User.objects.create_user(
+) -> Any:
+    new_user = get_user_model().objects.create_user(
         username=username,
         password=password,
     )
@@ -25,10 +29,11 @@ def create_user(
     return new_user
 
 
-def get_user(user_id: int) -> User:
-    return User.objects.get(pk=user_id)
+def get_user(user_id: int) -> Any:
+    return get_user_model().objects.get(pk=user_id)
 
 
+@transaction.atomic
 def update_user(
         user_id: int,
         username: str = None,
@@ -36,8 +41,8 @@ def update_user(
         email: str = None,
         first_name: str = None,
         last_name: str = None,
-) -> User:
-    current_user = User.objects.get(pk=user_id)
+) -> Any:
+    current_user = get_user_model().objects.get(pk=user_id)
 
     if username:
         current_user.username = username
