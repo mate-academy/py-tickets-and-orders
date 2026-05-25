@@ -27,7 +27,7 @@ def create_order(
             new_ticket = Ticket(
                 row=ticket.get("row"),
                 seat=ticket.get("seat"),
-                movie_session=ticket.get("movie_session"),
+                movie_session_id=ticket.get("movie_session"),
                 order=order
             )
             result_tickets.append(new_ticket)
