@@ -355,7 +355,9 @@ def test_order_service_create_order_with_date(create_order_data, tickets):
             "row", "seat", "movie_session"
         )
     ) == [(10, 8, 1), (10, 9, 1)]
-    assert Order.objects.first().created_at == datetime.datetime(
+    order = Order.objects.first()
+    assert order is not None
+    assert order.created_at == datetime.datetime(
         2020, 11, 10, 14, 40
     )
 
@@ -392,7 +394,7 @@ def test_create_movie_transaction_atomic(genres_data, actors_data):
     with pytest.raises(ValueError):
         create_movie(movie_title="New movie",
                      movie_description="Movie description",
-                     genres_ids=["zero", 1, 2],
+                     genres_ids=[0, 1, 2],
                      actors_ids=[1, 2, 3])
 
     assert Movie.objects.all().count() == 0
