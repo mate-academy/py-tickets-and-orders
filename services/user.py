@@ -10,7 +10,8 @@ def create_user(
         password: str,
         email: str = None,
         first_name: str = None,
-        last_name: str = None) -> object:
+        last_name: str = None
+) -> object:
     user = User.objects.create_user(
         username=username,
         password=password,
@@ -32,12 +33,14 @@ def get_user(user_id: int) -> User:
 
 
 @transaction.atomic
-def update_user(user_id: int,
-                username: str = None,
-                password: str = None,
-                email: str = None,
-                first_name: str = None,
-                last_name: str = None) -> object:
+def update_user(
+        user_id: int,
+        username: str = None,
+        password: str = None,
+        email: str = None,
+        first_name: str = None,
+        last_name: str = None
+) -> object:
     user = get_user(user_id)
 
     if username is not None:
