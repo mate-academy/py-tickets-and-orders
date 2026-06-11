@@ -1,5 +1,4 @@
 from django.conf import settings
-from datetime import datetime
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.core.exceptions import ValidationError
@@ -74,7 +73,7 @@ class Ticket(models.Model):
     movie_session = models.ForeignKey(
         to=MovieSession,
         on_delete=models.CASCADE,
-        related_name = "tickets",
+        related_name="tickets",
     )
     order = models.ForeignKey(
         to=Order,
