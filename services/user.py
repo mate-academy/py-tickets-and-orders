@@ -1,6 +1,6 @@
-from django.contrib.auth import get_user_model
+from typing import Any
 
-from db.models import User
+from django.contrib.auth import get_user_model
 
 
 def create_user(
@@ -9,25 +9,22 @@ def create_user(
         email: str = None,
         first_name: str = None,
         last_name: str = None,
-) -> User:
-    user = get_user_model().objects.create_user(
+) -> Any:
+    extra_fields = {}
+    if email:
+        extra_fields["email"] = email
+    if first_name:
+        extra_fields["first_name"] = first_name
+    if last_name:
+        extra_fields["last_name"] = last_name
+    return get_user_model().objects.create_user(
         username=username,
         password=password,
-        email="",
-        first_name="",
-        last_name="",
+        **extra_fields
     )
-    if email:
-        user.email = email
-    if first_name:
-        user.first_name = first_name
-    if last_name:
-        user.last_name = last_name
-    user.save()
-    return user
 
 
-def get_user(user_id: int) -> User:
+def get_user(user_id: int) -> Any:
     return get_user_model().objects.get(id=user_id)
 
 
@@ -38,7 +35,7 @@ def update_user(
         email: str = None,
         first_name: str = None,
         last_name: str = None,
-) -> User:
+) -> Any:
     user = get_user(user_id)
     if username:
         user.username = username
