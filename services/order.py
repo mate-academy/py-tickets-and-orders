@@ -25,8 +25,6 @@ def create_order(
 ) -> None:
     user = get_user_model().objects.get(username=username)
 
-    user = get_user_model().objects.get(username=username)
-
     new_order = Order.objects.create(user=user)
 
     if date:
