@@ -36,7 +36,7 @@ def update_user(
     first_name: str | None = None,
     last_name: str | None = None,
 ) -> None:
-    user = get_user_model().objects.get(pk=user_id)
+    user = get_user(user_id)
 
     if username is not None:
         user.username = username

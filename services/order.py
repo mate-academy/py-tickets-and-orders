@@ -5,21 +5,11 @@ from django.db import transaction
 from django.db.models import QuerySet
 
 from db.models import Order, Ticket
-from typing import TypedDict, List
-
-
-class TicketType(TypedDict):
-    row: int
-    seat: int
-    movie_session: int
-
-
-type TicketsList = List[TicketType]
 
 
 @transaction.atomic
 def create_order(
-    tickets: TicketType,
+    tickets: list[dict],
     username: str,
     date: str | datetime.date | None = None,
 ) -> None:
