@@ -17,7 +17,7 @@ DATABASES = {
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "Europe/Kiev"
+TIME_ZONE = "Europe/Kyiv"
 
 USE_I18N = True
 
@@ -25,4 +25,8 @@ USE_TZ = False
 
 INSTALLED_APPS = [
     "db",
+    "django.contrib.contenttypes",
+    "django.contrib.auth"
 ]
+
+AUTH_USER_MODEL = "db.User"

@@ -176,6 +176,78 @@
   },
   {
     "model": "db.movie",
+    "pk": 8,
+    "fields": {
+      "title": "Harry Kasparov: Documentary",
+      "description": "An undercover cop and a mole in the police attempt to identify each other while infiltrating an Irishgang in South Boston.",
+      "genres": [
+        1,
+        2,
+        3
+      ],
+      "actors": [
+        1,
+        2,
+        3
+      ]
+    }
+  },
+    {
+    "model": "db.movie",
+    "pk": 5,
+    "fields": {
+      "title": "Harry Potter 1",
+      "description": "An undercover cop and a mole in the police attempt to identify each other while infiltrating an Irishgang in South Boston.",
+      "genres": [
+        1,
+        2,
+        3
+      ],
+      "actors": [
+        1,
+        2,
+        3
+      ]
+    }
+  },
+    {
+    "model": "db.movie",
+    "pk": 6,
+    "fields": {
+      "title": "Harry Potter 2",
+      "description": "An undercover cop and a mole in the police attempt to identify each other while infiltrating an Irishgang in South Boston.",
+      "genres": [
+        1,
+        2,
+        3
+      ],
+      "actors": [
+        1,
+        2,
+        3
+      ]
+    }
+  },
+    {
+    "model": "db.movie",
+    "pk": 7,
+    "fields": {
+      "title": "Harry Potter 3",
+      "description": "An undercover cop and a mole in the police attempt to identify each other while infiltrating an Irishgang in South Boston.",
+      "genres": [
+        1,
+        2,
+        3
+      ],
+      "actors": [
+        1,
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "db.movie",
     "pk": 2,
     "fields": {
       "title": "Inception",
