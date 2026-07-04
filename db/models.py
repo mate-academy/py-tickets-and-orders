@@ -1,4 +1,13 @@
+from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models.constraints import UniqueConstraint
+
+import settings
+
+
+class User(AbstractUser):
+    pass
 
 
 class Genre(models.Model):
@@ -25,6 +34,11 @@ class Movie(models.Model):
     def __str__(self) -> str:
         return self.title
 
+    class Meta:
+        indexes = [
+            models.Index(fields=["title"])
+        ]
+
 
 class CinemaHall(models.Model):
     name = models.CharField(max_length=255)
@@ -50,3 +64,59 @@ class MovieSession(models.Model):
 
     def __str__(self) -> str:
         return f"{self.movie.title} {str(self.show_time)}"
+
+
+class Order(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(
+        to=settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="orders"
+    )
+
+    def __str__(self) -> str:
+        return str(self.created_at)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+
+class Ticket(models.Model):
+    row = models.IntegerField()
+    seat = models.IntegerField()
+    movie_session = models.ForeignKey(
+        to=MovieSession, on_delete=models.CASCADE, related_name="tickets"
+    )
+    order = models.ForeignKey(
+        to=Order, on_delete=models.CASCADE, related_name="tickets"
+    )
+
+    def clean(self) -> None:
+        if not (1 <= self.row <= self.movie_session.cinema_hall.rows):
+            raise ValidationError({
+                "row": f"row number must be in available range: (1, rows): "
+                       f"(1, {self.movie_session.cinema_hall.rows})"
+            })
+        if not (1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row):
+            raise ValidationError({
+                "seat": f"seat number must be in available range: "
+                        f"(1, seats_in_row): "
+                        f"(1, {self.movie_session.cinema_hall.seats_in_row})"
+            })
+
+    def save(self, *args, **kwargs) -> None:
+        self.full_clean()
+        return super().save(*args, **kwargs)
+
+    def __str__(self) -> str:
+        return (f"{self.movie_session.movie.title} "
+                f"{self.movie_session.show_time:%Y-%m-%d %H:%M:%S} "
+                f"(row: {self.row}, seat: {self.seat})")
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                fields=["row", "seat", "movie_session"],
+                name="unique-ticket-constraint-row-seat-movie-session"
+            )
+        ]
