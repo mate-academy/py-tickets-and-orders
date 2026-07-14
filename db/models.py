@@ -71,13 +71,11 @@ class Order(models.Model):
         related_name="orders"
     )
 
+    def __str__(self) -> str:
+        return str(self.created_at)
 
-def __str__(self: None) -> str:
-    return str(self.created_at)
-
-
-class Meta:
-    ordering = ["-created_at"]
+    class Meta:
+        ordering = ["-created_at"]
 
 
 class Ticket(models.Model):
@@ -103,12 +101,12 @@ class Ticket(models.Model):
 
         if self.row < 1 or self.row > rows:
             raise ValidationError(
-                {"row": ["row number must be in available range:"
+                {"row": [f"row number must be in available range: "
                          f"(1, rows): (1, {rows})"]})
 
         if self.seat < 1 or self.seat > seats:
             raise ValidationError(
-                {"seat": ["seat number must be in available range:"
+                {"seat": [f"seat number must be in available range: "
                           f"(1, seats_in_row): (1, {seats})"]})
 
     def save(self, *args, **kwargs) -> None:
