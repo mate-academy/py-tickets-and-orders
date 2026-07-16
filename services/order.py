@@ -1,9 +1,11 @@
+import datetime
+from typing import List
+
 from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.db.models import QuerySet
+
 from db.models import Order, Ticket
-from typing import List
-import datetime
 
 
 @transaction.atomic
