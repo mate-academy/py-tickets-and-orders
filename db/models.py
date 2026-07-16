@@ -67,6 +67,7 @@ class Order(models.Model):
     user = models.ForeignKey(
         to=settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
+        related_name="orders",
     )
 
     class Meta:
@@ -80,10 +81,12 @@ class Ticket(models.Model):
     movie_session = models.ForeignKey(
         to=MovieSession,
         on_delete=models.CASCADE,
+        related_name="tickets",
     )
     order = models.ForeignKey(
         to=Order,
         on_delete=models.CASCADE,
+        related_name="tickets",
     )
     row = models.IntegerField()
     seat = models.IntegerField()
@@ -102,13 +105,15 @@ class Ticket(models.Model):
         if not (1 <= self.row <= max_rows):
             raise ValidationError({
                 "row": [
-                    f"row number must be in available range: (1, rows): (1, {max_rows})"
+                    f"row number must be in available range: "
+                    f"(1, rows): (1, {max_rows})"
                 ]
             })
         if not (1 <= self.seat <= max_seats):
             raise ValidationError({
                 "seat": [
-                    f"seat number must be in available range: (1, seats_in_row): (1, {max_seats})"
+                    f"seat number must be in available range: "
+                    f"(1, seats_in_row): (1, {max_seats})"
                 ]
             })
 

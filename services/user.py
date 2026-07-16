@@ -1,18 +1,49 @@
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AbstractUser
 
 
-def get_user(user_id: int):
+def get_user(user_id: int) -> AbstractUser:
     return get_user_model().objects.get(id=user_id)
 
 
-def create_user(**extra_fields):
-    return get_user_model().objects.create_user(**extra_fields)
+def create_user(
+    username: str,
+    password: str,
+    email: str | None = None,
+    first_name: str | None = None,
+    last_name: str | None = None,
+) -> AbstractUser:
+    user = get_user_model().objects.create_user(
+        username=username,
+        password=password,
+    )
+    if email is not None:
+        user.email = email
+    if first_name is not None:
+        user.first_name = first_name
+    if last_name is not None:
+        user.last_name = last_name
+    user.save()
+    return user
 
 
-def update_user(user_id: int, **extra_fields) -> None:
+def update_user(
+    user_id: int,
+    username: str | None = None,
+    password: str | None = None,
+    email: str | None = None,
+    first_name: str | None = None,
+    last_name: str | None = None,
+) -> None:
     user = get_user(user_id)
-    if "password" in extra_fields:
-        user.set_password(extra_fields.pop("password"))
-    for field, value in extra_fields.items():
-        setattr(user, field, value)
+    if username is not None:
+        user.username = username
+    if password is not None:
+        user.set_password(password)
+    if email is not None:
+        user.email = email
+    if first_name is not None:
+        user.first_name = first_name
+    if last_name is not None:
+        user.last_name = last_name
     user.save()
