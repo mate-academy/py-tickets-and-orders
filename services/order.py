@@ -15,22 +15,21 @@ def create_order(
         username: str,
         date: datetime.datetime | None = None,
 ) -> Any:
-    with transaction.atomic():
-        user = User.objects.get(username=username)
+    User = get_user_model()
+    user = User.objects.get(username=username)
 
+    if date:
+        order = Order.objects.create(user=user, created_at=date)
+    else:
         order = Order.objects.create(user=user)
-
-        if date:
-            order.created_at = date
-            order.save()
-        for ticket in tickets:
-            Ticket.objects.create(
-                row=ticket["row"],
-                seat=ticket["seat"],
-                movie_session_id=ticket["movie_session"],
-                order=order
-            )
-        return order
+    for ticket in tickets:
+        Ticket.objects.create(
+            row=ticket["row"],
+            seat=ticket["seat"],
+            movie_session_id=ticket["movie_session"],
+            order=order
+        )
+    return order
 
 
 def get_orders(username: str | None = None) -> QuerySet[Order]:
