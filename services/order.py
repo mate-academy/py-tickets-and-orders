@@ -16,11 +16,11 @@ def create_order(
         date: datetime.datetime | None = None,
 ) -> Any:
     user = User.objects.get(username=username)
+    order = Order.objects.create(user=user)
 
     if date:
-        order = Order.objects.create(user=user, created_at=date)
-    else:
-        order = Order.objects.create(user=user)
+        order.created_at = date
+        order.save()
     for ticket in tickets:
         Ticket.objects.create(
             row=ticket["row"],
