@@ -15,7 +15,6 @@ def create_order(
         username: str,
         date: datetime.datetime | None = None,
 ) -> Any:
-    User = get_user_model()
     user = User.objects.get(username=username)
 
     if date:

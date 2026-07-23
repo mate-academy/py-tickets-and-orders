@@ -1,5 +1,4 @@
 from django.db.models import QuerySet
-from typing import Any
 
 from db.models import MovieSession, Ticket
 
