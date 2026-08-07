@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
@@ -6,6 +8,20 @@ from django.db import models
 
 class User(AbstractUser):
     pass
+
+
+class CreatedAtField(models.DateTimeField):
+    def pre_save(
+        self,
+        model_instance: models.Model,
+        add: bool,
+    ) -> datetime:
+        value = getattr(model_instance, self.attname)
+
+        if add and self.auto_now_add and value is not None:
+            return value
+
+        return super().pre_save(model_instance, add)
 
 
 class Genre(models.Model):
@@ -60,7 +76,7 @@ class MovieSession(models.Model):
 
 
 class Order(models.Model):
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = CreatedAtField(auto_now_add=True)
     user = models.ForeignKey(
         to=settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -71,7 +87,7 @@ class Order(models.Model):
         ordering = ["-created_at"]
 
     def __str__(self) -> str:
-        return str(self.created_at)
+        return f"<Order: {self.created_at}>"
 
 
 class Ticket(models.Model):
@@ -98,7 +114,8 @@ class Ticket(models.Model):
 
     def __str__(self) -> str:
         return (
-            f"{self.movie_session} (row: {self.row}, seat: {self.seat})"
+            f"<Ticket: {self.movie_session} "
+            f"(row: {self.row}, seat: {self.seat})>"
         )
 
     def clean(self) -> None:

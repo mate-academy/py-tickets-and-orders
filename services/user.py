@@ -29,6 +29,10 @@ def get_user(user_id: int) -> AbstractUser:
     return get_user_model().objects.get(pk=user_id)
 
 
+def get_user_by_username(username: str) -> AbstractUser:
+    return get_user_model().objects.get(username=username)
+
+
 def update_user(
     user_id: int,
     username: str = None,
