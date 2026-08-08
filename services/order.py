@@ -11,7 +11,7 @@ User = get_user_model()
 def create_order(
     tickets: list[dict],
     username: str,
-    date: str = None
+    date: str = None,
 ) -> Order:
     user = User.objects.get(username=username)
     order = Order.objects.create(user=user)
