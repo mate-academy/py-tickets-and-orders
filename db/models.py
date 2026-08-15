@@ -28,11 +28,11 @@ class Movie(models.Model):
     description = models.TextField()
     actors = models.ManyToManyField(
         to=Actor,
-        related_name="movies"
+        related_name="movies",
     )
     genres = models.ManyToManyField(
         to=Genre,
-        related_name="movies"
+        related_name="movies",
     )
 
     def __str__(self) -> str:
@@ -57,16 +57,16 @@ class MovieSession(models.Model):
     cinema_hall = models.ForeignKey(
         to=CinemaHall,
         on_delete=models.CASCADE,
-        related_name="movie_sessions"
+        related_name="movie_sessions",
     )
     movie = models.ForeignKey(
         to=Movie,
         on_delete=models.CASCADE,
-        related_name="movie_sessions"
+        related_name="movie_sessions",
     )
 
     def __str__(self) -> str:
-        return f"{self.movie.title} {str(self.show_time)}"
+        return f"{self.movie.title} {self.show_time}"
 
 
 class Order(models.Model):
@@ -74,26 +74,26 @@ class Order(models.Model):
     user = models.ForeignKey(
         to="User",
         on_delete=models.CASCADE,
-        related_name="orders"
+        related_name="orders",
     )
 
     class Meta:
         ordering = ["-created_at"]
 
     def __str__(self) -> str:
-        return str(self.created_at)
+        return f"<Order: {self.created_at}>"
 
 
 class Ticket(models.Model):
     movie_session = models.ForeignKey(
         MovieSession,
         on_delete=models.CASCADE,
-        related_name="tickets"
+        related_name="tickets",
     )
     order = models.ForeignKey(
         Order,
         on_delete=models.CASCADE,
-        related_name="tickets"
+        related_name="tickets",
     )
     row = models.IntegerField()
     seat = models.IntegerField()
@@ -102,15 +102,15 @@ class Ticket(models.Model):
         constraints = [
             UniqueConstraint(
                 fields=["movie_session", "row", "seat"],
-                name="unique_ticket_seat_per_session"
+                name="unique_ticket_seat_per_session",
             )
         ]
 
     def __str__(self) -> str:
         return (
-            f"{self.movie_session.movie.title} "
+            f"<Ticket: {self.movie_session.movie.title} "
             f"{self.movie_session.show_time} "
-            f"(row: {self.row}, seat: {self.seat})"
+            f"(row: {self.row}, seat: {self.seat})>"
         )
 
     def clean(self) -> None:
@@ -118,18 +118,18 @@ class Ticket(models.Model):
 
         if not (1 <= self.row <= hall.rows):
             raise ValidationError({
-                "row": (
+                "row": [
                     "row number must be in available range: "
                     f"(1, rows): (1, {hall.rows})"
-                )
+                ]
             })
 
         if not (1 <= self.seat <= hall.seats_in_row):
             raise ValidationError({
-                "seat": (
+                "seat": [
                     "seat number must be in available range: "
                     f"(1, seats_in_row): (1, {hall.seats_in_row})"
-                )
+                ]
             })
 
     def save(self, *args, **kwargs) -> None:
