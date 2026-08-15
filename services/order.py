@@ -1,53 +1,39 @@
+from django.db import transaction
 from django.db.models import QuerySet
+from datetime import datetime
 
-from db.models import MovieSession, Ticket
-
-
-def create_movie_session(
-    movie_show_time,
-    movie_id: int,
-    cinema_hall_id: int
-) -> MovieSession:
-    return MovieSession.objects.create(
-        show_time=movie_show_time,
-        movie_id=movie_id,
-        cinema_hall_id=cinema_hall_id,
-    )
+from db.models import Order, Ticket, User
 
 
-def get_movies_sessions(session_date=None) -> QuerySet:
-    queryset = MovieSession.objects.all()
-    if session_date:
-        queryset = queryset.filter(show_time__date=session_date)
+@transaction.atomic
+def create_order(
+    tickets: list[dict],
+    username: str,
+    date: datetime = None,
+) -> Order:
+    user = User.objects.get(username=username)
+
+    order = Order.objects.create(user=user)
+
+    if date is not None:
+        order.created_at = date
+        order.save(update_fields=["created_at"])
+
+    for ticket in tickets:
+        Ticket.objects.create(
+            movie_session_id=ticket["movie_session"],
+            order=order,
+            row=ticket["row"],
+            seat=ticket["seat"],
+        )
+
+    return order
+
+
+def get_orders(username: str = None) -> QuerySet:
+    queryset = Order.objects.all()
+
+    if username is not None:
+        queryset = queryset.filter(user__username=username)
+
     return queryset
-
-
-def get_movie_session_by_id(movie_session_id: int) -> MovieSession:
-    return MovieSession.objects.get(id=movie_session_id)
-
-
-def update_movie_session(
-    session_id: int,
-    show_time=None,
-    movie_id: int = None,
-    cinema_hall_id: int = None,
-) -> None:
-    movie_session = MovieSession.objects.get(id=session_id)
-
-    if show_time:
-        movie_session.show_time = show_time
-    if movie_id:
-        movie_session.movie_id = movie_id
-    if cinema_hall_id:
-        movie_session.cinema_hall_id = cinema_hall_id
-
-    movie_session.save()
-
-
-def delete_movie_session_by_id(session_id: int) -> None:
-    MovieSession.objects.get(id=session_id).delete()
-
-
-def get_taken_seats(movie_session_id: int):
-    tickets = Ticket.objects.filter(movie_session_id=movie_session_id)
-    return [{"row": t.row, "seat": t.seat} for t in tickets]
