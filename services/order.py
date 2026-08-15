@@ -1,8 +1,12 @@
-from django.db import transaction
-from django.db.models import QuerySet
 from datetime import datetime
 
-from db.models import Order, Ticket, User
+from django.contrib.auth import get_user_model
+from django.db import transaction
+from django.db.models import QuerySet
+
+from db.models import Order, Ticket
+
+User = get_user_model()
 
 
 @transaction.atomic
