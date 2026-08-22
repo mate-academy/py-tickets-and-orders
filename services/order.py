@@ -1,30 +1,29 @@
 from datetime import datetime
 
 from django.contrib.auth import get_user_model
-
-from db.models import Order, Ticket
 from django.db import transaction
 from django.db.models import QuerySet
+
+from db.models import Order, Ticket
 
 
 @transaction.atomic
 def create_order(
         tickets: list[dict],
         username: str,
-        date: datetime | None = None
+        date: datetime | str | None = None
 ) -> None:
     user = get_user_model().objects.get(username=username)
 
-    order_data = {"user": user}
+    if date and isinstance(date, str):
+        try:
+            date = datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
+        except ValueError:
+            date = datetime.strptime(date, "%Y-%m-%d %H:%M")
 
-    order = Order.objects.create(**order_data)
+    order = Order.objects.create(user=user)
 
     if date:
-        if isinstance(date, str):
-            date = datetime.strptime(
-                date,
-                "%Y-%m-%d %H:%M"
-            )
         Order.objects.filter(pk=order.pk).update(created_at=date)
 
     bulk_tickets = []
