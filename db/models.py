@@ -1,9 +1,7 @@
-from django.core.exceptions import ValidationError
-from django.contrib.auth.models import AbstractUser
-from django.db import models
-
-
 from django.conf import settings
+from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
+from django.db import models
 
 
 class Genre(models.Model):
@@ -66,7 +64,8 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name="orders"
     )
 
     class Meta:
@@ -77,8 +76,7 @@ class Order(models.Model):
 
 
 class User(AbstractUser):
-    first_name = models.CharField(max_length=150, blank=True, null=True)
-    last_name = models.CharField(max_length=150, blank=True, null=True)
+    pass
 
 
 class Ticket(models.Model):
