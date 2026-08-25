@@ -1,4 +1,3 @@
-from django.db.models import QuerySet
 from django.contrib.auth import get_user_model
 
 from db.models import User
@@ -16,7 +15,7 @@ def create_user(
     first_name = first_name or ""
     last_name = last_name or ""
 
-    user = User.objects.create_user(
+    user = get_user_model().objects.create_user(
         username=username,
         password=password,
         email=email,
@@ -26,8 +25,8 @@ def create_user(
     return user
 
 
-def get_user(user_id: int) -> QuerySet:
-    return User.objects.get(id=user_id)
+def get_user(user_id: int) -> User:
+    return get_user_model().objects.get(id=user_id)
 
 
 def update_user(

@@ -94,7 +94,12 @@ class Ticket(models.Model):
     seat = models.IntegerField()
 
     class Meta:
-        unique_together = ("movie_session", "row", "seat")
+        constraints = [
+            models.UniqueConstraint(
+                fields=["movie_session", "row", "seat"],
+                name="unique_ticket"
+            )
+        ]
 
     def clean(self) -> None:
         hall = self.movie_session.cinema_hall
