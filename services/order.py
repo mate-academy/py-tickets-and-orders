@@ -15,15 +15,11 @@ def create_order(
     user = User.objects.get(username=username)
 
     with transaction.atomic():
+        order = Order.objects.create(user=user)
+
         if date:
-            order = Order.objects.create(
-                user=user,
-                created_at=date,
-            )
-        else:
-            order = Order.objects.create(
-                user=user,
-            )
+            order.created_at = date
+            order.save(update_fields=["created_at"])
 
         for ticket in tickets:
             Ticket.objects.create(
