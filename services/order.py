@@ -7,35 +7,35 @@ from django.db.models import QuerySet
 from db.models import Order, Ticket
 
 
+@transaction.atomic
 def create_order(
     tickets: list[dict],
     username: str,
     date: datetime | None = None,
 ) -> Order | None:
-    with transaction.atomic():
-        user = get_user_model().objects.get(username=username)
-        order = Order.objects.create(
-            user=user,
+    user = get_user_model().objects.get(username=username)
+    order = Order.objects.create(
+        user=user,
+    )
+    if date:
+        order.created_at = date
+        order.save()
+
+    tickets_to_create = [
+        Ticket(
+            row=ticket["row"],
+            seat=ticket["seat"],
+            movie_session_id=ticket["movie_session"],
+            order=order,
         )
-        if date:
-            order.created_at = date
-            order.save()
+        for ticket in tickets
+    ]
+    for ticket in tickets_to_create:
+        ticket.full_clean()
 
-        tickets_to_create = [
-            Ticket(
-                row=ticket["row"],
-                seat=ticket["seat"],
-                movie_session_id=ticket["movie_session"],
-                order=order,
-            )
-            for ticket in tickets
-        ]
-        for ticket in tickets_to_create:
-            ticket.full_clean()
+    Ticket.objects.bulk_create(tickets_to_create)
 
-        Ticket.objects.bulk_create(tickets_to_create)
-
-        return order
+    return order
 
 
 def get_orders(username: str | None = None) -> QuerySet[Order]:
