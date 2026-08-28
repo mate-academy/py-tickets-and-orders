@@ -1,0 +1,10 @@
+[33mcommit 593549153eaaba1eb5da7593ff0eaee85aaeb3bf[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Andre Marcio <andre.marcio.ti@gmail.com>
+Date:   Sat Jul 25 17:11:28 2026 -0300
+
+    fresh migrations
+
+ ...ter_movie_actors_alter_movie_genres_and_more.py |  8 [32m+++[m[31m----[m
+ ...er_user_email_alter_user_first_name_and_more.py | 28 [31m----------------------[m
+ ...er_user_email_alter_user_first_name_and_more.py | 28 [31m----------------------[m
+ 3 files changed, 4 insertions(+), 60 deletions(-)
