@@ -24,5 +24,14 @@ USE_I18N = True
 USE_TZ = False
 
 INSTALLED_APPS = [
-    "db",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "db"
 ]
+
+AUTH_USER_MODEL = "db.User"
+
+ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
