@@ -59,14 +59,14 @@ class User(AbstractUser):
 
 
 class Order(models.Model):
-    created_at = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
         ordering = ["-created_at"]
 
     def __str__(self) -> str:
-        return str(self.created_at)
+        return f"{self.created_at.strftime('%Y-%m-%d %H:%M:%S')}"
 
 
 class Ticket(models.Model):
@@ -90,7 +90,7 @@ class Ticket(models.Model):
         show_time = self.movie_session.show_time
         movie_title = self.movie_session.movie.title
         return (
-            f"{movie_title} {show_time}"
+            f"{movie_title} {show_time.strftime('%Y-%m-%d %H:%M:%S')}"
             f" (row: {self.row}, seat: {self.seat})"
         )
 
@@ -112,8 +112,6 @@ class Ticket(models.Model):
                     f"(1, seats_in_row): (1, {hall.seats_in_row})"
                 ]
             })
-
-        return ValueError
 
     def save(self, *args, **kwargs) -> None:
         self.full_clean()
