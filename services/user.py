@@ -1,39 +1,41 @@
-from django.contrib.auth.backends import UserModel
+from django.contrib.auth import get_user_model
 
-from db.models import User
+User = get_user_model()
 
 
 def create_user(
-        username: str,
-        password: str,
-        email: str | None = None,
-        first_name: str | None = None,
-        last_name: str | None = None
+    username: str,
+    password: str,
+    email: str | None = None,
+    first_name: str | None = None,
+    last_name: str | None = None,
 ) -> User:
-    user = UserModel.objects.create_user(username=username, password=password)
+    extra_fields = {}
     if email:
-        user.email = email
-
+        extra_fields["email"] = email
     if first_name:
-        user.first_name = first_name
-
+        extra_fields["first_name"] = first_name
     if last_name:
-        user.last_name = last_name
-    user.save()
-    return user
+        extra_fields["last_name"] = last_name
+
+    return User.objects.create_user(
+        username=username,
+        password=password,
+        **extra_fields
+    )
 
 
 def get_user(user_id: int) -> User:
-    return UserModel.objects.get(pk=user_id)
+    return User.objects.get(pk=user_id)
 
 
 def update_user(
-        user_id: int,
-        username: str | None = None,
-        password: str | None = None,
-        email: str | None = None,
-        first_name: str | None = None,
-        last_name: str | None = None
+    user_id: int,
+    username: str | None = None,
+    password: str | None = None,
+    email: str | None = None,
+    first_name: str | None = None,
+    last_name: str | None = None,
 ) -> User:
     user = get_user(user_id)
     if username:
@@ -50,5 +52,6 @@ def update_user(
 
     if last_name:
         user.last_name = last_name
+
     user.save()
     return user
