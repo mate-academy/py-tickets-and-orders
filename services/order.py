@@ -21,13 +21,19 @@ def create_order(
         order.created_at = date
         order.save(update_fields=["created_at"])
 
+    tickets_objects = []
+
     for ticket in tickets:
-        Ticket.objects.create(
+        item = Ticket(
             order=order,
             row=ticket["row"],
             seat=ticket["seat"],
             movie_session_id=ticket["movie_session"],
         )
+        item.full_clean()
+        tickets_objects.append(item)
+
+    Ticket.objects.bulk_create(tickets_objects)
 
 
 def get_orders(username: Optional[str] = None) -> QuerySet:
