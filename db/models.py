@@ -2,8 +2,6 @@ from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
 
-import settings
-
 
 class Genre(models.Model):
     name = models.CharField(max_length=255, unique=True)
@@ -21,7 +19,7 @@ class Actor(models.Model):
 
 
 class Movie(models.Model):
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=255, db_index=True)
     description = models.TextField()
     actors = models.ManyToManyField(to=Actor, related_name="movies")
     genres = models.ManyToManyField(to=Genre, related_name="movies")
@@ -64,7 +62,7 @@ class MovieSession(models.Model):
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(
-        to=settings.AUTH_USER_MODEL,
+        to="User",
         on_delete=models.CASCADE,
         related_name="orders"
     )

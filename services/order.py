@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 
 from django.contrib.auth import get_user_model
 from django.db import transaction
@@ -11,22 +11,18 @@ from db.models import Order, Ticket
 def create_order(
     tickets: list[dict],
     username: str,
-    date: datetime.datetime | None = None,
-) -> None:
+    date: str | None = None,
+) -> Order:
     user = get_user_model().objects.get(username=username)
-
     order = Order.objects.create(user=user)
     if date is not None:
-        order.created_at = date
-        order.save()
-
+        order.created_at = datetime.strptime(date, "%Y-%m-%d %H:%M")
+        order.save(update_fields=["created_at"])
     for ticket in tickets:
-        Ticket.objects.create(
-            movie_session_id=ticket["movie_session"],
-            order=order,
-            row=ticket["row"],
-            seat=ticket["seat"],
-        )
+        ticket_data = ticket.copy()
+        ticket_data["movie_session_id"] = ticket_data.pop("movie_session")
+        Ticket.objects.create(order=order, **ticket_data)
+    return order
 
 
 def get_orders(username: str | None = None) -> QuerySet[Order]:
