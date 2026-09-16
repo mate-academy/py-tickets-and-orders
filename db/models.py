@@ -114,7 +114,7 @@ class Ticket(models.Model):
             self
     ) -> str:
         return (
-            f"{self.movie_session} "
+            f"{self.movie_session.movie.title} {self.movie_session.show_time} "
             f"(row: {self.row}, seat: {self.seat})"
         )
 
