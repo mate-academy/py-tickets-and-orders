@@ -16,13 +16,17 @@ def create_order(
     if date:
         Order.objects.filter(pk=order.pk).update(created_at=date)
         order.refresh_from_db()
+    tickets_to_create = []
     for ticket in tickets:
-        Ticket.objects.create(
+        ticket_object = Ticket(
             order=order,
             row=ticket["row"],
             seat=ticket["seat"],
             movie_session_id=ticket["movie_session"],
         )
+        ticket_object.full_clean()
+        tickets_to_create.append(ticket_object)
+    Ticket.objects.bulk_create(tickets_to_create)
     return order
 
 
