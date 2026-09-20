@@ -1,8 +1,6 @@
 from datetime import datetime
-
 from django.db import transaction
 from django.db.models import QuerySet
-
 from db.models import MovieSession, Order, Ticket, User
 
 
@@ -14,7 +12,6 @@ def create_order(
 ) -> Order:
     user = User.objects.get(username=username)
     order_kwargs = {"user": user}
-
     if date:
         try:
             order_kwargs["created_at"] = datetime.strptime(
@@ -27,9 +24,7 @@ def create_order(
                 )
             except ValueError:
                 pass
-
     order = Order.objects.create(**order_kwargs)
-
     ticket_objects = [
         Ticket(
             order=order,
@@ -41,8 +36,9 @@ def create_order(
         )
         for ticket_data in tickets
     ]
+    for ticket in ticket_objects:
+        ticket.full_clean()
     Ticket.objects.bulk_create(ticket_objects)
-
     return order
 
 
