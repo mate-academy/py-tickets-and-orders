@@ -24,6 +24,7 @@ def create_user(
 def get_user(user_id: int) -> User:
     return User.objects.get(id=user_id)
 
+
 @transaction.atomic
 def update_user(
     user_id: int,
@@ -33,7 +34,7 @@ def update_user(
     first_name: str = None,
     last_name: str = None,
 ) -> None:
-    user = User.objects.get(id=user_id)
+    user = get_user(user_id)
 
     if username is not None:
         user.username = username
