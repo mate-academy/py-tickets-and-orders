@@ -70,8 +70,16 @@ class Order(models.Model):
 
 
 class Ticket(models.Model):
-    movie_session = models.ForeignKey(MovieSession, on_delete=models.CASCADE)
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    movie_session = models.ForeignKey(
+        MovieSession,
+        on_delete=models.CASCADE,
+        related_name="tickets"
+    )
+    order = models.ForeignKey(
+        Order,
+        on_delete=models.CASCADE,
+        related_name="tickets"
+    )
     row = models.IntegerField(blank=False, null=False)
     seat = models.IntegerField(blank=False, null=False)
 
@@ -103,7 +111,6 @@ class Ticket(models.Model):
                     f"(1, seats_in_row): "
                     f"(1, {self.movie_session.cinema_hall.seats_in_row})"
                 ]})
-
 
     def save(self, *args, **kwargs) -> None:
         self.full_clean()

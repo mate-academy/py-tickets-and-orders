@@ -3,7 +3,10 @@ from datetime import datetime
 from django.db import transaction
 from django.db.models import QuerySet
 
-from db.models import Order, User, MovieSession, Ticket
+from db.models import Order, MovieSession, Ticket
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 
 @transaction.atomic
