@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 
 from django.db import transaction
 from django.db.models import QuerySet
@@ -14,11 +14,12 @@ def create_order(
 ) -> Order:
     user = User.objects.get(username=username)
 
-    order_data = {"user": user}
+    order = Order.objects.create(user=user)
     if date:
-        order_data["created_at"] = datetime.strptime(date, "%Y-%m-%d %H:%M")
-
-    order = Order.objects.create(**order_data)
+        Order.objects.filter(pk=order.pk).update(
+            created_at=datetime.strptime(date, "%Y-%m-%d %H:%M")
+        )
+        order.refresh_from_db()
 
     for ticket in tickets:
         movie_session = MovieSession.objects.get(pk=ticket["movie_session"])
