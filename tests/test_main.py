@@ -135,9 +135,9 @@ def test_auth_user_models():
 
 def test_order_str(orders_data):
     order = Order.objects.get(id=1)
-    assert str(order) == str(order.created_at)
+    assert str(order) == f"<Order: {order.created_at}>"
     order = Order.objects.get(id=2)
-    assert str(order) == str(order.created_at)
+    assert str(order) == f"<Order: {order.created_at}>"
 
 
 def test_order_ordering(orders_data):
@@ -346,7 +346,11 @@ def test_order_service_create_order_without_date(create_order_data, tickets):
 
 
 def test_order_service_create_order_with_date(create_order_data, tickets):
-    create_order(tickets=tickets, username="user_1", date="2020-11-10 14:40")
+    order = create_order(
+        tickets=tickets,
+        username="user_1",
+        date="2020-11-10 14:40"
+    )
     assert list(Order.objects.all().values_list(
         "user__username"
     )) == [("user_1",)]
@@ -358,6 +362,7 @@ def test_order_service_create_order_with_date(create_order_data, tickets):
     assert Order.objects.first().created_at == datetime.datetime(
         2020, 11, 10, 14, 40
     )
+    assert order.created_at == datetime.datetime(2020, 11, 10, 14, 40)
 
 
 def test_create_order_transaction_atomic(tickets):
