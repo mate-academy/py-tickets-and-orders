@@ -39,7 +39,7 @@ def create_order(
     return order
 
 
-def get_orders(username: Optional[str] = None) -> QuerySet:
+def get_orders(username: Optional[str] = None) -> QuerySet[Order]:
     orders = Order.objects.all()
 
     if username is not None:

@@ -8,7 +8,7 @@ def get_movies(
     genres_ids : Optional[list[int]] = None,
     actors_ids : Optional[list[int]] = None,
     title : Optional[list[int]] = None,
-) -> QuerySet:
+) -> QuerySet[Movie]:
     movies = Movie.objects.all()
 
     if genres_ids is not None:
@@ -20,7 +20,7 @@ def get_movies(
     if title is not None:
         movies = movies.filter(title__icontains=title)
 
-    return movies.distinct()
+    return movies.distinct().order_by("id")
 
 
 def get_movie_by_id(movie_id: int) -> Movie:
