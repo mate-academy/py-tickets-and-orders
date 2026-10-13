@@ -1,8 +1,10 @@
 from django.contrib.auth import get_user_model
+from django.db import transaction
 
 from db.models import User
 
 
+@transaction.atomic
 def create_user(
         username: str,
         password: str,
@@ -11,10 +13,9 @@ def create_user(
         last_name: str = None
 ) -> None:
     user = get_user_model().objects.create_user(
-        username=username
+        username=username,
+        password=password
     )
-
-    user.set_password(password)
 
     if email:
         user.email = email
