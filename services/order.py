@@ -16,9 +16,12 @@ def create_order(
     order = Order.objects.create(
         user=get_user_model().objects.get(
             username=username
-        ),
-        created_at=date
+        )
     )
+
+    if date:
+        order.created_at = date
+        order.save(update_fields=["created_at"])
 
     for ticket in tickets:
         Ticket.objects.create(
