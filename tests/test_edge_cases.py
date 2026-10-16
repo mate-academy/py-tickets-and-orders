@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import pytest
 
 from django.core.exceptions import ValidationError
@@ -77,3 +79,22 @@ def test_user_can_clear_optional_fields():
     assert user.email == ""
     assert user.first_name == ""
     assert user.check_password("secret")
+
+
+@pytest.mark.parametrize(
+    "date",
+    ["2020-11-10 14:40", datetime(2020, 11, 10, 14, 40)],
+)
+def test_custom_order_date_survives_refresh(booking_session, date):
+    create_user("customer", "secret")
+    order = create_order(
+        tickets=[
+            {"movie_session": booking_session.pk, "row": 1, "seat": 1}
+        ],
+        username="customer",
+        date=date,
+    )
+    expected = datetime(2020, 11, 10, 14, 40)
+    assert order.created_at == expected
+    order.refresh_from_db()
+    assert order.created_at == expected
