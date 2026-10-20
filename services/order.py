@@ -1,7 +1,11 @@
 from django.db import transaction
 from django.db.models import QuerySet
 
-from db.models import Ticket, User, Order
+from django.contrib.auth import get_user_model
+from db.models import Ticket, Order
+
+
+User = get_user_model()
 
 
 @transaction.atomic
