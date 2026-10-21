@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 
+import settings
+
 
 class Genre(models.Model):
     name = models.CharField(max_length=255, unique=True)
@@ -60,33 +62,48 @@ class User(AbstractUser):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User, related_name="orders", on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="orders",
+        on_delete=models.CASCADE
+    )
 
     def __str__(self) -> str:
-        return f"<Order: {self.created_at}>"
+        return str(self.created_at)
 
     class Meta:
         ordering = ["-created_at"]
 
 
 class Ticket(models.Model):
-    movie_session = models.ForeignKey(MovieSession, related_name="tickets", on_delete=models.CASCADE)
-    order = models.ForeignKey(Order, related_name="tickets", on_delete=models.CASCADE)
+    movie_session = models.ForeignKey(
+        MovieSession,
+        related_name="tickets",
+        on_delete=models.CASCADE
+    )
+    order = models.ForeignKey(
+        Order,
+        related_name="tickets",
+        on_delete=models.CASCADE
+    )
     row = models.IntegerField()
     seat = models.IntegerField()
 
     def __str__(self) -> str:
-        return f"<Ticket: {str(self.movie_session)} (row: {self.row}, seat: {self.seat})>"
+        return f"{str(
+            self.movie_session
+        )} (row: {self.row}, seat: {self.seat})"
 
     def clean(self) -> None:
         if not (1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row):
             raise ValidationError({
                 "seat": (
                     "seat number must be in available range: "
-                    f"(1, seats_in_row): (1, {self.movie_session.cinema_hall.seats_in_row})"
+                    f"(1, seats_in_row): "
+                    f"(1, {self.movie_session.cinema_hall.seats_in_row})"
                 )
             })
-                
+
         if not (1 <= self.row <= self.movie_session.cinema_hall.rows):
             raise ValidationError({
                 "row": (
@@ -97,11 +114,12 @@ class Ticket(models.Model):
 
     def save(self, *args, **kwargs) -> None:
         self.full_clean()
-        return super().save(*args, **kwargs) 
+        return super().save(*args, **kwargs)
 
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=["seat", "row", "movie_session"], name="unique_ticket_seat_movie"
+                fields=["seat", "row", "movie_session"],
+                name="unique_ticket_seat_movie",
             )
         ]
