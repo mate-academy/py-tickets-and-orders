@@ -15,8 +15,6 @@ def create_order(
     order = Order.objects.create(user=user)
 
     if date:
-        # auto_now_add игнорирует created_at в create(),
-        # дата 
         order.created_at = date
         order.save()
 
