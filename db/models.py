@@ -27,7 +27,7 @@ class Movie(models.Model):
 
     class Meta:
         indexes = [
-            models.Index(fields=["title"]),
+            models.Index(fields=["title"], name="movie_title_idx"),
         ]
 
     def __str__(self) -> str:
