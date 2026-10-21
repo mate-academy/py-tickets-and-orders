@@ -69,7 +69,7 @@ class Order(models.Model):
     )
 
     def __str__(self) -> str:
-        return str(self.created_at)
+        return f"<Order: {self.created_at}>"
 
     class Meta:
         ordering = ["-created_at"]
@@ -90,9 +90,9 @@ class Ticket(models.Model):
     seat = models.IntegerField()
 
     def __str__(self) -> str:
-        return f"{str(
+        return f"<Ticker: {str(
             self.movie_session
-        )} (row: {self.row}, seat: {self.seat})"
+        )} (row: {self.row}, seat: {self.seat})>"
 
     def clean(self) -> None:
         if not (1 <= self.seat <= self.movie_session.cinema_hall.seats_in_row):
