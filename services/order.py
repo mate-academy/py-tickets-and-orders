@@ -16,7 +16,7 @@ def create_order(
 
     if date:
         # auto_now_add игнорирует created_at в create(),
-        # поэтому ставим дату уже после создания
+        # дата 
         order.created_at = date
         order.save()
 
