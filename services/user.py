@@ -49,5 +49,4 @@ def update_user(
         user.first_name = first_name
     if last_name is not None:
         user.last_name = last_name
-
     user.save()

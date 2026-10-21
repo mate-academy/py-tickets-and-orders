@@ -90,7 +90,7 @@ class Ticket(models.Model):
     seat = models.IntegerField()
 
     def __str__(self) -> str:
-        return f"<Ticker: {str(
+        return f"<Ticket: {str(
             self.movie_session
         )} (row: {self.row}, seat: {self.seat})>"
 
