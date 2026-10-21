@@ -19,8 +19,10 @@ def create_order(
 ) -> None:
     order = Order.objects.create(
         user=get_user_model().objects.get(username=username),
-        created_at=date
-    ) 
+    )
+    if date is not None:
+        order.created_at = date
+        order.save()
     for ticket in tickets:
         Ticket.objects.create(
             movie_session_id=ticket["movie_session"],
