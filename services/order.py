@@ -1,9 +1,8 @@
-from datetime import datetime
-
 from django.db import transaction
 from django.db.models import QuerySet
+from django.contrib.auth import get_user_model
 
-from db.models import Order, Ticket, User
+from db.models import Order, Ticket
 
 
 def get_orders(username: str = None) -> QuerySet[Order]:
@@ -16,10 +15,10 @@ def get_orders(username: str = None) -> QuerySet[Order]:
 def create_order(
     tickets: list[dict],
     username: str,
-    date: datetime = None
+    date: str = None
 ) -> None:
     order = Order.objects.create(
-        user=User.objects.get(username=username)
+        user=get_user_model().objects.get(username=username)
     )
     if date is not None:
         order.created_at = date
