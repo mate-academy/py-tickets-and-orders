@@ -1,13 +1,13 @@
 # Сheck Your Code Against the Following Points
 
-## Don't Push db files
-Make sure you don't push db files (files with `.sqlite`, `.db3`, etc. extension).
+## Don"t Push db files
+Make sure you don"t push db files (files with `.sqlite`, `.db3`, etc. extension).
 
-## Don't Forget to Add Migrations to your PR
+## Don"t Forget to Add Migrations to your PR
 This is a required for the tests to pass.
 
-## Don't Repeat Yourself
-Call the `save()` method only one time if it's possible.
+## Don"t Repeat Yourself
+Call the `save()` method only one time if it"s possible.
 
 Good example:
 ```python
@@ -98,7 +98,7 @@ User.objects.create_user(
 Good example:
 ```python
 class Ticket(models.Model):
-    order = models.ForeignKey(to=Order, on_delete=models.CASCADE, related_name='tickets')
+    order = models.ForeignKey(to=Order, on_delete=models.CASCADE, related_name="tickets")
 ```
 
 Bad example:
@@ -128,7 +128,7 @@ def __init__(self,
              name: str,age: int) -> None:
 ```
 
-8. To improve the code's readability and maintainability, it’s better to use the previously created function
+8. To improve the code"s readability and maintainability, it’s better to use the previously created function
 
  Good example:
 
