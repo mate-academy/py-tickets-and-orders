@@ -3,6 +3,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Index, DateTimeField
 from django.db.models.constraints import UniqueConstraint
+from django.conf import settings
 
 
 class Genre(models.Model):
@@ -65,7 +66,8 @@ class User(AbstractUser):
 
 class Order(models.Model):
     created_at = DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE,
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE,
                              related_name="order")
 
     class Meta:
