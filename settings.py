@@ -27,6 +27,8 @@ INSTALLED_APPS = [
     "db",
     "django.contrib.auth",
     "django.contrib.contenttypes",
+    
 ]
 
 # add `AUTH_USER_MODEL` equals to `"db.User"`.
+AUTH_USER_MODEL = "db.User"

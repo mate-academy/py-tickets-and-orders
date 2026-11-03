@@ -85,14 +85,22 @@ class Ticket(models.Model):
     )
 
     def clean(self):
+        errors = {}
         # Validate that the row and seat are within the cinema hall's capacity
         if self.row < 1 or self.row > self.movie_session.cinema_hall.rows:
-            raise ValidationError(f"Row {self.row} is out of range"
-                                  f"for this cinema hall.")
+            errors["row"] = [
+            f"row number must be in available range: (1, rows): (1, {self.movie_session.cinema_hall.rows})"
+        ]
+
         if (self.seat < 1 
         or self.seat > self.movie_session.cinema_hall.seats_in_row):
-            raise ValidationError(f"Seat {self.seat} is out of range"
-                                  f" for this cinema hall.")
+            errors["seat"] = [
+                f"seat number must be in available range: (1, seats_in_row): (1, {self.movie_session.cinema_hall.seats_in_row})"
+            ]
+
+        if errors:
+            raise ValidationError(errors)
+
 
     def save(self, *args, **kwargs):
         self.full_clean()  # Call clean() before saving
@@ -100,15 +108,20 @@ class Ticket(models.Model):
 
 
     class Meta:
-        unique_together = ["row", "seat", "movie_session"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["row", "seat", "movie_session"],
+                name="unique_ticket_seat_per_session",
+            )
+        ]
 
     def __str__(self) -> str:
-        return (f"Ticket for {self.movie_session.movie.title} at "
+        return (f"{self.movie_session.movie.title} at "
                 f"{self.movie_session.show_time}, Row: {self.row},"
                 f" Seat: {self.seat}")
 
 
-class AbstractBaseUser(models.Model):
+class AbstractUser(models.Model):
     username = models.CharField(max_length=255, unique=True)
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=255)
@@ -119,7 +132,7 @@ class AbstractBaseUser(models.Model):
     def __str__(self) -> str:
         return self.username
 
-class User(AbstractBaseUser):
+class User(AbstractUser):
     pass
 
     def __str__(self) -> str:
