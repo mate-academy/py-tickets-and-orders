@@ -69,7 +69,8 @@ class Order(models.Model):
     )
 
     def __str__(self) -> str:
-        return f"Order {self.id} by {self.user.username} at {self.created_at}"
+        return f"{self.created_at}"
+
 
     class Meta:
         ordering = ["-created_at"]
@@ -119,21 +120,11 @@ class Ticket(models.Model):
 
     def __str__(self) -> str:
         return (
-            f"{self.movie_session.movie.title} {self.movie_session.show_time} "
+            f"{self.movie_session.movie.title} "
+            f"{self.movie_session.show_time} "
             f"(row: {self.row}, seat: {self.seat})"
         )
 
-
-class AbstractUser(models.Model):
-    username = models.CharField(max_length=255, unique=True)
-    email = models.EmailField(unique=True)
-    password = models.CharField(max_length=255)
-
-    class Meta:
-        abstract = True
-
-    def __str__(self) -> str:
-        return self.username
 
 
 class User(AbstractUser):
