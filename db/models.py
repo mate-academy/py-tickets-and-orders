@@ -114,9 +114,9 @@ class Ticket(models.Model):
         ]
 
     def __str__(self) -> str:
-        return (f"<Ticket: {self.movie_session}"
+        return (f"{self.movie_session}"
                 f" (row: {self.row},"
-                f" seat: {self.seat})>")
+                f" seat: {self.seat})")
 
 
 class User(AbstractUser):
