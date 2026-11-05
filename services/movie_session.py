@@ -43,7 +43,7 @@ def delete_movie_session_by_id(session_id: int) -> None:
     MovieSession.objects.get(id=session_id).delete()
 
 
-def get_taken_seats_for_session(session_id: int) -> list[dict[str, int]]:
+def get_taken_seats(session_id: int) -> list[dict[str, int]]:
     tickets = MovieSession.objects.get(id=session_id).tickets.all()
 
     return [
