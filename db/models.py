@@ -108,15 +108,15 @@ class Ticket(models.Model):
     class Meta:
         constraints = [
             UniqueConstraint(
-                fields=["movie_session", "seat", "row"],
+                fields=["row", "seat", "movie_session"],
                 name="unique_seat_row_for_ticket"
             )
         ]
 
     def __str__(self) -> str:
-        return (f"{self.movie_session}"
+        return (f"<Ticket: {self.movie_session}"
                 f" (row: {self.row},"
-                f" seat: {self.seat})")
+                f" seat: {self.seat})>")
 
 
 class User(AbstractUser):
