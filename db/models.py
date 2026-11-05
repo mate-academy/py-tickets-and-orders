@@ -69,7 +69,7 @@ class Order(models.Model):
     )
 
     def __str__(self) -> str:
-        return f"{self.created_at}"
+        return str(self.created_at)
 
 
     class Meta:
@@ -128,7 +128,5 @@ class Ticket(models.Model):
 
 
 class User(AbstractUser):
-    pass
-
     def __str__(self) -> str:
         return self.username
