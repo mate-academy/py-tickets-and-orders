@@ -32,5 +32,4 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
 
 ]
-ALLOWED_HOSTS = ['*']
 
