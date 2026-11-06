@@ -35,4 +35,3 @@ def get_orders(username: str | None = None) -> QuerySet:
     if username is not None:
         queryset = queryset.filter(user__username=username)
     return queryset
-
