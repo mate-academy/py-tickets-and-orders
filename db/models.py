@@ -1,6 +1,11 @@
-from django.contrib.auth.models import User
+from django.conf import settings
+from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
+
+
+class User(AbstractUser):
+    pass
 
 
 class Genre(models.Model):
@@ -19,10 +24,10 @@ class Actor(models.Model):
 
 
 class Movie(models.Model):
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=255, db_index=True)
     description = models.TextField()
-    actors = models.ManyToManyField(to=Actor, related_name="movies")
-    genres = models.ManyToManyField(to=Genre, related_name="movies")
+    actors = models.ManyToManyField(Actor, related_name="movies")
+    genres = models.ManyToManyField(Genre, related_name="movies")
 
     def __str__(self) -> str:
         return self.title
@@ -44,10 +49,10 @@ class CinemaHall(models.Model):
 class MovieSession(models.Model):
     show_time = models.DateTimeField()
     cinema_hall = models.ForeignKey(
-        to=CinemaHall, on_delete=models.CASCADE, related_name="movie_sessions"
+        CinemaHall, on_delete=models.CASCADE, related_name="movie_sessions"
     )
     movie = models.ForeignKey(
-        to=Movie, on_delete=models.CASCADE, related_name="movie_sessions"
+        Movie, on_delete=models.CASCADE, related_name="movie_sessions"
     )
 
     def __str__(self) -> str:
@@ -56,13 +61,15 @@ class MovieSession(models.Model):
 
 class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE
+    )
 
     class Meta:
         ordering = ["-created_at"]
 
-    def __str__(self) -> str:
-        return f"{self.created_at}"
+        def __str__(self) -> str:
+            return f"{self.created_at}"
 
 
 class Ticket(models.Model):
