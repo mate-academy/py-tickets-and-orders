@@ -1,13 +1,13 @@
+from django.db import transaction
 from django.db.models import QuerySet
 from db.models import Movie
-from django.db import transaction
 
 
 def get_movies(
     genres_ids: list[int] = None,
     actors_ids: list[int] = None,
-    title: str = None,  # <- Додаємо сюди у параметри
-) -> QuerySet:
+    title: str = None,
+) -> QuerySet[Movie]:
     queryset = Movie.objects.all()
 
     if genres_ids:
@@ -16,7 +16,7 @@ def get_movies(
     if actors_ids:
         queryset = queryset.filter(actors__id__in=actors_ids)
 
-    if title is not None:  # <- А сюди додаємо саму фільтрацію
+    if title is not None:
         queryset = queryset.filter(title__icontains=title)
 
     return queryset
