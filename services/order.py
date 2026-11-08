@@ -1,18 +1,21 @@
 from datetime import datetime
+from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.db.models import QuerySet
-from db.models import Order, Ticket, User
+from db.models import Order, Ticket
 
 
 @transaction.atomic
 def create_order(
-    tickets: list[dict], username: str = None, date: str = None
+        tickets: list[dict], username: str = None, date: str = None
 ) -> None:
+    user_model = get_user_model()
+
     user = (
-        User.objects.get(username=username)
+        user_model.objects.get(username=username)
         if username
-        else User.objects.first()
-    )  # або передавайте користувача відповідно до логіки платформи
+        else user_model.objects.first()
+    )
 
     order_kwargs = {"user": user}
     if date:
@@ -30,7 +33,7 @@ def create_order(
         )
 
 
-def get_orders(username: str = None) -> QuerySet:
+def get_orders(username: str = None) -> QuerySet[Order]:
     if username:
         return Order.objects.filter(user__username=username)
     return Order.objects.all()
