@@ -4,8 +4,10 @@ User = get_user_model()
 
 
 def create_user(
-        username: str, password: str,
-        email: str = None, first_name: str = None,
+        username: str,
+        password: str,
+        email: str = None,
+        first_name: str = None,
         last_name: str = None
 ) -> None:
     user = User.objects.create_user(
@@ -28,8 +30,10 @@ def get_user(user_id: int) -> User:
 
 def update_user(
         user_id: int,
-        username: str = None, password: str = None,
-        first_name : str = None, last_name: str = None,
+        username: str = None,
+        password: str = None,
+        first_name : str = None,
+        last_name: str = None,
         email: str = None
 ) -> None:
     user = get_user(user_id)

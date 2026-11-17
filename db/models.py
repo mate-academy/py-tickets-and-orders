@@ -2,7 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
 
-import settings
+from django.conf import settings
 
 
 class Genre(models.Model):
@@ -112,7 +112,11 @@ class Ticket(models.Model):
                         f"(1, {self.movie_session.cinema_hall.seats_in_row})"
             })
 
-    def save(self, *args, **kwargs) -> None:
+    def save(
+            self,
+            *args,
+            **kwargs
+    ) -> None:
         self.full_clean()
         super().save(*args, **kwargs)
 
