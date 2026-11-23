@@ -52,4 +52,4 @@ class MovieSession(models.Model):
         return f"{self.movie.title} {str(self.show_time)}"
 
 
-#start!!
+#start!
