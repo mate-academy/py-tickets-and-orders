@@ -1,0 +1,11 @@
+[33mcommit df46582b364e9b66c052c20a6abc21a91b9a51a0[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mdevelop[m[33m)[m
+Author: Nazar Sydorovych <sidornazik@gmail.com>
+Date:   Wed Nov 25 16:11:05 2026 +0200
+
+    Fix review comments, timezone and add migrations
+
+[33mcommit 1bdb5e91e35a932bbec6159d4a281386da4e0d85[m[33m ([m[1;31morigin/develop[m[33m)[m
+Author: Nazar Sydorovych <sidornazik@gmail.com>
+Date:   Wed Nov 25 16:01:58 2026 +0200
+
+    'Solution'
