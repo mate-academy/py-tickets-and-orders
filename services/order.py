@@ -20,10 +20,10 @@ def create_order(
             seat=ticket["seat"],
             order=order,
         )
-        if date is not None:
-            Order.objects.filter(pk=order.pk).update(
-                created_at=datetime.strptime(date, "%Y-%m-%d %H:%M")
-            )
+    if date is not None:
+        Order.objects.filter(pk=order.pk).update(
+            created_at=datetime.strptime(date, "%Y-%m-%d %H:%M")
+        )
 
 
 def get_orders(
