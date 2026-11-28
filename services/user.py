@@ -1,4 +1,4 @@
-from db.models import User
+from django.contrib.auth.models import AbstractUser
 from django.contrib.auth import get_user_model
 
 
@@ -21,13 +21,12 @@ def create_user(
     if last_name is not None:
         user_data["last_name"] = last_name
 
-    user = get_user_model().objects.create_user(**user_data)
-    user.save()
+    get_user_model().objects.create_user(**user_data)
 
 
 def get_user(
         user_id: int
-) -> User:
+) -> AbstractUser:
     user = get_user_model().objects.get(pk=user_id)
     return user
 

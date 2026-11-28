@@ -124,6 +124,10 @@ class Ticket(models.Model):
                     f"(1, seats_in_row): (1, {seats})"
             })
 
-    def save(self, *args, **kwargs) -> None:
+    def save(
+            self,
+            *args,
+            **kwargs
+    ) -> None:
         self.full_clean()
         return super().save(*args, **kwargs)

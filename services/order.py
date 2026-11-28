@@ -2,6 +2,7 @@ from django.db import transaction
 from db.models import Order, Ticket
 from django.db.models import QuerySet
 from django.contrib.auth import get_user_model
+from datetime import datetime
 
 
 @transaction.atomic
@@ -19,9 +20,10 @@ def create_order(
             seat=ticket["seat"],
             order=order,
         )
-    if date is not None:
-        order.created_at = date
-    order.save()
+        if date is not None:
+            Order.objects.filter(pk=order.pk).update(
+                created_at=datetime.strptime(date, "%Y-%m-%d %H:%M")
+            )
 
 
 def get_orders(
