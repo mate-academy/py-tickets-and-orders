@@ -7,7 +7,9 @@ from django.db import models
 class Genre(models.Model):
     name = models.CharField(max_length=255, unique=True)
 
-    def __str__(self) -> str:
+    def __str__(
+        self,
+    ) -> str:
         return self.name
 
 
@@ -15,7 +17,9 @@ class Actor(models.Model):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
 
-    def __str__(self) -> str:
+    def __str__(
+        self,
+    ) -> str:
         return f"{self.first_name} {self.last_name}"
 
 
@@ -31,7 +35,9 @@ class Movie(models.Model):
         related_name="movies",
     )
 
-    def __str__(self) -> str:
+    def __str__(
+        self,
+    ) -> str:
         return self.title
 
 
@@ -41,10 +47,14 @@ class CinemaHall(models.Model):
     seats_in_row = models.IntegerField()
 
     @property
-    def capacity(self) -> int:
+    def capacity(
+        self,
+    ) -> int:
         return self.rows * self.seats_in_row
 
-    def __str__(self) -> str:
+    def __str__(
+        self,
+    ) -> str:
         return self.name
 
 
@@ -61,7 +71,9 @@ class MovieSession(models.Model):
         related_name="movie_sessions",
     )
 
-    def __str__(self) -> str:
+    def __str__(
+        self,
+    ) -> str:
         return f"{self.movie.title} {self.show_time}"
 
 
@@ -80,7 +92,9 @@ class Order(models.Model):
     class Meta:
         ordering = ["-created_at"]
 
-    def __str__(self) -> str:
+    def __str__(
+        self,
+    ) -> str:
         return str(self.created_at)
 
 
@@ -106,13 +120,17 @@ class Ticket(models.Model):
             )
         ]
 
-    def __str__(self) -> str:
+    def __str__(
+        self,
+    ) -> str:
         return (
             f"{self.movie_session} "
             f"(row: {self.row}, seat: {self.seat})"
         )
 
-    def clean(self) -> None:
+    def clean(
+        self,
+    ) -> None:
         cinema_hall = self.movie_session.cinema_hall
 
         if self.row < 1 or self.row > cinema_hall.rows:
@@ -132,6 +150,10 @@ class Ticket(models.Model):
                 )
             })
 
-    def save(self, *args, **kwargs) -> None:
+    def save(
+        self,
+        *args,
+        **kwargs,
+    ) -> None:
         self.full_clean()
         return super().save(*args, **kwargs)
